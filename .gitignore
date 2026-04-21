@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Local verification artifacts (regenerate with scripts/ as needed)
+screenshots/
+
+# Owner's private photo drop / source-photo staging
+WEBsite/
+
+# Claude Code local settings
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Local backups / tmp (script recovery)
+/tmp/
+*.bak
+
+# Unreferenced source video / working folder — re-add via proper images/ or videos/ path when ready
+untitled folder/
