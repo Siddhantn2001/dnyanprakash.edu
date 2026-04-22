@@ -1247,7 +1247,32 @@
       line-height: 1.45;
       color: var(--color-text-primary);
     }
-    .lede { font-size: 22px; line-height: 1.5; color: var(--color-text-primary); margin: 0 0 28px; font-family: var(--font-display); font-style: normal; font-weight: 400; }
+    .lede {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--color-text-primary);
+      margin: 0 0 18px;
+      font-family: var(--font-sans);
+      font-style: normal;
+      font-weight: 400;
+    }
+    /* Designated subtitle — the ONLY case where .lede is italic + lighter.
+       Applies strictly when the .lede is an immediate sibling of .article-heading. */
+    .article-heading + .lede {
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-bottom: 18px;
+    }
+    /* Collapse the section gap between a subtitle and the first body paragraph.
+       Applies when the .article-body section contains a subtitle (sibling .lede). */
+    main > section.section-pad.article-body:has(> .container-main > .article-heading + .lede) {
+      padding-bottom: 0;
+    }
+    main > section.section-pad.article-body:has(> .container-main > .article-heading + .lede) + section.section-pad {
+      padding-top: 0;
+    }
   </style>
 </head>
 <body>
@@ -1654,23 +1679,14 @@
         <div class="section-eyebrow">Watch</div>
         <h2 class="section-title">A Virtual Tour of Dnyanprakash</h2>
 
-        <div class="video-wrap">
-          <div
-            data-img-slot="11"
-            data-img-description="Campus walkthrough video poster, 90–120 seconds"
-            class="slot-box w-full h-full"
-          >
-            <div class="text-center">
-              <div class="slot-num">11</div>
-              <div class="slot-desc">Virtual tour video</div>
-            </div>
-          </div>
-          <button type="button" class="play-btn" aria-label="Play virtual tour">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </button>
-          <div class="video-label">A Virtual Tour of Dnyanprakash</div>
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px;">
+          <iframe
+            src="https://www.youtube.com/embed/d8WFBmGhmzQ"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
         </div>
       </div>
     </section>
@@ -2144,7 +2160,7 @@
   08  (retired — "Meet Our Community" section removed 2026-04-21)
   09  (retired — "Meet Our Community" section removed 2026-04-21)
   10  (retired — "Meet Our Community" section removed 2026-04-21)
-  11  Video poster — "A Virtual Tour of Dnyanprakash" (90–120s)
+  11  [FILLED 2026-04-22] YouTube embed d8WFBmGhmzQ — "A Virtual Tour of Dnyanprakash"
   12  Academics — Balbhavan (Age 3–6) early-years classroom
   13  Academics — Balvikas Kendra (Grades 1–4) primary scene
   14  Academics — Vidyaniketan (Grades 5–10) secondary scene
@@ -2153,8 +2169,10 @@
   17  Academics — Narhare Learning Home (supplementary programme)
   =====================================================================
   Inner-page slots 18–65 are catalogued in their respective page files.
+  (46 [FILLED 2026-04-22] images/46-about-education.png — about/about-education.html page hero)
   (65 [FILLED 2026-04-21] images/65-learning-through-action-hero.jpg — about/learning-through-action.html page hero)
   =====================================================================
   -->
+  <script defer src="scripts/header-blur.js"></script>
 </body>
 </html>
