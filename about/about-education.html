@@ -1154,13 +1154,30 @@
       color: var(--color-text-primary);
     }
     .lede {
-      font-size: 18px;
-      line-height: 1.6;
-      color: var(--color-text-muted);
-      margin: 0 0 20px;
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--color-text-primary);
+      margin: 0 0 18px;
       font-family: var(--font-sans);
-      font-style: italic;
+      font-style: normal;
       font-weight: 400;
+    }
+    /* Designated subtitle — the ONLY case where .lede is italic + lighter.
+       Applies strictly when the .lede is an immediate sibling of .article-heading. */
+    .article-heading + .lede {
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--color-text-muted);
+      font-style: italic;
+      margin-bottom: 18px;
+    }
+    /* Collapse the section gap between a subtitle and the first body paragraph.
+       Applies when the .article-body section contains a subtitle (sibling .lede). */
+    main > section.section-pad.article-body:has(> .container-main > .article-heading + .lede) {
+      padding-bottom: 0;
+    }
+    main > section.section-pad.article-body:has(> .container-main > .article-heading + .lede) + section.section-pad {
+      padding-top: 0;
     }
 
     /* ==== article-template:start ==== */
@@ -1639,12 +1656,7 @@
 
   <main>
         <section class="article-hero-media" aria-label="About Education">
-      <div data-img-slot="46" data-img-description="About Education hero — children learning in classroom or with family" class="slot-box">
-        <div class="text-center">
-          <div class="slot-num">46</div>
-          <div class="slot-desc">About Education hero — children lear</div>
-        </div>
-      </div>
+      <img src="../images/46-about-education.png" alt="About Education hero — children learning in classroom or with family" />
     </section>
 <div class="breadcrumb"><div class="container-main"><a href="../index.html">Home</a><span class="sep">›</span><a href="index.html">About</a><span class="sep">›</span><span>About Education</span></div></div>
     <section class="section-pad reveal article-body">
@@ -1655,7 +1667,7 @@
         </header>
         <div class="article-layout">
           <div class="prose">
-            <p class="lede">Why the mother tongue matters when choosing a medium of instruction.</p>
+            <p class="lede">Why the mother tongue matters when choosing a medium of instruction?</p>
                         <!-- owner-supplied verbatim About Education copy — locked 2026-04-21 -->
                       <p>When it comes to choosing the medium of education for their children, today's parents face a very complex dilemma. There is an abundant rise in various schools catering to this demand, leaving these parents in a state of indecision. However, parents often lack the time to consider how beneficial or suitable this medium will be for their child. In such situations, influenced by the blind belief of keeping up with the neighborhood, they might choose the same medium without considering if it is right for their child.</p>
             
@@ -1666,7 +1678,7 @@
 
           <aside class="article-aside" aria-label="Related information">
             <blockquote class="aside-pullquote">
-              &ldquo;Why the mother tongue matters when choosing a medium of instruction.&rdquo;
+              &ldquo;Why the mother tongue matters when choosing a medium of instruction?&rdquo;
               <cite>From the article</cite>
             </blockquote>
             <div class="aside-card">
@@ -1898,5 +1910,6 @@
       });
     })();
   </script>
+  <script defer src="../scripts/header-blur.js"></script>
 </body>
 </html>
