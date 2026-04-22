@@ -24,3 +24,9 @@ Thumbs.db
 
 # Unreferenced source video / working folder — re-add via proper images/ or videos/ path when ready
 untitled folder/
+
+# Dev utility scripts (not part of the site runtime)
+scripts/shot-*.js
+scripts/verify-*.js
+scripts/fix-lede-styling*.js
+scripts/inject-header-blur.js

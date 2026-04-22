@@ -408,7 +408,7 @@ PAGES.push({
           <div class="section-eyebrow">Admissions</div>
           <h2 class="section-title">One of Maharashtra's longest Marathi-medium waitlists</h2>
           <p class="mission-body">Every year, 300–400 families apply beyond available seats — a measure of trust that no ranking can replicate.</p>
-          <a href="../admission/index.html" class="btn btn-outline">How to Apply</a>
+          <a href="../admission/index.html" class="btn btn-outline">Admission Process</a>
         </div>
       </div>
     </section>
