@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dnyanprakash Educational Project — Know & Inspire</title>
-  <meta name="description" content="A center for joyful, research-informed learning in Latur since 1999." />
+  <title>An Experiment in Education — Dnyanprakash</title>
+  <meta name="description" content="How Dnyanprakash connects every child's learning to action, reading, writing, and real-world experience — from kindergarten through Grade 10." />
 
   <!-- Google Fonts: Playfair Display (display italic substitute for adelle-condensed) + Libre Franklin (body substitute for franklin-gothic-urw) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,9 +15,9 @@
   />
 
   <!-- Favicon / touch icons (generated from the square brand logo) -->
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
-  <link rel="shortcut icon" href="images/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="../images/favicon.ico" />
 
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -434,29 +434,19 @@
        height to keep the solid nav compact. image-rendering + object-contain
        keep the raster sharp. */
     .site-header:not(.nav-solid) .site-header-logo img {
-      height: 92px !important;          /* bumped from 72px for stronger brand presence on hero */
+      height: 72px !important;          /* was 44px — ~64% larger for hero */
       image-rendering: -webkit-optimize-contrast;
     }
     @media (max-width: 768px) {
       .site-header:not(.nav-solid) .site-header-logo img {
-        height: 60px !important;         /* scale down on phones */
+        height: 52px !important;         /* scale down on phones */
       }
     }
     .site-header.nav-solid .site-header-logo img {
-      height: 64px;                       /* bumped from 52px to match */
+      height: 52px;                       /* was 44px — slightly larger */
     }
     /* Also lift the nav bar a touch so the bigger logo has breathing room */
-    /* Main-nav bar spans full viewport so the logo sits flush-left with a small gutter
-       (container-main centers at 1200px, which leaves big empty margins on wide screens). */
-    .main-nav-inner {
-      width: 100%;
-      padding-left: 24px;
-      padding-right: 24px;
-    }
-    @media (min-width: 1024px) {
-      .main-nav-inner { padding-left: 40px; padding-right: 40px; }
-    }
-    .site-header:not(.nav-solid) .main-nav > .main-nav-inner { min-height: 112px; }
+    .site-header:not(.nav-solid) .main-nav > .container-main { min-height: 96px; }
 
     /* Solid fallback (pages without a hero — add .nav-solid to .site-header) */
     .site-header.nav-solid {
@@ -521,25 +511,15 @@
       padding-top: 140px;
       color: #fff;
     }
-    /* Align hero content's left edge to the nav's logo (uses .main-nav-inner padding, no max-width cap) */
-    .hero-content > .container-main {
-      max-width: none;
-      padding-left: 24px;
-      padding-right: 24px;
-    }
-    @media (min-width: 1024px) {
-      .hero-content > .container-main { padding-left: 40px; padding-right: 40px; }
-    }
     .hero-title {
       font-family: var(--font-display);
       font-style: normal;
       font-weight: 400;
-      font-size: 120px;
-      line-height: 1;
-      letter-spacing: -0.02em;
+      font-size: 112px;
+      line-height: 1.02;
       color: #fff;
-      margin: 0 0 28px;
-      text-shadow: 0 2px 28px rgba(0,0,0,0.28);
+      margin: 0 0 24px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.35);
     }
     @media (max-width: 1024px) { .hero-title { font-size: 84px; } }
     @media (max-width: 768px) {
@@ -548,12 +528,12 @@
     }
     .hero-sub {
       font-family: var(--font-sans);
-      font-size: 20px;
-      line-height: 1.55;
-      color: rgba(255,255,255,0.92);
+      font-size: 22px;
+      line-height: 1.45;
+      color: #fff;
       max-width: 620px;
-      margin: 0 0 36px;
-      text-shadow: 0 1px 12px rgba(0,0,0,0.35);
+      margin: 0 0 32px;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.4);
     }
     @media (max-width: 768px) { .hero-sub { font-size: 17px; } }
     .btn-hero-primary {
@@ -573,46 +553,6 @@
     .btn-hero-secondary:hover {
       background: #fff;
       color: var(--color-text-primary);
-    }
-
-    /* ---------- Hero social rail (right edge, vertical, square corners) ---------- */
-    .hero-social-rail {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      background: var(--color-primary);
-      border-radius: 0;
-      padding: 16px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-    }
-    .hero-social-rail a {
-      width: 34px;
-      height: 34px;
-      border-radius: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-primary);
-      background: #fff;
-      transition: transform var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
-    }
-    .hero-social-rail a:hover {
-      background: var(--color-primary-dark);
-      color: #fff;
-      transform: scale(1.08);
-    }
-    @media (max-width: 768px) {
-      .hero-social-rail {
-        padding: 10px 7px;
-        gap: 10px;
-      }
-      .hero-social-rail a { width: 28px; height: 28px; }
-      .hero-social-rail svg { width: 13px; height: 13px; }
     }
 
     /* ---------- Reusable placeholder slot box ---------- */
@@ -636,8 +576,8 @@
     }
 
     /* ---------- Shared section layout ---------- */
-    .section-pad { padding: 60px 0; }
-    @media (min-width: 1024px) { .section-pad { padding: 80px 0; } }
+    .section-pad { padding: 96px 0; }
+    @media (min-width: 1024px) { .section-pad { padding: 128px 0; } }
     .section-eyebrow {
       font-family: var(--font-sans-cond);
       font-size: 12px;
@@ -690,55 +630,51 @@
       gap: 24px;
     }
     @media (max-width: 900px) { .news-grid { grid-template-columns: 1fr; gap: 24px; } }
-    /* News card — red heading block on top, clean image below, no gap */
     .news-card {
       position: relative;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      background: var(--color-primary);
-      color: #fff;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
-    }
-    .news-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-      text-decoration: none;
-    }
-    .news-card .news-heading-block {
-      padding: 20px 22px 22px;
-      background: var(--color-primary);
-      color: #fff;
-      min-height: 150px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-    @media (max-width: 900px) {
-      .news-card .news-heading-block { min-height: 0; }
-    }
-    .news-card .news-img-wrap {
-      position: relative;
+      display: block;
       aspect-ratio: 4 / 3;
       overflow: hidden;
+      color: #fff;
+      transition: transform var(--transition-fast);
+    }
+    .news-card:hover { transform: translateY(-2px); text-decoration: none; }
+    .news-card .news-img-wrap {
+      position: absolute;
+      inset: 0;
       margin: 0;
     }
-    .news-card .news-img-wrap > img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    .news-card .news-img-wrap > * { width: 100%; height: 100%; }
+    .news-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg,
+        rgba(0,0,0,0) 35%,
+        rgba(0,0,0,0.45) 70%,
+        rgba(0,0,0,0.78) 100%);
+      z-index: 1;
+      transition: background var(--transition-fast);
     }
-    .news-card:hover .news-img-wrap > img { transform: scale(1.04); }
+    .news-card:hover::after {
+      background: linear-gradient(180deg,
+        rgba(0,0,0,0.1) 0%,
+        rgba(0,0,0,0.55) 60%,
+        rgba(0,0,0,0.85) 100%);
+    }
+    .news-card .news-overlay {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 24px 24px 22px;
+      z-index: 2;
+    }
     .news-cat {
       font-family: var(--font-sans-cond);
       font-size: 11px;
-      letter-spacing: var(--tracking-label);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.85);
       font-weight: 500;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .news-headline {
       font-family: var(--font-display);
@@ -752,16 +688,14 @@
     .news-read {
       font-family: var(--font-sans-cond);
       text-transform: uppercase;
-      letter-spacing: var(--tracking-label);
-      font-size: 12px;
+      letter-spacing: 0.08em;
+      font-size: 13px;
       font-weight: 500;
       color: var(--color-primary);
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: color var(--transition-base), gap var(--transition-base);
     }
-    .news-read:hover { gap: 10px; }
     .news-read:hover { color: var(--color-primary-dark); text-decoration: none; }
 
     /* ---------- Section 8.5 Meet Our Community ---------- */
@@ -780,15 +714,10 @@
       scroll-snap-align: start;
     }
     .meet-card .meet-img {
-      aspect-ratio: 3 / 4;
+      aspect-ratio: 4 / 5;
       overflow: hidden;
       margin-bottom: 16px;
     }
-    .meet-card .meet-img > * {
-      width: 100%; height: 100%;
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .meet-card:hover .meet-img > * { transform: scale(1.04); }
     .meet-name {
       font-family: var(--font-display);
       font-style: normal;
@@ -810,24 +739,20 @@
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 88px; height: 88px;
+      width: 92px; height: 92px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.96);
+      background: rgba(255,255,255,0.95);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--color-primary);
       z-index: 3;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 16px 40px rgba(0,0,0,0.18);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
       cursor: pointer;
       border: 0;
-      transition: transform 0.4s var(--ease-out-expo), background var(--transition-fast), box-shadow 0.4s var(--ease-out-expo);
+      transition: transform var(--transition-fast), background var(--transition-fast);
     }
-    .play-btn:hover {
-      transform: translate(-50%, -50%) scale(1.08);
-      background: #fff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 24px 56px rgba(0,0,0,0.22);
-    }
+    .play-btn:hover { transform: translate(-50%, -50%) scale(1.08); background: #fff; }
     .video-label {
       position: absolute;
       bottom: 32px;
@@ -874,13 +799,11 @@
     .event-link {
       font-family: var(--font-sans-cond);
       text-transform: uppercase;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
-      letter-spacing: var(--tracking-label);
+      letter-spacing: 0.08em;
       color: var(--color-primary);
-      transition: color var(--transition-base);
     }
-    .event-link:hover { color: var(--color-primary-dark); text-decoration: none; }
     @media (max-width: 640px) {
       .event-row { grid-template-columns: 80px 1fr; gap: 16px; }
       .event-row .event-link { grid-column: 1 / -1; justify-self: start; }
@@ -905,37 +828,12 @@
     @media (max-width: 640px) {
       .academics-grid { grid-template-columns: 1fr; }
     }
-    .academics-card {
-      min-width: 0;
-      will-change: transform;
-      transform: scale(1) translateY(0);
-      box-shadow: none;
-      transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .academics-card:hover {
-      transform: scale(1.03) translateY(-6px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .academics-card,
-      .academics-card:hover {
-        transition: none;
-        transform: none;
-        box-shadow: none;
-      }
-    }
+    .academics-card { min-width: 0; }
     .academics-card .ac-img {
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 4 / 5;
       overflow: hidden;
       margin-bottom: 18px;
     }
-    .academics-card .ac-img > * {
-      width: 100%; height: 100%;
-    }
-    .academics-card .ac-link {
-      transition: color var(--transition-base), letter-spacing var(--transition-base);
-    }
-    .academics-card:hover .ac-link { color: var(--color-primary-dark); letter-spacing: 0.1em; }
     .academics-card h3 {
       font-family: var(--font-display);
       font-style: normal;
@@ -953,9 +851,9 @@
     .academics-card .ac-link {
       font-family: var(--font-sans-cond);
       text-transform: uppercase;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
-      letter-spacing: var(--tracking-label);
+      letter-spacing: 0.08em;
       color: var(--color-primary);
     }
 
@@ -975,7 +873,7 @@
     .mission-body {
       font-family: var(--font-sans);
       font-size: 17px;
-      line-height: 1.75;
+      line-height: 1.65;
       color: var(--color-text-primary);
       margin: 0 0 28px;
     }
@@ -1155,21 +1053,14 @@
       color: var(--color-text-muted);
     }
 
-    /* ---------- Smooth in-page scroll ---------- */
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: var(--nav-height);
-    }
-
     /* ---------- Scroll-reveal animation ---------- */
     /* Default: visible (no-JS users, SEO crawlers, and screenshots see content). */
     .reveal { opacity: 1; transform: none; }
     /* JS adds .reveal-fx before observing; observer then adds .is-visible to fade in. */
     .reveal.reveal-fx {
       opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translateY(20px);
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
       will-change: opacity, transform;
     }
     .reveal.reveal-fx.is-visible {
@@ -1177,7 +1068,6 @@
       transform: translateY(0);
     }
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
       .reveal.reveal-fx { opacity: 1; transform: none; transition: none; }
     }
 
@@ -1235,8 +1125,69 @@
     .breadcrumb a:hover { color: var(--color-primary); text-decoration: none; }
     .breadcrumb .sep { margin: 0 8px; color: var(--color-border); }
 
+    /* Article page layout — prose + sticky sidebar (Phase 3 article template) */
+    .article-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; }
+    @media (min-width: 1024px) {
+      .article-layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 72px; align-items: start; }
+    }
+    .article-aside { display: flex; flex-direction: column; gap: 28px; }
+    @media (min-width: 1024px) {
+      .article-aside { position: sticky; top: 96px; }
+    }
+    .aside-pullquote {
+      border-left: 3px solid var(--color-primary);
+      padding: 4px 0 4px 20px;
+      margin: 0;
+      font-family: var(--font-display);
+      font-style: normal;
+      font-size: 22px;
+      line-height: 1.35;
+      color: var(--color-text-primary);
+    }
+    .aside-pullquote cite {
+      display: block;
+      margin-top: 12px;
+      font-family: var(--font-sans);
+      font-style: normal;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .aside-card { background: var(--color-bg-alt); padding: 24px; }
+    .aside-card-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin: 0 0 14px;
+    }
+    .aside-links { display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
+    .aside-links a {
+      color: var(--color-text-primary);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+    .aside-links a:hover { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+    .aside-cta { background: var(--color-primary); color: #fff; padding: 24px; }
+    .aside-cta p {
+      font-family: var(--font-display); font-style: normal; font-weight: 400;
+      font-size: 19px; line-height: 1.3; color: #fff; margin: 0 0 16px;
+    }
+    .aside-cta a.aside-cta-btn {
+      display: inline-block; background: #fff; color: var(--color-primary);
+      padding: 11px 20px; font-family: var(--font-sans); font-size: 12px;
+      font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; transition: background .2s;
+    }
+    .aside-cta a.aside-cta-btn:hover { background: var(--color-bg-alt); }
+
     /* Prose body for inner pages */
     .prose { max-width: 760px; }
+    .article-layout .prose { max-width: none; }
     .prose p { margin: 0 0 18px; font-size: 17px; line-height: 1.7; }
     .prose h2 {
       font-family: var(--font-display);
@@ -1289,24 +1240,197 @@
     main > section.section-pad.article-body:has(> .container-main > .article-heading + .lede) + section.section-pad {
       padding-top: 0;
     }
+
+    /* ==== article-template:start ==== */
+    .article-hero-media {
+      background: var(--color-bg-alt);
+      line-height: 0;
+    }
+    .article-hero-media img,
+    .article-hero-media .slot-box {
+      width: 100%;
+      aspect-ratio: 2.4 / 1;
+      max-height: 560px;
+      object-fit: cover;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .article-hero-media img,
+      .article-hero-media .slot-box { aspect-ratio: 16 / 10; max-height: none; }
+    }
+    main > section.section-pad.article-body { padding-top: 48px; padding-bottom: 80px; }
+    @media (min-width: 1024px) {
+      main > section.section-pad.article-body { padding-top: 56px; padding-bottom: 96px; }
+    }
+    .article-heading {
+      margin: 0 0 28px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .article-heading .eyebrow {
+      font-family: var(--font-sans-cond);
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: 14px;
+    }
+    .article-heading h1 {
+      font-family: var(--font-display);
+      font-style: normal;
+      font-weight: 400;
+      font-size: 56px;
+      line-height: 1.08;
+      color: var(--color-text-primary);
+      margin: 0;
+      letter-spacing: -0.015em;
+    }
+    @media (max-width: 768px) {
+      .article-heading { margin-bottom: 24px; padding-bottom: 20px; }
+      .article-heading h1 { font-size: 36px; }
+    }
+    .article-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; }
+    @media (min-width: 1024px) {
+      .article-layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 72px; align-items: start; }
+    }
+    .article-layout .prose { max-width: none; }
+    .article-aside { display: flex; flex-direction: column; gap: 28px; }
+    @media (min-width: 1024px) {
+      .article-aside { position: sticky; top: 96px; }
+    }
+    .aside-pullquote {
+      border-left: 3px solid var(--color-primary);
+      padding: 4px 0 4px 20px;
+      margin: 0;
+      font-family: var(--font-display);
+      font-style: normal;
+      font-size: 22px;
+      line-height: 1.35;
+      color: var(--color-text-primary);
+    }
+    .aside-pullquote cite {
+      display: block;
+      margin-top: 12px;
+      font-family: var(--font-sans);
+      font-style: normal;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .aside-card { background: var(--color-bg-alt); padding: 24px; }
+    .aside-card-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin: 0 0 14px;
+    }
+    .aside-links { display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
+    .aside-links a {
+      color: var(--color-text-primary);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+    .aside-links a:hover { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+    .aside-instagram {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      padding: 20px 22px;
+    }
+    .aside-instagram-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .aside-instagram-top svg {
+      width: 22px; height: 22px; color: var(--color-primary);
+    }
+    .aside-instagram-top span {
+      font-family: var(--font-sans);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      font-size: 15px;
+    }
+    .aside-instagram p {
+      font-size: 14px; line-height: 1.5;
+      color: var(--color-text-muted);
+      margin: 0 0 14px;
+    }
+    .aside-instagram-btn {
+      display: inline-block;
+      background: var(--color-primary);
+      color: #fff;
+      padding: 10px 18px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .aside-instagram-btn:hover { background: var(--color-primary-dark); color: #fff; text-decoration: none; }
+    .aside-cta { background: var(--color-primary); color: #fff; padding: 24px; }
+    .aside-cta p {
+      font-family: var(--font-display); font-style: normal; font-weight: 400;
+      font-size: 19px; line-height: 1.3; color: #fff; margin: 0 0 16px;
+    }
+    .aside-cta a.aside-cta-btn {
+      display: inline-block; background: #fff; color: var(--color-primary);
+      padding: 11px 20px; font-family: var(--font-sans); font-size: 12px;
+      font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; transition: background .2s;
+    }
+    .aside-cta a.aside-cta-btn:hover { background: var(--color-bg-alt); }
+    /* ==== article-template:end ==== */
+
+    /* ==== article-template-hero:start ==== */
+    .article-hero-media { background: var(--color-bg-alt); line-height: 0; }
+    .article-hero-media img, .article-hero-media .slot-box {
+      width: 100%; aspect-ratio: 2.4 / 1; max-height: 560px; object-fit: cover; display: block;
+    }
+    @media (max-width: 768px) {
+      .article-hero-media img, .article-hero-media .slot-box { aspect-ratio: 16 / 10; max-height: none; }
+    }
+    main > section.section-pad.article-body { padding-top: 48px; padding-bottom: 40px; }
+    @media (min-width: 1024px) {
+      main > section.section-pad.article-body { padding-top: 56px; padding-bottom: 48px; }
+    }
+    .article-heading { margin: 0 0 28px; padding-bottom: 18px; border-bottom: 1px solid var(--color-border); }
+    .article-heading .eyebrow {
+      font-family: var(--font-sans-cond); font-size: 13px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 14px;
+    }
+    .article-heading h1 {
+      font-family: var(--font-display); font-style: normal; font-weight: 400;
+      font-size: 56px; line-height: 1.08; color: var(--color-text-primary); margin: 0;
+      letter-spacing: -0.015em;
+    }
+    @media (max-width: 768px) {
+      .article-heading { margin-bottom: 24px; padding-bottom: 20px; }
+      .article-heading h1 { font-size: 36px; }
+    }
+    /* ==== article-template-hero:end ==== */
   </style>
 </head>
 <body>
-  <!-- =========================================================
-       Site header — wraps utility bar + main nav so they can share
-       overlay vs solid states. Overlay (default) on pages with a hero;
-       add class "nav-solid" on pages without a hero (About, News, etc.)
-       ========================================================= -->
-  <header class="site-header">
+  <!-- NAV/FOOTER — if changing, update in all pages (see CLAUDE.md §8.14 override) -->
+  <header class="site-header nav-solid">
   <!-- =========================================================
        Section 8.1 — Top Utility Bar
        - Language toggle (मराठी ↔ English, JS-enhanced; see scripts/lang-toggle.js)
-       - Alumni link
-       Socials moved to hero-social-rail; phone + student/parent login removed per owner.
+       - Phone number
+       - Parent Login (external link to existing portal)
+       - Small social icons (FB, IG, YT) — Lucide
        ========================================================= -->
   <div data-section="utility-bar" class="w-full border-b border-[var(--color-border)] bg-white">
-    <div class="main-nav-inner flex items-center justify-between h-9 text-[12px] tracking-[0.04em]">
-      <!-- Left: language toggle -->
+    <div class="container-main flex items-center justify-between h-9 text-[12px] tracking-[0.04em]">
+      <!-- Left: language toggle + phone -->
       <div class="flex items-center gap-6">
         <a
           href="#"
@@ -1314,11 +1438,66 @@
           class="uppercase flex items-center gap-1.5 font-medium"
           aria-label="Switch language"
         ><i data-lucide="globe" class="w-3.5 h-3.5"></i><span class="lang-toggle-label">मराठी</span></a>
+        <a
+          href="tel:02382220598"
+          class="hidden sm:flex items-center gap-1.5 text-[var(--color-text-muted)] hover:text-[var(--color-primary)]"
+        >
+          <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+          <span>02382 220598</span>
+        </a>
       </div>
 
-      <!-- Right: alumni only -->
+      <!-- Right: audience links + parent login + socials (Taft-style utility row) -->
       <div class="flex items-center gap-5">
-        <a href="alumni.html" class="hidden md:inline uppercase font-medium text-[var(--color-text-muted)] hover:text-[var(--color-primary)]">Alumni</a>
+        <a href="http://dnyanprakash.techvium.in/site/userlogin" target="_blank" rel="noopener" class="hidden md:inline uppercase font-medium text-[var(--color-text-muted)] hover:text-[var(--color-primary)]">Students</a>
+        <a href="http://dnyanprakash.techvium.in/site/userlogin" target="_blank" rel="noopener" class="hidden md:inline uppercase font-medium text-[var(--color-text-muted)] hover:text-[var(--color-primary)]">Parents</a>
+        <a href="../alumni.html" class="hidden md:inline uppercase font-medium text-[var(--color-text-muted)] hover:text-[var(--color-primary)]">Alumni</a>
+        <a
+          href="http://dnyanprakash.techvium.in/site/userlogin"
+          target="_blank"
+          rel="noopener"
+          class="uppercase font-medium text-[var(--color-text-muted)] hover:text-[var(--color-primary)] flex items-center gap-1.5"
+        >
+          <i data-lucide="user" class="w-3.5 h-3.5"></i>
+          <span>Parent Login</span>
+        </a>
+        <div class="flex items-center gap-3 text-[var(--color-text-muted)]">
+          <a
+            href="https://www.facebook.com/share/1CQwtkb8ix/?mibextid=wwXIfr"
+            target="_blank"
+            rel="noopener"
+            aria-label="Facebook"
+            class="hover:text-[var(--color-primary)] transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/>
+            </svg>
+          </a>
+          <a
+            href="https://www.instagram.com/dnyanprakash_latur"
+            target="_blank"
+            rel="noopener"
+            aria-label="Instagram"
+            class="hover:text-[var(--color-primary)] transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+            </svg>
+          </a>
+          <a
+            href="https://www.youtube.com/@dnyanprakashlatur2335"
+            target="_blank"
+            rel="noopener"
+            aria-label="YouTube"
+            class="hover:text-[var(--color-primary)] transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -1327,12 +1506,12 @@
        Section 8.2 — Main Navigation (7 items, mega-menu on hover, mobile drawer)
        ========================================================= -->
   <nav data-section="main-nav" class="main-nav" role="navigation" aria-label="Primary">
-    <div class="main-nav-inner flex items-center justify-between h-20">
+    <div class="container-main flex items-center justify-between h-20">
       <!-- Logo — horizontal brand asset (mark + ज्ञानप्रकाश wordmark + subtitle, all preserved).
            .site-header-logo triggers the white-pill backdrop in overlay mode. -->
-      <a href="index.html" class="site-header-logo flex items-center shrink-0" aria-label="Dnyanprakash Educational Project — home">
+      <a href="../index.html" class="site-header-logo flex items-center shrink-0" aria-label="Dnyanprakash Educational Project — home">
         <img
-          src="images/00-school-logo.png"
+          src="../images/00-school-logo.png"
           alt="Dnyanprakash Educational Project"
           class="h-11 w-auto object-contain"
         />
@@ -1341,7 +1520,7 @@
       <!-- Desktop navigation (hidden <lg) -->
       <ul class="hidden lg:flex items-stretch h-full m-0 p-0">
         <li class="nav-item">
-          <a href="about/index.html" class="nav-link" aria-haspopup="true">About</a>
+          <a href="../index.html" class="nav-link" aria-haspopup="true">About</a>
           <div class="mega-panel" role="menu" aria-label="About">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
@@ -1350,19 +1529,19 @@
                 <p class="mega-desc">Since 1999, Dnyanprakash has been a center for joyful, research-informed learning in Latur. Founded by Satish and Savita Narhare, we serve children from age 3 through Grade 10.</p>
                 <div class="flex gap-3">
                   <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="btn btn-primary">Apply</a>
-                  <a href="gallery.html" class="btn btn-secondary">Take a Tour</a>
+                  <a href="../gallery.html" class="btn btn-secondary">Take a Tour</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
                 <div>
-                  <a href="about/about-education.html" class="mega-sublink">About Education</a>
-                  <a href="about/learning-through-action.html" class="mega-sublink">Learning through Action</a>
-                  <a href="about/history.html" class="mega-sublink">Our History</a>
-                  <a href="about/mission.html" class="mega-sublink">Mission &amp; Values</a>
+                  <a href="about-education.html" class="mega-sublink">About Education</a>
+                  <a href="learning-through-action.html" class="mega-sublink">Learning through Action</a>
+                  <a href="history.html" class="mega-sublink">Our History</a>
+                  <a href="mission.html" class="mega-sublink">Mission &amp; Values</a>
                 </div>
                 <div>
-                  <a href="about/at-a-glance.html" class="mega-sublink">At a Glance</a>
-                  <a href="contact.html" class="mega-sublink">Contact Us</a>
+                  <a href="at-a-glance.html" class="mega-sublink">At a Glance</a>
+                  <a href="../contact.html" class="mega-sublink">Contact Us</a>
                 </div>
               </div>
             </div>
@@ -1370,7 +1549,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="admission/index.html" class="nav-link" aria-haspopup="true">Admission</a>
+          <a href="../admission/index.html" class="nav-link" aria-haspopup="true">Admission</a>
           <div class="mega-panel" role="menu" aria-label="Admission">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
@@ -1379,19 +1558,19 @@
                 <p class="mega-desc">We welcome families from Latur and beyond. Our team can walk you through the admissions process, timelines, fee structure, and visit options.</p>
                 <div class="flex gap-3">
                   <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="btn btn-primary">Apply Online</a>
-                  <a href="contact.html" class="btn btn-secondary">Visit Us</a>
+                  <a href="../contact.html" class="btn btn-secondary">Visit Us</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
                 <div>
-                  <a href="admission/index.html" class="mega-sublink">Admission Process</a>
+                  <a href="../admission/index.html" class="mega-sublink">Admission Process</a>
                   <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="mega-sublink">Apply Online</a>
-                  <a href="admission/why-dnyanprakash.html" class="mega-sublink">Why Dnyanprakash</a>
+                  <a href="../admission/why-dnyanprakash.html" class="mega-sublink">Why Dnyanprakash</a>
                 </div>
                 <div>
-                  <a href="admission/faq.html" class="mega-sublink">FAQs</a>
-                  <a href="contact.html" class="mega-sublink">Visit Campus</a>
-                  <a href="contact.html" class="mega-sublink">Contact Admissions</a>
+                  <a href="../admission/faq.html" class="mega-sublink">FAQs</a>
+                  <a href="../contact.html" class="mega-sublink">Visit Campus</a>
+                  <a href="../contact.html" class="mega-sublink">Contact Admissions</a>
                 </div>
               </div>
             </div>
@@ -1399,7 +1578,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="academics/index.html" class="nav-link" aria-haspopup="true">Academics</a>
+          <a href="../academics/index.html" class="nav-link" aria-haspopup="true">Academics</a>
           <div class="mega-panel" role="menu" aria-label="Academics">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
@@ -1408,20 +1587,20 @@
                 <p class="mega-desc">Three divisions — Balbhavan, Balvikas Kendra, and Vidyaniketan — span pre-primary through Grade 10, rooted in the motto: Know &amp; Inspire.</p>
                 <div class="flex gap-3">
                   <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="btn btn-primary">Apply</a>
-                  <a href="gallery.html" class="btn btn-secondary">Take a Tour</a>
+                  <a href="../gallery.html" class="btn btn-secondary">Take a Tour</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
                 <div>
-                  <a href="academics/balbhavan.html" class="mega-sublink">Balbhavan (Age 3–6)</a>
-                  <a href="academics/balvikas-kendra.html" class="mega-sublink">Balvikas Kendra (1–4)</a>
-                  <a href="academics/vidyaniketan.html" class="mega-sublink">Vidyaniketan (5–10)</a>
-                  <a href="academics/narhare-learning-home.html" class="mega-sublink">Narhare Learning Home</a>
+                  <a href="../academics/balbhavan.html" class="mega-sublink">Balbhavan (Age 3–6)</a>
+                  <a href="../academics/balvikas-kendra.html" class="mega-sublink">Balvikas Kendra (1–4)</a>
+                  <a href="../academics/vidyaniketan.html" class="mega-sublink">Vidyaniketan (5–10)</a>
+                  <a href="../academics/narhare-learning-home.html" class="mega-sublink">Narhare Learning Home</a>
                 </div>
                 <div>
-                  <a href="campus-life/arts.html" class="mega-sublink">Arts &amp; Culture</a>
-                  <a href="campus-life/student-life.html" class="mega-sublink">Life Skills &amp; Service</a>
-                  <a href="academics/index.html" class="mega-sublink">Curriculum Overview</a>
+                  <a href="../campus-life/arts.html" class="mega-sublink">Arts &amp; Culture</a>
+                  <a href="../campus-life/student-life.html" class="mega-sublink">Life Skills &amp; Service</a>
+                  <a href="../academics/index.html" class="mega-sublink">Curriculum Overview</a>
                 </div>
               </div>
             </div>
@@ -1429,7 +1608,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="alumni.html" class="nav-link" aria-haspopup="true">Alumni</a>
+          <a href="../alumni.html" class="nav-link" aria-haspopup="true">Alumni</a>
           <div class="mega-panel" role="menu" aria-label="Alumni">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
@@ -1437,8 +1616,8 @@
                 <h3 class="mega-title">Dnyanprakash Alumni</h3>
                 <p class="mega-desc">Our alumni carry the Dnyanprakash spirit into careers, communities, and universities across India and beyond. Stay connected and give back.</p>
                 <div class="flex gap-3">
-                  <a href="alumni.html" class="btn btn-primary">Alumni Home</a>
-                  <a href="contact.html" class="btn btn-secondary">Contact Alumni Relations</a>
+                  <a href="../alumni.html" class="btn btn-primary">Alumni Home</a>
+                  <a href="../contact.html" class="btn btn-secondary">Contact Alumni Relations</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
@@ -1458,7 +1637,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="news/index.html" class="nav-link" aria-haspopup="true">News</a>
+          <a href="../news/index.html" class="nav-link" aria-haspopup="true">News</a>
           <div class="mega-panel" role="menu" aria-label="News">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
@@ -1466,22 +1645,22 @@
                 <h3 class="mega-title">News &amp; Updates</h3>
                 <p class="mega-desc">Read the latest from Dnyanprakash — competitions, celebrations, curriculum updates, and student achievements from across our three divisions.</p>
                 <div class="flex gap-3">
-                  <a href="news/index.html" class="btn btn-primary">All Stories</a>
-                  <a href="campus-life/events.html" class="btn btn-secondary">Events</a>
+                  <a href="../news/index.html" class="btn btn-primary">All Stories</a>
+                  <a href="../campus-life/events.html" class="btn btn-secondary">Events</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
                 <div>
-                  <a href="news/index.html" class="mega-sublink">Latest News</a>
-                  <a href="news/challenging-times-leaders.html" class="mega-sublink">Challenging Times</a>
-                  <a href="news/second-place-latur-division.html" class="mega-sublink">Second Place, Latur</a>
-                  <a href="news/142-meritorious-students.html" class="mega-sublink">142 Meritorious Students</a>
+                  <a href="../news/index.html" class="mega-sublink">Latest News</a>
+                  <a href="../news/challenging-times-leaders.html" class="mega-sublink">Challenging Times</a>
+                  <a href="../news/second-place-latur-division.html" class="mega-sublink">Second Place, Latur</a>
+                  <a href="../news/142-meritorious-students.html" class="mega-sublink">142 Meritorious Students</a>
                 </div>
                 <div>
-                  <a href="news/parents-grade-one-textbook.html" class="mega-sublink">Grade 1 Textbook</a>
-                  <a href="news/mrunal-kulkarni-dialogue.html" class="mega-sublink">Mrunal Kulkarni Dialogue</a>
-                  <a href="news/institute-head-satish-narhare.html" class="mega-sublink">Institute Head, Mr. Narhare</a>
-                  <a href="gallery.html" class="mega-sublink">Media Gallery</a>
+                  <a href="../news/parents-grade-one-textbook.html" class="mega-sublink">Grade 1 Textbook</a>
+                  <a href="../news/mrunal-kulkarni-dialogue.html" class="mega-sublink">Mrunal Kulkarni Dialogue</a>
+                  <a href="../news/institute-head-satish-narhare.html" class="mega-sublink">Institute Head, Mr. Narhare</a>
+                  <a href="../gallery.html" class="mega-sublink">Media Gallery</a>
                 </div>
               </div>
             </div>
@@ -1530,404 +1709,73 @@
   </header>
 
   <main>
-    <!-- =========================================================
-         Section 8.3 — Hero (bottom-left, full-bleed, gradient on bottom 60%)
-         ========================================================= -->
-    <section class="hero" aria-label="Welcome">
-      <div class="hero-media">
-        <img
-          src="images/01-hero.jpg"
-          alt="Dnyanprakash school building exterior with landscaped foreground"
-          class="w-full h-full object-cover"
-        />
-      </div>
-      <div class="hero-overlay" aria-hidden="true"></div>
-
-      <!-- Vertical social rail — flush to left edge, vertically centered -->
-      <div class="hero-social-rail" aria-label="Social media">
-        <a href="https://www.facebook.com/share/1CQwtkb8ix/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/>
-          </svg>
-        </a>
-        <a href="https://www.instagram.com/dnyanprakash_latur" target="_blank" rel="noopener" aria-label="Instagram">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-          </svg>
-        </a>
-        <a href="https://www.youtube.com/@dnyanprakashlatur2335" target="_blank" rel="noopener" aria-label="YouTube">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-          </svg>
-        </a>
-      </div>
-
-      <div class="hero-content">
-        <div class="container-main w-full">
-          <div class="max-w-3xl">
-            <h1 class="hero-title">Know &amp; Inspire</h1>
-            <p class="hero-sub">A center for joyful, research-informed learning in Latur since 1999.</p>
-            <div class="flex flex-wrap gap-4">
-              <a
-                href="https://www.dnyanprakash.techvium.in/online_admission"
-                target="_blank"
-                rel="noopener"
-                class="btn btn-hero-primary"
-              >Apply for Admission</a>
-              <a href="gallery.html" class="btn btn-hero-secondary">Take a Virtual Tour</a>
-            </div>
-          </div>
+    <section class="article-hero-media" aria-label="An Experiment in Education">
+      <div data-img-slot="19" data-img-description="An Experiment in Education — Dnyanprakash campus or classroom scene" class="slot-box">
+        <div class="text-center">
+          <div class="slot-num">19</div>
+          <div class="slot-desc">Experiment in Education hero</div>
         </div>
       </div>
     </section>
-
-    <!-- =========================================================
-         Section 8.4 — Featured News (3-column grid, all cards visible)
-         ========================================================= -->
-    <section class="section-pad reveal" aria-label="Featured News">
+    <div class="breadcrumb"><div class="container-main"><a href="../index.html">Home</a><span class="sep">›</span><a href="index.html">About</a><span class="sep">›</span><span>An Experiment in Education</span></div></div>
+    <section class="section-pad reveal article-body" style="padding-bottom: 0;">
       <div class="container-main">
-        <div class="section-eyebrow">In This Section</div>
-        <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
-          <h2 class="section-title" style="margin-bottom:0; text-transform:uppercase; letter-spacing:0.01em;">Happening at Dnyanprakash</h2>
-          <a href="news/index.html" class="news-read">All News
-            <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          </a>
-        </div>
-
-        <div class="news-grid">
-          <a href="news/second-place-latur-division.html" class="news-card">
-            <div class="news-heading-block">
-              <div class="news-cat">News · June 5, 2025</div>
-              <h3 class="news-headline">Dnyanprakash Secures Second Place in Latur Division</h3>
-            </div>
-            <div class="news-img-wrap">
-              <img src="images/02-award-ceremony.jpg" alt="Dnyanprakash honoured with trophy and 15 lakh cheque at the Chief Minister's My School, Beautiful School ceremony in Mumbai" loading="lazy" />
-            </div>
-          </a>
-
-          <a href="news/142-meritorious-students.html" class="news-card">
-            <div class="news-heading-block">
-              <div class="news-cat">News · February 18, 2026</div>
-              <h3 class="news-headline">Felicitation of 142 Meritorious Students in Various Competitive Exams</h3>
-            </div>
-            <div class="news-img-wrap">
-              <img src="images/03-felicitation-142.jpg" alt="Felicitation ceremony at Dnyanprakash honouring 142 meritorious students in various competitive exams" loading="lazy" />
-            </div>
-          </a>
-
-          <a href="news/challenging-times-leaders.html" class="news-card">
-            <div class="news-heading-block">
-              <div class="news-cat">News · February 18, 2026</div>
-              <h3 class="news-headline">Challenging Times Shape the Strongest Leaders</h3>
-            </div>
-            <div class="news-img-wrap">
-              <img src="images/04-babson-alumni-mentoring.jpg" alt="Babson College alumni Hriday Munoth, Neha Aswani, and Siddhant Narhare with Dnyanprakash students during a mentoring session" loading="lazy" />
-            </div>
-          </a>
-        </div>
+        <header class="article-heading">
+          <div class="eyebrow">The Project</div>
+          <h1>Dnyanprakash — An Experiment in Education</h1>
+        </header>
+        <p class="lede">Operated by the Dnyanprakash Foundation · Latur, Maharashtra</p>
       </div>
     </section>
-
-    <!-- =========================================================
-         Section 8.4b — An Experiment in Education
-         Article LEFT, picture box RIGHT (matches §8.6b layout).
-         ========================================================= -->
-    <section class="section-pad reveal" aria-label="An Experiment in Education">
+    <section class="section-pad reveal">
       <div class="container-main">
-        <div class="mission-stats-grid" style="align-items: center;">
-          <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
-          <div>
-            <div class="section-eyebrow">The Project</div>
-            <h2 class="section-title">Dnyanprakash — An Experiment in Education</h2>
-            <p class="mission-body">What Dnyanprakash has built in Latur was not built easily. It was built despite limited physical infrastructure, without government funding, and against the grain of how most schools in this region have always operated. That it has earned the deep trust of parents, educators, and children over twenty-six years is not a coincidence, it is the result of a conscious, sustained commitment to doing education differently.</p>
-            <a href="about/an-experiment-in-education.html" class="btn btn-outline">Read More</a>
+        <div class="article-layout">
+          <div class="prose">
+
+            <p>What Dnyanprakash has built in Latur was not built easily. It was built despite limited physical infrastructure, without government funding, and against the grain of how most schools in this region have always operated. That it has earned the deep trust of parents, educators, and children over twenty-six years is not a coincidence, it is the result of a conscious, sustained commitment to doing education differently.</p>
+
+            <p>The Dnyanprakash Educational Project began with a clear purpose: to work seriously and experimentally in the field of child education. For its early years, it ran classes from Grade 1 to Grade 4, finding its footing, refining its approach, and building the trust of families one classroom at a time. The physical facilities during those years were modest, made possible through the support of Narhare Classes and the Learning Home, which stepped in as the project grew. In the academic year 2011&ndash;12, the institution took a significant step forward by introducing semi-English medium classes for Grades 6 to 10 under Vidyaniketan, expanding its reach while staying true to its founding philosophy.</p>
+
+            <p>Today, Dnyanprakash Balvikas Kendra stands as a comprehensive centre for child education, one that has always insisted on charting its own course. The institution has never accepted government funding. Admissions, curriculum design, assessment methods, class sizes, and the overall learning environment have always been determined by the institution's own educational convictions, not by external mandates or financial dependencies. This independence is not incidental. It is a deliberate choice, made to protect the integrity of an experiment-based approach to learning that cannot be sustained under the pressures of standardised, government-regulated schooling.</p>
+
+            <p>What has kept this project alive and growing is not funding or infrastructure. It is people, a dedicated group of teachers who chose to be here, parents who understood and embraced the methodology, children who became genuine companions in the learning process, and countless well-wishers and thinkers who believed in what Dnyanprakash was trying to do.</p>
+
+            <p>The project that began with a love for knowledge is today completing twenty-six years. And it carries the same conviction it started with, that education, done right, does not need to be loud. It just needs to be true.</p>
+
           </div>
-          <!-- RIGHT: image slot -->
-          <div style="aspect-ratio: 4 / 5; overflow: hidden;">
-            <div data-img-slot="08" data-img-description="An Experiment in Education — Dnyanprakash campus or community moment" class="slot-box w-full h-full">
-              <div class="text-center"><div class="slot-num">08</div><div class="slot-desc">Experiment in Education</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- =========================================================
-         Section 8.5 — About Us (replaced "Meet Our Community" 2026-04-21)
-         Image LEFT, first About paragraph + Read More on the RIGHT.
-         ========================================================= -->
-    <section class="section-pad reveal" style="background: var(--color-bg-alt);" aria-label="About Us">
-      <div class="container-main">
-        <div class="mission-stats-grid" style="align-items: center;">
-          <!-- LEFT: image -->
-          <div style="aspect-ratio: 4 / 5; overflow: hidden;">
-            <img src="images/05-about.jpg" alt="Dnyanprakash — a school moment from the campus" class="w-full h-full object-cover" loading="lazy" />
-          </div>
-          <!-- RIGHT: eyebrow + headline + one paragraph + Read More -->
-          <div>
-            <div class="section-eyebrow">About Us</div>
-            <h2 class="section-title">A Vision of Joyful Learning</h2>
-            <p class="mission-body">Experiencing the importance of effective learning through the mother tongue, the head of the institution, Mr. Satish Narhare, began teaching mathematics in 1989 through Narhare Classes. During this time, he realized the significance of making learning enjoyable and stress-free for children. With a vision to make education engaging, meaningful, and self-motivated — where children naturally want to learn, ask questions, seek answers, and express their thoughts freely — Savita and Satish Narhare founded Dnyanprakash in 1999, starting with their own child.</p>
-            <a href="about/index.html" class="btn btn-outline">Read More</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-         Section 8.6 — Video Spotlight
-         ========================================================= -->
-    <section class="section-pad reveal" aria-label="Video Spotlight">
-      <div class="container-main">
-        <div class="section-eyebrow">Watch</div>
-        <h2 class="section-title">A Virtual Tour of Dnyanprakash</h2>
-
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px;">
-          <iframe
-            src="https://www.youtube.com/embed/d8WFBmGhmzQ"
-            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-          </iframe>
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-         Section 8.6b — Learning through action and experience
-         Article LEFT, picture box RIGHT (mirror of §8.5 layout).
-         ========================================================= -->
-    <section class="section-pad reveal" aria-label="Learning through action and experience">
-      <div class="container-main">
-        <div class="mission-stats-grid" style="align-items: center;">
-          <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
-          <div>
-            <div class="section-eyebrow">Our Approach</div>
-            <h2 class="section-title">Learning through action and experience</h2>
-            <p class="mission-body">From the very beginning of Dnyanprakash, children's learning was linked with action and experience. Various materials are used according to the subject for that. Various reading and writing experiments were also conducted. Children get to know letters and words in kindergarten itself. After that, the children read and write sentences, and then they create stories from pictures, complete incomplete stories, write stories from points, experience writing, case writing, dialogue writing, letter writing, etc.</p>
-            <a href="about/learning-through-action.html" class="btn btn-outline">Read More</a>
-          </div>
-          <!-- RIGHT: image -->
-          <div style="aspect-ratio: 4 / 5; overflow: hidden;">
-            <img src="images/06-learning-through-action.jpg" alt="Learning through action — students engaged in a hands-on classroom activity" class="w-full h-full object-cover" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-         Section 8.8 — Explore Dnyanprakash
-         ========================================================= -->
-    <section class="section-pad reveal" aria-label="Explore Dnyanprakash">
-      <div class="container-main">
-        <div class="section-eyebrow">Learn With Us</div>
-        <h2 class="section-title">Explore Dnyanprakash</h2>
-
-        <div class="academics-grid">
-          <article class="academics-card row-1">
-            <div class="ac-img">
-              <img src="images/12-balbhavan.png" alt="Balbhavan early-years classroom" class="w-full h-full object-cover" />
-            </div>
-            <h3>Balbhavan (Age 3–6)</h3>
-            <p>Foundational play-based learning rooted in curiosity and joy.</p>
-            <a href="academics/balbhavan.html" class="ac-link">Learn More →</a>
-          </article>
-
-          <article class="academics-card row-1">
-            <div class="ac-img">
-              <img src="images/13-balvikas-kendra.png" alt="Balvikas Kendra — Grades 1 to 4 primary classroom" class="w-full h-full object-cover" />
-            </div>
-            <h3>Balvikas Kendra (Grades 1–4)</h3>
-            <p>Primary education with a strong language, math, and values base.</p>
-            <a href="academics/balvikas-kendra.html" class="ac-link">Learn More →</a>
-          </article>
-
-          <article class="academics-card row-1">
-            <div class="ac-img">
-              <img src="images/14-vidyaniketan.jpg" alt="Vidyaniketan — Grades 5 to 10 secondary classroom" class="w-full h-full object-cover" />
-            </div>
-            <h3>Vidyaniketan (Grades 5–10)</h3>
-            <p>Rigorous SSC-aligned education with career and character guidance.</p>
-            <a href="academics/vidyaniketan.html" class="ac-link">Learn More →</a>
-          </article>
-
-          <article class="academics-card row-1">
-            <div class="ac-img">
-              <div data-img-slot="17" data-img-description="Academics — Narhare Learning Home extension / supplementary programme" class="slot-box w-full h-full">
-                <div class="text-center"><div class="slot-num">17</div><div class="slot-desc">Narhare Learning Home</div></div>
+          <aside class="article-aside" aria-label="Related information">
+            <blockquote class="aside-pullquote">
+              "Education, done right, does not need to be loud. It just needs to be true."
+              <cite>From the article</cite>
+            </blockquote>
+            <div class="aside-card">
+              <div class="aside-card-eyebrow">Related pages</div>
+              <div class="aside-links">
+                <a href="mission.html">Our Mission</a>
+                <a href="history.html">Our History</a>
+                <a href="about-education.html">Our Approach to Education</a>
+                <a href="at-a-glance.html">Dnyanprakash at a Glance</a>
+                <a href="../index.html#academics">Academics Overview</a>
               </div>
             </div>
-            <h3>Narhare Learning Home</h3>
-            <p>An extension of the Dnyanprakash classroom — supplementary programmes that carry our teaching approach beyond the school day.</p>
-            <a href="academics/narhare-learning-home.html" class="ac-link">Learn More →</a>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-         Section 8.7 — Upcoming Events
-         ========================================================= -->
-    <section class="section-pad reveal" aria-label="Upcoming Events">
-      <div class="container-main">
-        <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
-          <div>
-            <div class="section-eyebrow">Calendar</div>
-            <h2 class="section-title" style="margin-bottom: 0;">Upcoming Events</h2>
-          </div>
-          <a href="campus-life/events.html" class="news-read">View Full Calendar
-            <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          </a>
-        </div>
-
-        <div class="events-list">
-          <!-- DUMMY - replace later -->
-          <div class="event-row">
-            <div class="event-date">04·22</div>
-            <div>
-              <div class="event-title">Annual Science Exhibition</div>
-              <div class="event-time">9:00 AM – 1:00 PM</div>
+            <div class="aside-cta">
+              <p>Admissions open for the 2026&ndash;27 academic year.</p>
+              <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="aside-cta-btn">Apply Online</a>
             </div>
-            <a href="campus-life/events.html" class="event-link">More Info</a>
-          </div>
-          <!-- DUMMY - replace later -->
-          <div class="event-row">
-            <div class="event-date">04·23</div>
-            <div>
-              <div class="event-title">Std. X Parent-Teacher Meeting</div>
-              <div class="event-time">4:00 PM – 6:00 PM</div>
-            </div>
-            <a href="campus-life/events.html" class="event-link">More Info</a>
-          </div>
-          <!-- DUMMY - replace later -->
-          <div class="event-row">
-            <div class="event-date">04·24</div>
-            <div>
-              <div class="event-title">Inter-House Drawing Competition</div>
-              <div class="event-time">All day</div>
-            </div>
-            <a href="campus-life/events.html" class="event-link">More Info</a>
-          </div>
-          <!-- Events 4-8 temporarily hidden; homepage shows only the 3 earliest. Full list lives in campus-life/events.html (see "View Full Calendar"). Re-add by removing the surrounding HTML comment. -->
-          <!--
-          <div class="event-row">
-            <div class="event-date">04·25</div>
-            <div>
-              <div class="event-title">Balbhavan Nature Walk</div>
-              <div class="event-time">10:00 AM – 12:00 PM</div>
-            </div>
-            <a href="campus-life/events.html" class="event-link">More Info</a>
-          </div>
-          <div class="event-row">
-            <div class="event-date">04·26</div>
-            <div>
-              <div class="event-title">Book Fair Closes</div>
-              <div class="event-time">All day</div>
-            </div>
-            <a href="campus-life/events.html" class="event-link">More Info</a>
-          </div>
-          <div class="event-row">
-            <div class="event-date">04·27</div>
-            <div>
-              <div class="event-title">Marathi Essay Writing Workshop</div>
-              <div class="event-time">2:00 PM – 4:00 PM</div>
-            </div>
-            <a href="campus-life/events.html" class="event-link">More Info</a>
-          </div>
-          <div class="event-row">
-            <div class="event-date">04·28</div>
-            <div>
-              <div class="event-title">Sports Day Practice Session</div>
-              <div class="event-time">3:30 PM – 5:00 PM</div>
-            </div>
-            <a href="campus-life/events.html" class="event-link">More Info</a>
-          </div>
-          <div class="event-row">
-            <div class="event-date">04·30</div>
-            <div>
-              <div class="event-title">Admissions Open House 2026–27</div>
-              <div class="event-time">11:00 AM – 2:00 PM</div>
-            </div>
-            <a href="admission/index.html" class="event-link">More Info</a>
-          </div>
-          -->
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-         Section 8.9 — Our Mission
-         ========================================================= -->
-    <!-- =========================================================
-         Sections 8.9 + 8.10 combined — Taft-style:
-         Mission text LEFT, "Dnyanprakash at a Glance" stats circle RIGHT.
-         ========================================================= -->
-    <section class="section-pad reveal mission-stats" aria-label="Our Mission and at a Glance">
-      <div class="container-main">
-        <div class="mission-stats-grid">
-          <!-- LEFT: Mission -->
-          <div>
-            <div class="section-eyebrow">Living Our Motto</div>
-            <h2 class="section-title">Our Mission</h2>
-            <p class="mission-body">In 1999, Savita and Satish Narhare started Dnyanprakash with 26 children and one deeply held belief: that every child already carries within them everything they need to learn. What they need around them is an environment that knows how to bring it out.</p>
-            <a href="about/mission.html" class="btn btn-outline">Learn More</a>
-          </div>
-
-          <!-- RIGHT: Stats circle carousel -->
-          <div class="stats-circle" data-stats-carousel>
-            <button type="button" class="stats-arrow prev" aria-label="Previous stat" data-stats-prev>
-              <i data-lucide="chevron-left" class="w-5 h-5"></i>
-            </button>
-            <div class="stats-circle-inner">
-              <div class="stats-eyebrow">Dnyanprakash at a Glance</div>
-              <div class="stat-slide is-active">
-                <div class="stat-num">27+</div>
-                <div class="stat-label">years of teaching experience through Narhare Classes since 1989</div>
-              </div>
-              <div class="stat-slide">
-                <div class="stat-num">1,400</div>
-                <div class="stat-label">students across four divisions</div>
-              </div>
-              <div class="stat-slide">
-                <div class="stat-num">500+</div>
-                <div class="stat-label">families on the waiting list each year</div>
-              </div>
-              <div class="stat-slide">
-                <div class="stat-num">20:1</div>
-                <div class="stat-label">student-to-teacher ratio</div>
-              </div>
-              <div class="stat-slide">
-                <div class="stat-num">4</div>
-                <div class="stat-label">divisions — Balbhavan, Balvikas Kendra, Vidyaniketan &amp; Narhare Learning Home</div>
-              </div>
-              <div class="stat-slide">
-                <div class="stat-num">1999</div>
-                <div class="stat-label">the year Dnyanprakash was founded</div>
-              </div>
-            </div>
-            <button type="button" class="stats-arrow next" aria-label="Next stat" data-stats-next>
-              <i data-lucide="chevron-right" class="w-5 h-5"></i>
-            </button>
-          </div>
+          </aside>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- =========================================================
-       Section 8.11 — Footer
-       ========================================================= -->
   <footer class="site-footer" aria-label="Site footer">
     <div class="container-main">
       <div class="footer-grid">
         <!-- Left: logo + address -->
         <div>
           <img
-            src="images/00-school-logo.png"
+            src="../images/00-school-logo.png"
             alt="Dnyanprakash Educational Project"
             class="footer-logo"
           />
@@ -1949,13 +1797,13 @@
         <div>
           <h4 class="footer-heading">Quick Links</h4>
           <nav class="footer-links">
-            <a href="admission/index.html">Admission</a>
-            <a href="about/index.html">About</a>
-            <a href="academics/index.html">Academics</a>
+            <a href="../admission/index.html">Admission</a>
+            <a href="../index.html">About</a>
+            <a href="../academics/index.html">Academics</a>
 
-            <a href="news/index.html">News</a>
-            <a href="give.html">Give</a>
-            <a href="contact.html">Contact</a>
+            <a href="../news/index.html">News</a>
+            <a href="../give.html">Give</a>
+            <a href="../contact.html">Contact</a>
           </nav>
         </div>
 
@@ -1996,18 +1844,17 @@
       </div>
 
       <div class="footer-bottom">
-        © 2026 Dnyanprakash Educational Project · <a href="contact.html">Contact</a>
+        © 2026 Dnyanprakash Educational Project · <a href="../contact.html">Contact</a>
       </div>
     </div>
   </footer>
 
-  <!-- Mobile nav drawer (slides in from right; accordion sub-menus) -->
   <div id="mobile-drawer" class="mobile-drawer" hidden aria-hidden="true">
     <div class="mobile-backdrop" data-mobile-close aria-label="Close menu"></div>
     <aside class="mobile-panel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
       <header class="flex items-center justify-between h-16 px-5 border-b border-[var(--color-border)] shrink-0">
         <img
-          src="images/00-school-logo.png"
+          src="../images/00-school-logo.png"
           alt="Dnyanprakash"
           class="h-9 w-auto object-contain"
         />
@@ -2016,17 +1863,17 @@
         </button>
       </header>
       <nav class="grow">
-        <details class="mobile-accordion"><summary>About</summary><div class="mobile-sublinks"><a href="about/about-education.html">About Education</a><a href="about/learning-through-action.html">Learning through Action</a><a href="about/history.html">Our History</a><a href="about/mission.html">Mission &amp; Values</a><a href="about/at-a-glance.html">At a Glance</a><a href="contact.html">Contact Us</a></div></details>
-        <details class="mobile-accordion"><summary>Admission</summary><div class="mobile-sublinks"><a href="admission/index.html">Admission Process</a><a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener">Apply Online</a><a href="admission/why-dnyanprakash.html">Why Dnyanprakash</a><a href="admission/faq.html">FAQs</a><a href="contact.html">Visit Campus</a></div></details>
-        <details class="mobile-accordion"><summary>Academics</summary><div class="mobile-sublinks"><a href="academics/index.html">Overview</a><a href="academics/balbhavan.html">Balbhavan (Age 3–6)</a><a href="academics/balvikas-kendra.html">Balvikas Kendra (1–4)</a><a href="academics/vidyaniketan.html">Vidyaniketan (5–10)</a><a href="academics/narhare-learning-home.html">Narhare Learning Home</a><a href="campus-life/arts.html">Arts &amp; Culture</a></div></details>
+        <details class="mobile-accordion"><summary>About</summary><div class="mobile-sublinks"><a href="about-education.html">About Education</a><a href="learning-through-action.html">Learning through Action</a><a href="history.html">Our History</a><a href="mission.html">Mission &amp; Values</a><a href="at-a-glance.html">At a Glance</a><a href="../contact.html">Contact Us</a></div></details>
+        <details class="mobile-accordion"><summary>Admission</summary><div class="mobile-sublinks"><a href="../admission/index.html">Admission Process</a><a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener">Apply Online</a><a href="../admission/why-dnyanprakash.html">Why Dnyanprakash</a><a href="../admission/faq.html">FAQs</a><a href="../contact.html">Visit Campus</a></div></details>
+        <details class="mobile-accordion"><summary>Academics</summary><div class="mobile-sublinks"><a href="../academics/index.html">Overview</a><a href="../academics/balbhavan.html">Balbhavan (Age 3–6)</a><a href="../academics/balvikas-kendra.html">Balvikas Kendra (1–4)</a><a href="../academics/vidyaniketan.html">Vidyaniketan (5–10)</a><a href="../academics/narhare-learning-home.html">Narhare Learning Home</a><a href="../campus-life/arts.html">Arts &amp; Culture</a></div></details>
 
         <details class="mobile-accordion"><summary>Alumni</summary><div class="mobile-sublinks"><a style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Alumni Home</a><a href="https://docs.google.com/forms/d/e/1FAIpQLSeA1j8Xxg0xGYDTq9ZWdDddxrIpbencHvAvya4KUw4CQTNePQ/viewform" target="_blank" rel="noopener noreferrer">Stay Connected</a><a style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Give Back</a><a style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Photo Archive</a></div></details>
-        <details class="mobile-accordion"><summary>News</summary><div class="mobile-sublinks"><a href="news/index.html">Latest News</a><a href="news/challenging-times-leaders.html">Challenging Times</a><a href="news/institute-head-satish-narhare.html">Institute Head, Mr. Narhare</a><a href="campus-life/events.html">Events</a><a href="gallery.html">Media Gallery</a></div></details>
+        <details class="mobile-accordion"><summary>News</summary><div class="mobile-sublinks"><a href="../news/index.html">Latest News</a><a href="../news/challenging-times-leaders.html">Challenging Times</a><a href="../news/institute-head-satish-narhare.html">Institute Head, Mr. Narhare</a><a href="../campus-life/events.html">Events</a><a href="../gallery.html">Media Gallery</a></div></details>
         <details class="mobile-accordion"><summary>Login</summary><div class="mobile-sublinks"><a href="http://dnyanprakash.techvium.in/site/userlogin" target="_blank" rel="noopener">Student Login</a><a href="http://dnyanprakash.techvium.in/site/userlogin" target="_blank" rel="noopener">Faculty Login</a><a href="http://dnyanprakash.techvium.in/site/userlogin" target="_blank" rel="noopener">Alumni Login</a></div></details>
       </nav>
       <div class="flex flex-col gap-3 p-5 border-t border-[var(--color-border)] shrink-0">
         <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="btn btn-primary">Apply for Admission</a>
-        <a href="gallery.html" class="btn btn-secondary">Take a Virtual Tour</a>
+        <a href="../gallery.html" class="btn btn-secondary">Take a Virtual Tour</a>
       </div>
     </aside>
   </div>
@@ -2103,7 +1950,7 @@
             io.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.08, rootMargin: '0px 0px -10% 0px' });
+      }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
 
       requestAnimationFrame(() => {
         const vh = window.innerHeight;
@@ -2119,37 +1966,8 @@
       });
     })();
   </script>
-
-  <!--
-  =====================================================================
-  IMAGE INDEX — running list of all numbered image placeholder slots
-  (updated whenever slots are added / replaced / renumbered)
-  =====================================================================
-  01  [FILLED 2026-04-21] images/01-hero.jpg — homepage hero, wide shot of the school building
-  02  [FILLED 2026-04-21] images/02-award-ceremony.jpg — CM award ceremony photo (also used on the article hero at news/second-place-latur-division.html)
-  03  [FILLED 2026-04-21] images/03-felicitation-142.jpg — felicitation ceremony photo (also used on the article hero at news/142-meritorious-students.html)
-  04  [FILLED 2026-04-21] images/04-babson-alumni-mentoring.jpg — "Challenging Times Shape the Strongest Leaders" (Babson College alumni mentoring session, 2026-02-18)
-  05  [FILLED 2026-04-21] images/05-about.jpg — About Us portrait / school moment (homepage About section, image left)
-  06  [FILLED 2026-04-21] images/06-learning-through-action.jpg — homepage "Learning through action" section, image right
-  07  (retired — "Meet Our Community" section removed 2026-04-21)
-  08  Homepage — "An Experiment in Education" teaser image (repurposed 2026-04-23)
-  09  (retired — "Meet Our Community" section removed 2026-04-21)
-  10  (retired — "Meet Our Community" section removed 2026-04-21)
-  11  [FILLED 2026-04-22] YouTube embed d8WFBmGhmzQ — "A Virtual Tour of Dnyanprakash"
-  12  [FILLED 2026-04-22] images/12-balbhavan.png — Balbhavan (Age 3–6) early-years classroom
-  13  [FILLED 2026-04-23] images/13-balvikas-kendra.png — Balvikas Kendra (Grades 1–4) primary scene
-  14  [FILLED 2026-04-23] images/14-vidyaniketan.jpg — Vidyaniketan (Grades 5–10) secondary scene
-  15  (retired — Arts & Culture tile removed from homepage grid 2026-04-22)
-  16  (retired — Life Skills & Service tile removed from homepage grid 2026-04-22)
-  17  Academics — Narhare Learning Home (supplementary programme)
-  =====================================================================
-  Inner-page slots 18–65 are catalogued in their respective page files.
-  (46 [FILLED 2026-04-22] images/46-about-education.png — about/about-education.html page hero)
-  (65 [FILLED 2026-04-21] images/65-learning-through-action-hero.jpg — about/learning-through-action.html page hero)
-  =====================================================================
-  -->
-  <script defer src="scripts/header-blur.js"></script>
-  <script defer src="scripts/translations-manifest.js"></script>
-  <script defer src="scripts/lang-toggle.js"></script>
+  <script defer src="../scripts/header-blur.js"></script>
+  <script defer src="../scripts/translations-manifest.js"></script>
+  <script defer src="../scripts/lang-toggle.js"></script>
 </body>
 </html>
