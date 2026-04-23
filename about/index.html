@@ -1334,7 +1334,7 @@
   <header class="site-header nav-solid">
   <!-- =========================================================
        Section 8.1 — Top Utility Bar
-       - Language toggle (disabled, tooltip "Marathi version coming soon")
+       - Language toggle (मराठी ↔ English, JS-enhanced; see scripts/lang-toggle.js)
        - Phone number
        - Parent Login (external link to existing portal)
        - Small social icons (FB, IG, YT) — Lucide
@@ -1343,17 +1343,12 @@
     <div class="container-main flex items-center justify-between h-9 text-[12px] tracking-[0.04em]">
       <!-- Left: language toggle + phone -->
       <div class="flex items-center gap-6">
-        <button
-          type="button"
-          disabled
-          aria-disabled="true"
-          title="Marathi version coming soon"
-          class="uppercase text-[var(--color-text-muted)] cursor-not-allowed flex items-center gap-1.5 font-medium"
-        >
-          <i data-lucide="globe" class="w-3.5 h-3.5"></i>
-          <span>EN</span>
-          <i data-lucide="chevron-down" class="w-3 h-3 opacity-50"></i>
-        </button>
+        <a
+          href="#"
+          id="lang-toggle"
+          class="uppercase flex items-center gap-1.5 font-medium"
+          aria-label="Switch language"
+        ><i data-lucide="globe" class="w-3.5 h-3.5"></i><span class="lang-toggle-label">मराठी</span></a>
         <a
           href="tel:02382220598"
           class="hidden sm:flex items-center gap-1.5 text-[var(--color-text-muted)] hover:text-[var(--color-primary)]"
@@ -1886,5 +1881,7 @@
     })();
   </script>
   <script defer src="../scripts/header-blur.js"></script>
+  <script defer src="../scripts/translations-manifest.js"></script>
+  <script defer src="../scripts/lang-toggle.js"></script>
 </body>
 </html>

@@ -582,4 +582,28 @@ When every box above is checked, show the owner the screenshots and say: *"Homep
 
 ---
 
+## 17. Multilingual (Marathi Translation) Setup
+
+- Marathi versions live at `/mr/[same-path-as-english]` (e.g. English `/about/index.html` → Marathi `/mr/about/index.html`).
+- **Translation registry**: `scripts/translations-manifest.js` — single source of truth. Each entry `"path/to/page.html": true` declares that the Marathi twin exists.
+- **Language toggle**: `scripts/lang-toggle.js` reads the manifest and wires the `#lang-toggle` link in the utility bar of every page. Manifest loads BEFORE the toggle (both `<script defer>`).
+- **Site root detection**: the toggle parses its own `<script src>` to derive the site root, so it works at domain root (`/`) and at a subpath (e.g. GitHub Pages `/dnyanprakash-website/`) without any hardcoded prefix.
+- **Fallback flow**: if a Marathi twin doesn't exist, clicking मराठी keeps the user on the English page and reloads it with `?fallback=true`. The same script then injects a dismissible bilingual banner at the very top of the page. Dismissal is sticky for the browser session via `sessionStorage['mr-fallback-dismissed'] = '1'`.
+- **Shared assets**: `/images/` and `/videos/` are not duplicated. Marathi pages reference `../images/...` (or deeper) just like the English siblings.
+- **Graceful degradation**: without JS, the toggle is `<a href="#">` — inert but harmless. Site is fully usable in English without JS.
+
+### To add a new Marathi page
+
+1. Create `/mr/<path>/<filename>.html` with the translated content. Use the matching English file as the template; only swap copy. Image paths are `../images/...` (or `../../images/...` for two-deep paths).
+2. Add an entry to `scripts/translations-manifest.js`:
+   ```js
+   "<path>/<filename>.html": true
+   ```
+3. Test the toggle on both the English and Marathi versions:
+   - English page → click मराठी → land on the Marathi twin
+   - Marathi page → click English → land on the English source
+   - English page WITHOUT a Marathi twin → click मराठी → page reloads with `?fallback=true`, banner appears at top.
+
+---
+
 *This file is the single source of truth for the Dnyanprakash Educational Project website. If you are Claude reading this at the start of a new session — you now know everything you need. Begin.*
