@@ -2,7 +2,7 @@
  * Adds 3 orphaned pages into both the desktop mega-menu and the mobile drawer
  * across every HTML file:
  *
- *   About       → insert "Learning through Action" after "About Education"
+ *   About       → insert "Principal's Note" after "About Education"
  *   News col 1  → insert "Challenging Times" after "Latest News"
  *   News col 2  → insert "Institute Head, Mr. Narhare" before "Media Gallery"
  *
@@ -20,7 +20,7 @@ const ROOT = path.resolve(__dirname, '..');
 const DESKTOP_EDITS = [
   {
     find: `                  <a href="about/about-education.html" class="mega-sublink">About Education</a>\n                  <a href="about/history.html" class="mega-sublink">Our History</a>`,
-    repl: `                  <a href="about/about-education.html" class="mega-sublink">About Education</a>\n                  <a href="about/learning-through-action.html" class="mega-sublink">Learning through Action</a>\n                  <a href="about/history.html" class="mega-sublink">Our History</a>`,
+    repl: `                  <a href="about/about-education.html" class="mega-sublink">About Education</a>\n                  <a href="about/principals-note.html" class="mega-sublink">Principal's Note</a>\n                  <a href="about/history.html" class="mega-sublink">Our History</a>`,
   },
   {
     find: `                  <a href="news/index.html" class="mega-sublink">Latest News</a>\n                  <a href="news/second-place-latur-division.html" class="mega-sublink">Second Place, Latur</a>`,
@@ -36,7 +36,7 @@ const DESKTOP_EDITS = [
 const MOBILE_EDITS = [
   {
     find: `<a href="about/about-education.html">About Education</a><a href="about/history.html">Our History</a>`,
-    repl: `<a href="about/about-education.html">About Education</a><a href="about/learning-through-action.html">Learning through Action</a><a href="about/history.html">Our History</a>`,
+    repl: `<a href="about/about-education.html">About Education</a><a href="about/principals-note.html">Principal's Note</a><a href="about/history.html">Our History</a>`,
   },
   {
     find: `<a href="news/index.html">Latest News</a><a href="campus-life/events.html">Events</a><a href="gallery.html">Media Gallery</a>`,
@@ -97,7 +97,7 @@ for (const fileRel of listAllHtml(ROOT)) {
 
   // Sentinel strings — if already present in the file, that particular edit is a no-op.
   const SENTINELS = [
-    'learning-through-action.html" class="mega-sublink">Learning through Action',
+    'principals-note.html" class="mega-sublink">Principal's Note',
     'challenging-times-leaders.html" class="mega-sublink">Challenging Times',
     'institute-head-satish-narhare.html" class="mega-sublink">Institute Head',
   ];
@@ -111,7 +111,7 @@ for (const fileRel of listAllHtml(ROOT)) {
   }
 
   const MOBILE_SENTINELS = [
-    'learning-through-action.html">Learning through Action',
+    'principals-note.html">Principal's Note',
     'challenging-times-leaders.html">Challenging Times',
   ];
   for (let i = 0; i < MOBILE_EDITS.length; i++) {
