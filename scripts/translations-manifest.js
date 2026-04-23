@@ -16,4 +16,5 @@ window.MR_TRANSLATIONS_AVAILABLE = {
   "about/principals-note.html": true,
   "about/index.html": true,
   "admission/index.html": true,
+  "alumni/stories.html": true,
 };
