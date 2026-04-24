@@ -1,23 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alumni — Dnyanprakash</title>
-  <meta name="description" content="Dnyanprakash alumni carry the school’s spirit into careers across India and beyond." />
+  <title>माजी विद्यार्थी — ज्ञानप्रकाश</title>
+  <meta name="description" content="ज्ञानप्रकाश माजी विद्यार्थी संघ — सव्वीस वर्षांच्या प्रवासात प्रकल्पाशी भावनिक नात्याने जोडलेली पिढी." />
 
   <!-- Google Fonts: Playfair Display (display italic substitute for adelle-condensed) + Libre Franklin (body substitute for franklin-gothic-urw) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500&family=Playfair+Display:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
 
+  <!-- Marathi typography (matches other Marathi pages) -->
+  <style>
+    html[lang="mr"] {
+      --font-display: "Noto Serif Devanagari", "Playfair Display", Georgia, serif;
+      --font-sans: "Noto Sans Devanagari", "Libre Franklin", system-ui, sans-serif;
+      --font-sans-cond: "Noto Sans Devanagari", "Libre Franklin", system-ui, sans-serif;
+    }
+    html[lang="mr"] body { font-family: "Noto Sans Devanagari", "Libre Franklin", system-ui, sans-serif; }
+    html[lang="mr"] .article-heading h1 { font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; }
+    html[lang="mr"] .article-heading .eyebrow,
+    html[lang="mr"] .section-eyebrow,
+    html[lang="mr"] .mega-eyebrow,
+    html[lang="mr"] .aside-card-eyebrow { letter-spacing: 0.02em; text-transform: none; }
+    html[lang="mr"] .prose p,
+    html[lang="mr"] .prose .lede,
+    html[lang="mr"] .article-heading .lede { line-height: 1.8; }
+  </style>
+
   <!-- Favicon / touch icons (generated from the square brand logo) -->
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
-  <link rel="shortcut icon" href="images/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="../images/favicon.ico" />
 
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -1300,9 +1318,9 @@
     <div class="container-main flex items-center justify-between h-20">
       <!-- Logo — horizontal brand asset (mark + ज्ञानप्रकाश wordmark + subtitle, all preserved).
            .site-header-logo triggers the white-pill backdrop in overlay mode. -->
-      <a href="index.html" class="site-header-logo flex items-center shrink-0" aria-label="Dnyanprakash Educational Project — home">
+      <a href="../index.html" class="site-header-logo flex items-center shrink-0" aria-label="Dnyanprakash Educational Project — home">
         <img
-          src="images/00-school-logo.png"
+          src="../images/00-school-logo.png"
           alt="Dnyanprakash Educational Project"
           class="h-11 w-auto object-contain"
         />
@@ -1311,7 +1329,7 @@
       <!-- Desktop navigation (hidden <lg) -->
       <ul class="hidden lg:flex items-stretch h-full m-0 p-0">
         <li class="nav-item">
-          <a href="about/index.html" class="nav-link" aria-haspopup="true">About</a>
+          <a href="../about/index.html" class="nav-link" aria-haspopup="true">About</a>
           <div class="mega-panel" role="menu" aria-label="About">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
@@ -1320,19 +1338,19 @@
                 <p class="mega-desc">Since 1999, Dnyanprakash has been a center for joyful, research-informed learning in Latur. Founded by Satish and Savita Narhare, we serve children from age 3 through Grade 10.</p>
                 <div class="flex gap-3">
                   <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="btn btn-primary">Apply</a>
-                  <a href="gallery.html" class="btn btn-secondary">Take a Tour</a>
+                  <a href="../gallery.html" class="btn btn-secondary">Take a Tour</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
                 <div>
-                  <a href="about/about-education.html" class="mega-sublink">About Education</a>
-                  <a href="about/principals-note.html" class="mega-sublink">Principal's Note</a>
-                  <a href="about/history.html" class="mega-sublink">Our History</a>
-                  <a href="about/mission.html" class="mega-sublink">Mission &amp; Values</a>
+                  <a href="../about/about-education.html" class="mega-sublink">About Education</a>
+                  <a href="../about/principals-note.html" class="mega-sublink">Principal's Note</a>
+                  <a href="../about/history.html" class="mega-sublink">Our History</a>
+                  <a href="../about/mission.html" class="mega-sublink">Mission &amp; Values</a>
                 </div>
                 <div>
-                  <a href="about/at-a-glance.html" class="mega-sublink">At a Glance</a>
-                  <a href="contact.html" class="mega-sublink">Contact Us</a>
+                  <a href="../about/at-a-glance.html" class="mega-sublink">At a Glance</a>
+                  <a href="../contact.html" class="mega-sublink">Contact Us</a>
                 </div>
               </div>
             </div>
@@ -1340,7 +1358,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="admission/index.html" class="nav-link" aria-haspopup="true">Admission</a>
+          <a href="../admission/index.html" class="nav-link" aria-haspopup="true">Admission</a>
           <div class="mega-panel" role="menu" aria-label="Admission">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
@@ -1349,19 +1367,19 @@
                 <p class="mega-desc">We welcome families from Latur and beyond. Our team can walk you through the admissions process, timelines, fee structure, and visit options.</p>
                 <div class="flex gap-3">
                   <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="btn btn-primary">Apply Online</a>
-                  <a href="contact.html" class="btn btn-secondary">Visit Us</a>
+                  <a href="../contact.html" class="btn btn-secondary">Visit Us</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
                 <div>
-                  <a href="admission/index.html" class="mega-sublink">Admission Process</a>
+                  <a href="../admission/index.html" class="mega-sublink">Admission Process</a>
                   <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="mega-sublink">Apply Online</a>
-                  <a href="admission/why-dnyanprakash.html" class="mega-sublink">Why Dnyanprakash</a>
+                  <a href="../admission/why-dnyanprakash.html" class="mega-sublink">Why Dnyanprakash</a>
                 </div>
                 <div>
-                  <a href="admission/faq.html" class="mega-sublink">FAQs</a>
-                  <a href="contact.html" class="mega-sublink">Visit Campus</a>
-                  <a href="contact.html" class="mega-sublink">Contact Admissions</a>
+                  <a href="../admission/faq.html" class="mega-sublink">FAQs</a>
+                  <a href="../contact.html" class="mega-sublink">Visit Campus</a>
+                  <a href="../contact.html" class="mega-sublink">Contact Admissions</a>
                 </div>
               </div>
             </div>
@@ -1369,7 +1387,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="academics/index.html" class="nav-link" aria-haspopup="true">Academics</a>
+          <a href="../academics/index.html" class="nav-link" aria-haspopup="true">Academics</a>
           <div class="mega-panel" role="menu" aria-label="Academics">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
@@ -1378,20 +1396,20 @@
                 <p class="mega-desc">Three divisions — Balbhavan, Balvikas Kendra, and Vidyaniketan — span pre-primary through Grade 10, rooted in the motto: Know &amp; Inspire.</p>
                 <div class="flex gap-3">
                   <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="btn btn-primary">Apply</a>
-                  <a href="gallery.html" class="btn btn-secondary">Take a Tour</a>
+                  <a href="../gallery.html" class="btn btn-secondary">Take a Tour</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
                 <div>
-                  <a href="academics/balbhavan.html" class="mega-sublink">Balbhavan (Age 3–6)</a>
-                  <a href="academics/balvikas-kendra.html" class="mega-sublink">Balvikas Kendra (1–4)</a>
-                  <a href="academics/vidyaniketan.html" class="mega-sublink">Vidyaniketan (5–10)</a>
-                  <a href="academics/narhare-learning-home.html" class="mega-sublink">Narhare Learning Home</a>
+                  <a href="../academics/balbhavan.html" class="mega-sublink">Balbhavan (Age 3–6)</a>
+                  <a href="../academics/balvikas-kendra.html" class="mega-sublink">Balvikas Kendra (1–4)</a>
+                  <a href="../academics/vidyaniketan.html" class="mega-sublink">Vidyaniketan (5–10)</a>
+                  <a href="../academics/narhare-learning-home.html" class="mega-sublink">Narhare Learning Home</a>
                 </div>
                 <div>
-                  <a href="campus-life/arts.html" class="mega-sublink">Arts &amp; Culture</a>
-                  <a href="campus-life/student-life.html" class="mega-sublink">Life Skills &amp; Service</a>
-                  <a href="academics/index.html" class="mega-sublink">Curriculum Overview</a>
+                  <a href="../campus-life/arts.html" class="mega-sublink">Arts &amp; Culture</a>
+                  <a href="../campus-life/student-life.html" class="mega-sublink">Life Skills &amp; Service</a>
+                  <a href="../academics/index.html" class="mega-sublink">Curriculum Overview</a>
                 </div>
               </div>
             </div>
@@ -1408,12 +1426,12 @@
                 <p class="mega-desc">Our alumni carry the Dnyanprakash spirit into careers, communities, and universities across India and beyond. Stay connected and give back.</p>
                 <div class="flex gap-3">
                   <a href="alumni.html" class="btn btn-primary">Alumni Home</a>
-                  <a href="contact.html" class="btn btn-secondary">Contact Alumni Relations</a>
+                  <a href="../contact.html" class="btn btn-secondary">Contact Alumni Relations</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
                 <div>
-                  <a href="alumni/stories.html" class="mega-sublink">Alumni Stories</a>
+                  <a href="../alumni/stories.html" class="mega-sublink">Alumni Stories</a>
                   <a href="https://docs.google.com/forms/d/e/1FAIpQLSeA1j8Xxg0xGYDTq9ZWdDddxrIpbencHvAvya4KUw4CQTNePQ/viewform" target="_blank" rel="noopener noreferrer" class="mega-sublink">Stay Connected</a>
                   <a class="mega-sublink" style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Give Back</a>
                 </div>
@@ -1428,7 +1446,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="news/index.html" class="nav-link" aria-haspopup="true">News</a>
+          <a href="../news/index.html" class="nav-link" aria-haspopup="true">News</a>
           <div class="mega-panel" role="menu" aria-label="News">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
@@ -1436,22 +1454,22 @@
                 <h3 class="mega-title">News &amp; Updates</h3>
                 <p class="mega-desc">Read the latest from Dnyanprakash — competitions, celebrations, curriculum updates, and student achievements from across our three divisions.</p>
                 <div class="flex gap-3">
-                  <a href="news/index.html" class="btn btn-primary">All Stories</a>
-                  <a href="campus-life/events.html" class="btn btn-secondary">Events</a>
+                  <a href="../news/index.html" class="btn btn-primary">All Stories</a>
+                  <a href="../campus-life/events.html" class="btn btn-secondary">Events</a>
                 </div>
               </div>
               <div class="col-span-7 grid grid-cols-2 gap-x-10">
                 <div>
-                  <a href="news/index.html" class="mega-sublink">Latest News</a>
-                  <a href="news/challenging-times-leaders.html" class="mega-sublink">Challenging Times</a>
-                  <a href="news/second-place-latur-division.html" class="mega-sublink">Second Place, Latur</a>
-                  <a href="news/142-meritorious-students.html" class="mega-sublink">142 Meritorious Students</a>
+                  <a href="../news/index.html" class="mega-sublink">Latest News</a>
+                  <a href="../news/challenging-times-leaders.html" class="mega-sublink">Challenging Times</a>
+                  <a href="../news/second-place-latur-division.html" class="mega-sublink">Second Place, Latur</a>
+                  <a href="../news/142-meritorious-students.html" class="mega-sublink">142 Meritorious Students</a>
                 </div>
                 <div>
-                  <a href="news/parents-grade-one-textbook.html" class="mega-sublink">Grade 1 Textbook</a>
-                  <a href="news/mrunal-kulkarni-dialogue.html" class="mega-sublink">Mrunal Kulkarni Dialogue</a>
-                  <a href="news/institute-head-satish-narhare.html" class="mega-sublink">Institute Head, Mr. Narhare</a>
-                  <a href="gallery.html" class="mega-sublink">Media Gallery</a>
+                  <a href="../news/parents-grade-one-textbook.html" class="mega-sublink">Grade 1 Textbook</a>
+                  <a href="../news/mrunal-kulkarni-dialogue.html" class="mega-sublink">Mrunal Kulkarni Dialogue</a>
+                  <a href="../news/institute-head-satish-narhare.html" class="mega-sublink">Institute Head, Mr. Narhare</a>
+                  <a href="../gallery.html" class="mega-sublink">Media Gallery</a>
                 </div>
               </div>
             </div>
@@ -1500,7 +1518,7 @@
   </header>
 
   <main>
-    <section class="article-hero-media" aria-label="Alumni">
+    <section class="article-hero-media" aria-label="माजी विद्यार्थी">
       <div data-img-slot="38" data-img-description="Alumni page hero — group photo or campus return" class="slot-box">
         <div class="text-center">
           <div class="slot-num">38</div>
@@ -1508,28 +1526,21 @@
         </div>
       </div>
     </section>
-    <div class="breadcrumb"><div class="container-main"><a href="index.html">Home</a><span class="sep">›</span><span>Alumni</span></div></div>
+    <div class="breadcrumb"><div class="container-main"><a href="../index.html">Home</a><span class="sep">›</span><span>माजी विद्यार्थी</span></div></div>
     <section class="section-pad reveal article-body" style="padding-bottom: 0;">
       <div class="container-main">
         <header class="article-heading">
-          <div class="eyebrow">Our Community</div>
-          <h1>Alumni</h1>
+          <div class="eyebrow">आमचा समुदाय</div>
+          <h1>माजी विद्यार्थी</h1>
         </header>
-        <p class="lede">Twenty-six years of students who have made Dnyanprakash theirs, and stayed.</p>
       </div>
     </section>
     <section class="section-pad reveal">
       <div class="container-main">
         <div class="prose">
-          <p>With the vision of nurturing a disciplined, principled, well-rounded, and dedicated generation of young people, the institution maintains individual records of each student's academic progress, and social awareness, right from their earliest years in Balbhavan. These records are preserved carefully and independently for every child.</p>
+          <p>अनुशासित, चारित्र्यवान, परिपूर्ण आणि समर्पणशील युवा पिढी घडविण्याच्या उद्देशाने केंद्राच्या माजी विद्यार्थ्यांच्या शैक्षणिक प्रगतीचा (व सामाजिक जाणवेचा) स्वतंत्र अहवाल बालगटांपासून जतन केला जातो. ज्ञानप्रकाश माजी विद्यार्थी संघ प्रकल्पाशी भावनिक नात्याने जोडला गेलेला आहे.</p>
 
-          <p>The Dnyanprakash Alumni Association carries a deep emotional bond with the institution, and over twenty-six years, it has grown into one of the school's greatest strengths. Dnyanprakash's alumni network is large, close-knit, and genuinely engaged. Alumni return to the school regularly &mdash; not just to revisit the memories of their childhood, but to connect meaningfully with current students, sharing their journeys, guiding career choices, and offering the kind of perspective that only lived experience can give.</p>
-
-          <p>Our alumni have gone on to build lives and careers across virtually every field &mdash; government and public service, science and research, medicine and healthcare, technology and engineering, law and the judiciary, business and corporate leadership, arts, design, and culture. Many hold positions of significant responsibility and leadership in their respective fields. And yet, they return. That says something about what Dnyanprakash gave them, and what they feel they owe it.</p>
-
-          <p>On these occasions, teachers offer their blessings and encouragement to the children, inspiring them as they move forward on their own educational journeys.</p>
-
-          <p>Alumni are not former students who have moved on. They are an indispensable part of the Dnyanprakash community &mdash; its living proof, its extended family, and the next flagbearers of everything this institution has stood for since 1999.</p>
+          <p>बालपणातील आठवणींना उजाळा देण्यासाठी विविध कार्यक्रमाच्या निमित्ताने माजी विद्यार्थी प्रकल्पात येतात आणि प्रकल्पातील विद्यार्थ्यांना करिअर गाईडन्स करतात. यावेळी शिक्षक मुलांना शैक्षणिक वाटचालीसाठी शुभेच्छा व प्रेरणा देतात.</p>
         </div>
       </div>
     </section>
@@ -1541,7 +1552,7 @@
         <!-- Left: logo + address -->
         <div>
           <img
-            src="images/00-school-logo.png"
+            src="../images/00-school-logo.png"
             alt="Dnyanprakash Educational Project"
             class="footer-logo"
           />
@@ -1563,13 +1574,13 @@
         <div>
           <h4 class="footer-heading">Quick Links</h4>
           <nav class="footer-links">
-            <a href="admission/index.html">Admission</a>
-            <a href="about/index.html">About</a>
-            <a href="academics/index.html">Academics</a>
+            <a href="../admission/index.html">Admission</a>
+            <a href="../about/index.html">About</a>
+            <a href="../academics/index.html">Academics</a>
 
-            <a href="news/index.html">News</a>
-            <a href="give.html">Give</a>
-            <a href="contact.html">Contact</a>
+            <a href="../news/index.html">News</a>
+            <a href="../give.html">Give</a>
+            <a href="../contact.html">Contact</a>
           </nav>
         </div>
 
@@ -1610,7 +1621,7 @@
       </div>
 
       <div class="footer-bottom">
-        © 2026 Dnyanprakash Educational Project · <a href="contact.html">Contact</a>
+        © 2026 Dnyanprakash Educational Project · <a href="../contact.html">Contact</a>
       </div>
     </div>
   </footer>
@@ -1620,7 +1631,7 @@
     <aside class="mobile-panel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
       <header class="flex items-center justify-between h-16 px-5 border-b border-[var(--color-border)] shrink-0">
         <img
-          src="images/00-school-logo.png"
+          src="../images/00-school-logo.png"
           alt="Dnyanprakash"
           class="h-9 w-auto object-contain"
         />
@@ -1629,17 +1640,17 @@
         </button>
       </header>
       <nav class="grow">
-        <details class="mobile-accordion"><summary>About</summary><div class="mobile-sublinks"><a href="about/about-education.html">About Education</a><a href="about/principals-note.html">Principal's Note</a><a href="about/history.html">Our History</a><a href="about/mission.html">Mission &amp; Values</a><a href="about/at-a-glance.html">At a Glance</a><a href="contact.html">Contact Us</a></div></details>
-        <details class="mobile-accordion"><summary>Admission</summary><div class="mobile-sublinks"><a href="admission/index.html">Admission Process</a><a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener">Apply Online</a><a href="admission/why-dnyanprakash.html">Why Dnyanprakash</a><a href="admission/faq.html">FAQs</a><a href="contact.html">Visit Campus</a></div></details>
-        <details class="mobile-accordion"><summary>Academics</summary><div class="mobile-sublinks"><a href="academics/index.html">Overview</a><a href="academics/balbhavan.html">Balbhavan (Age 3–6)</a><a href="academics/balvikas-kendra.html">Balvikas Kendra (1–4)</a><a href="academics/vidyaniketan.html">Vidyaniketan (5–10)</a><a href="academics/narhare-learning-home.html">Narhare Learning Home</a><a href="campus-life/arts.html">Arts &amp; Culture</a></div></details>
+        <details class="mobile-accordion"><summary>About</summary><div class="mobile-sublinks"><a href="../about/about-education.html">About Education</a><a href="../about/principals-note.html">Principal's Note</a><a href="../about/history.html">Our History</a><a href="../about/mission.html">Mission &amp; Values</a><a href="../about/at-a-glance.html">At a Glance</a><a href="../contact.html">Contact Us</a></div></details>
+        <details class="mobile-accordion"><summary>Admission</summary><div class="mobile-sublinks"><a href="../admission/index.html">Admission Process</a><a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener">Apply Online</a><a href="../admission/why-dnyanprakash.html">Why Dnyanprakash</a><a href="../admission/faq.html">FAQs</a><a href="../contact.html">Visit Campus</a></div></details>
+        <details class="mobile-accordion"><summary>Academics</summary><div class="mobile-sublinks"><a href="../academics/index.html">Overview</a><a href="../academics/balbhavan.html">Balbhavan (Age 3–6)</a><a href="../academics/balvikas-kendra.html">Balvikas Kendra (1–4)</a><a href="../academics/vidyaniketan.html">Vidyaniketan (5–10)</a><a href="../academics/narhare-learning-home.html">Narhare Learning Home</a><a href="../campus-life/arts.html">Arts &amp; Culture</a></div></details>
 
-        <details class="mobile-accordion"><summary>Alumni</summary><div class="mobile-sublinks"><a style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Alumni Home</a><a href="alumni/stories.html">Alumni Stories</a><a href="https://docs.google.com/forms/d/e/1FAIpQLSeA1j8Xxg0xGYDTq9ZWdDddxrIpbencHvAvya4KUw4CQTNePQ/viewform" target="_blank" rel="noopener noreferrer">Stay Connected</a><a style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Give Back</a><a style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Photo Archive</a></div></details>
-        <details class="mobile-accordion"><summary>News</summary><div class="mobile-sublinks"><a href="news/index.html">Latest News</a><a href="news/challenging-times-leaders.html">Challenging Times</a><a href="news/institute-head-satish-narhare.html">Institute Head, Mr. Narhare</a><a href="campus-life/events.html">Events</a><a href="gallery.html">Media Gallery</a></div></details>
+        <details class="mobile-accordion"><summary>Alumni</summary><div class="mobile-sublinks"><a style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Alumni Home</a><a href="../alumni/stories.html">Alumni Stories</a><a href="https://docs.google.com/forms/d/e/1FAIpQLSeA1j8Xxg0xGYDTq9ZWdDddxrIpbencHvAvya4KUw4CQTNePQ/viewform" target="_blank" rel="noopener noreferrer">Stay Connected</a><a style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Give Back</a><a style="color: rgba(0, 0, 0, 0.35); cursor: not-allowed; pointer-events: none;">Photo Archive</a></div></details>
+        <details class="mobile-accordion"><summary>News</summary><div class="mobile-sublinks"><a href="../news/index.html">Latest News</a><a href="../news/challenging-times-leaders.html">Challenging Times</a><a href="../news/institute-head-satish-narhare.html">Institute Head, Mr. Narhare</a><a href="../campus-life/events.html">Events</a><a href="../gallery.html">Media Gallery</a></div></details>
         <details class="mobile-accordion"><summary>Login</summary><div class="mobile-sublinks"><a href="http://dnyanprakash.techvium.in/site/userlogin" target="_blank" rel="noopener">Student Login</a><a href="http://dnyanprakash.techvium.in/site/userlogin" target="_blank" rel="noopener">Faculty Login</a><a href="http://dnyanprakash.techvium.in/site/userlogin" target="_blank" rel="noopener">Alumni Login</a></div></details>
       </nav>
       <div class="flex flex-col gap-3 p-5 border-t border-[var(--color-border)] shrink-0">
         <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="btn btn-primary">Apply for Admission</a>
-        <a href="gallery.html" class="btn btn-secondary">Take a Virtual Tour</a>
+        <a href="../gallery.html" class="btn btn-secondary">Take a Virtual Tour</a>
       </div>
     </aside>
   </div>
@@ -1732,8 +1743,8 @@
       });
     })();
   </script>
-  <script defer src="scripts/header-blur.js"></script>
-  <script defer src="scripts/translations-manifest.js"></script>
-  <script defer src="scripts/lang-toggle.js"></script>
+  <script defer src="../scripts/header-blur.js"></script>
+  <script defer src="../scripts/translations-manifest.js"></script>
+  <script defer src="../scripts/lang-toggle.js"></script>
 </body>
 </html>
