@@ -605,4 +605,120 @@ When every box above is checked, show the owner the screenshots and say: *"Homep
 
 ---
 
+## Session Notes — April 28, 2026 (Domain Live + Refinement Phase)
+
+### 1. Site is live on the custom domain
+
+- **Production URL**: https://dnyanprakash.org (HTTPS via GitHub Pages).
+- `CNAME` file at the repo root contains exactly `dnyanprakash.org\n` (17 bytes). It was added/deleted twice during DNS configuration; current state is committed and live.
+- Deploy URL fallback (still works): `https://siddhantn2001.github.io/dnyanprakash.edu/` — the GitHub Pages URL after the repo was renamed from `dnyanprakash-website` to `dnyanprakash.edu`. Old `dnyanprakash-website` URL returns 404; do not use it.
+
+### 2. Current state of the site
+
+**Working / final**:
+- All 6 top-level nav items (About, Admission, Academics, Alumni, News, Login) — Campus Life and Faculty were removed earlier this phase.
+- Homepage (`index.html`): hero, "Happening at Dnyanprakash" 3-news-tiles row, two teaser sections (A Vision of Joyful Learning, An Experiment in Education, Learning through action), Video Spotlight (YouTube embed), Explore Dnyanprakash 4-tile grid (all 4 photos filled), Our Mission + At a Glance stats slider, Upcoming Events (3 visible, 5 hidden), footer.
+- Inner pages with real hero photos: about/index, about/principals-note, about/an-experiment-in-education, about/about-education, about/at-a-glance, about/history, about/mission, admission/index (Admission Process), admission/why-dnyanprakash, admission/faq, alumni.html, alumni/stories, contact.html.
+- News article: news/second-place-latur-division.html (now titled "Dnyanprakash Ranked Best School in the District…"), news/parents-grade-one-textbook.html (refreshed body Feb 18 2026), news/index.html with carousel.
+- Language toggle on every page (top-right of utility bar), wired to `scripts/lang-toggle.js` + `scripts/translations-manifest.js`.
+
+**Still placeholder (data-img-slot div) heroes** — pages where Sid hasn't supplied photos yet:
+- `about/faculty.html` (orphaned page; still reachable by direct URL)
+- `academics/index.html`, `academics/balbhavan.html`, `academics/balvikas-kendra.html`, `academics/vidyaniketan.html`, `academics/narhare-learning-home.html`
+- `campus-life/index.html`, `campus-life/arts.html`, `campus-life/events.html`, `campus-life/student-life.html` (all four orphaned — Campus Life removed from nav, pages remain at direct URL)
+- `give.html`
+- `news/index.html` carousel slot pre-fill HTML (since replaced with real clippings — but the `data-img-slot` count includes related-tile thumbnails on individual news article pages that still show "Dnyanprakash Ranked Best School…" / "Felicitation of 142 Meritorious Students" / "Challenging Times" / "Mrunal Kulkarni Dialogue" / "Institute Head Satish Narhare" / "Parents Grasp the Concepts" thumbnails as placeholders)
+- `news/142-meritorious-students.html`, `news/challenging-times-leaders.html`, `news/institute-head-satish-narhare.html`, `news/mrunal-kulkarni-dialogue.html`, `news/parents-grade-one-textbook.html`: each has 1 hero slot still as a dashed placeholder.
+- `mr/alumni/stories.html`: hero slot 48 placeholder (English alumni/stories.html also has slot 48 placeholder; that's the shared image waiting for a photo).
+
+**Still dummy text** (clearly marked with `[CONTENT NEEDED]` or `<!-- DUMMY -->` comments in the source):
+- Most `academics/*` pages — body content is template scaffolding.
+- Most `campus-life/*` pages — orphaned, not in nav, body still scaffold.
+- `gallery.html`, `give.html`, `about/faculty.html` — orphaned, body still scaffold.
+- News article bodies for the meritorious-students, challenging-times, institute-head-satish-narhare, mrunal-kulkarni-dialogue articles — placeholder copy until owner supplies verbatim text.
+
+### 3. Marathi pages live so far
+
+7 Marathi twins registered in `scripts/translations-manifest.js`:
+
+```
+about/principals-note.html
+about/index.html               (आनंददायी शिक्षणाचा ध्यास)
+about/about-education.html
+about/learning-through-action.html
+admission/index.html           (प्रवेश प्रक्रिया — letter section is an English-fallback placeholder; only the प्रवेश प्रक्रिया body is translated)
+alumni/stories.html
+alumni.html
+```
+
+Each Marathi page uses `<html lang="mr">` and the standard `html[lang="mr"]` typography block (Noto Serif Devanagari at weight 600 for H1, Noto Sans Devanagari for body, 0.02em eyebrow tracking, 1.8 line-height for prose, no `text-transform: uppercase` on eyebrows). Site root is detected from the lang-toggle script's own `src` attribute, so all pages work at the custom domain root and at the GitHub Pages subpath.
+
+**Marathi pages NOT yet translated** (clicking मराठी on these falls back to English with the bilingual banner):
+- index.html (homepage)
+- contact.html, gallery.html, give.html
+- about/mission.html, about/history.html, about/at-a-glance.html, about/faculty.html
+- all academics/*.html
+- all admission/why-dnyanprakash.html, admission/faq.html
+- all campus-life/*.html (orphaned; not in nav)
+- all news/*.html
+
+When Sid sends Marathi text, the workflow is:
+1. Copy the English file → `mr/[same-path]`.
+2. `<html lang="mr">`, path transform (`../` → `../../`, sibling references to `../../folder/X`).
+3. Add the standard html[lang="mr"] typography `<style>` block (already established pattern — copy from any existing Marathi page).
+4. Swap title, breadcrumb, eyebrow, H1, body, sidebar pullquote.
+5. Add to `scripts/translations-manifest.js`: `"path/to/page.html": true`.
+
+### 4. Disabled / coming-soon nav items
+
+**Alumni mega-menu sublinks** — only "Stay Connected" is functional (links to a Google Form). The rest render in `rgba(0,0,0,0.35)` with `cursor: not-allowed; pointer-events: none`:
+- Alumni Stories — clickable now (was disabled earlier; activated once `/alumni/stories.html` was built)
+- Give Back — disabled
+- Photo Archive — disabled
+- News (the one in the Alumni column, NOT the top-level News nav) — disabled
+- Update Contact — disabled
+- Mobile drawer "Alumni Home" — disabled
+
+**Explore Dnyanprakash 4-tile "Learn More →" links** on the homepage — all four disabled with the same muted-grey pattern. Tile cards still hover-lift; only the "Learn More →" anchors are inert. Re-enable by reverting each `<a>` back to `<a href="academics/[slug].html" class="ac-link">Learn More →</a>` once Sid provides academics-page content.
+
+**Mega-menu CTAs that point to gallery.html** — "Take a Tour" / "Take a Virtual Tour" buttons in About + Academics dropdowns and the homepage hero now point to `gallery.html` (no longer `campus-life/index.html`, since Campus Life was removed from nav).
+
+### 5. News carousel
+
+- Folder: `images/news-clippings/`
+- Current count: **23 clippings** (`clipping-01.jpg` through `clipping-23.jpg`)
+- Total folder size: ~3.9 MB
+- HTML: 23 slides + 23 dots in `news/index.html`. Letterbox treatment with `#1a1612` background, `object-fit: contain`, 24px padding (16px mobile). Arrow buttons + dot navigation + 7s auto-advance + keyboard arrow + touch swipe + `prefers-reduced-motion` respect. Carousel JS at `scripts/news-carousel.js`.
+- Same JS powers the **Alumni Stories carousel** at `images/alumni/` (4 photos: alumni-01 to alumni-04).
+
+To add more clippings: copy file to `images/news-clippings/clipping-NN.jpg` (next sequential number) and add a corresponding `<div class="news-carousel-slide">` + `<button class="news-carousel-dot">` to `news/index.html`. JS walks `track.children` so slide count is dynamic — no JS edit needed.
+
+### 6. Uncommitted work / known issues
+
+- **Working tree is currently clean**. All commits are pushed to `origin/main` on the renamed `dnyanprakash.edu` repo.
+- **Heavy images**: a few hero photos are PNG screenshots in the 5–8 MB range — slot 25 (FAQ, 6.6 MB), slot 19 at-a-glance (7.6 MB), slot 17 Narhare Learning Home (3.3 MB), slot 14 Vidyaniketan (5.4 MB), slot 13 Balvikas Kendra (6.5 MB), slot 47 Principal's Note (3.6 MB). These should be compressed via TinyPNG (target ~500 KB each) when there's time. Site loads fine on broadband but mobile users on slow networks will feel it.
+- **Repo URL note**: `git push` always emits a "This repository moved" warning because the old remote URL `dnyanprakash-website.git` redirects to the new `dnyanprakash.edu.git`. Harmless, but at some point run `git remote set-url origin https://github.com/Siddhantn2001/dnyanprakash.edu.git` to silence it.
+- **CNAME has been deleted twice** by GitHub Pages settings UI changes during this phase. If Pages settings get reconfigured again, the file may be deleted again and need re-adding. Always verify `cat CNAME` shows `dnyanprakash.org` after any Pages settings work.
+- **No service worker, no offline support, no analytics**. Stack remains pure HTML + Tailwind CDN + vanilla JS per §3.
+- **`scripts/scaffold-pages.js` exists but is dev-only** — never run by the owner, never run during this phase. Updated for nav-rename consistency but the actual page content was edited directly on each HTML file.
+
+### 7. Working design language — the Pentagram polish-pass aesthetic
+
+The visual language landed during the spring polish pass and is the locked working aesthetic. Anything new should match this:
+
+- **Tone**: warm. Off-white backgrounds (`#ffffff` and `#f1f2f2` as alt). Burgundy red accent (`#9E1B32`) for eyebrows + primary CTAs only. Near-black body text (`#292f36`), muted grey (`#818386`) for subtitles, role lines, and meta labels.
+- **Typography**: editorial. Playfair Display (italic in some heads, regular in most) for serif headlines. Libre Franklin for sans body. Noto Serif/Sans Devanagari for Marathi (matches the editorial tone). Eyebrows in condensed sans, uppercase, 0.14em tracking on English / 0.02em on Marathi (Devanagari has no uppercase). H1 weight 400 on English (Playfair has built-in weight) / 600 on Marathi (Noto Serif Devanagari at 400 reads too light at display sizes).
+- **Motion**: restrained. Slide transitions on carousels at 450ms `cubic-bezier(0.2, 0.8, 0.2, 1)`. Tile hover lift `scale(1.03) translateY(-6px)` over 500ms with a soft shadow. Auto-advance pauses on hover/focus. `prefers-reduced-motion` respected everywhere with a single override. No bounce, no spin, no zoom.
+- **Layout**: editorial column. Articles use `.prose` at 760px max-width (auto on `.article-layout` which has a sidebar). 17px body, 1.7 line-height English / 1.8 Marathi. 28px paragraph margin-bottom. Hero aspect 2.4:1 desktop / 16:10 mobile, max-height 560px.
+- **Buttons**: thin. Outlined Read More / Learn More buttons in a small italic serif. Filled primary buttons (Apply, etc.) use the burgundy red. No drop shadows on buttons (heavy shadow is reserved for tile hover and the carousel arrow button only).
+- **Don't add**: gradients on text, drop shadows on body content, "modern" sans-serif headlines, decorative dividers, emoji as icons, animated illustrations. The whole point is quiet authority.
+
+When in doubt, look at the existing About / Principal's Note / Admission Process page. Match that.
+
+---
+
+*Domain is live, infrastructure is solid, content is most of the way there. Next session is about filling remaining placeholders, polishing edges, and adding the Marathi translations as Sid sends them.*
+
+---
+
 *This file is the single source of truth for the Dnyanprakash Educational Project website. If you are Claude reading this at the start of a new session — you now know everything you need. Begin.*
