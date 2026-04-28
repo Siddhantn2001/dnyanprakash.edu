@@ -1067,6 +1067,23 @@
       opacity: 1;
       transform: translateY(0);
     }
+    /* Pattern 2 — staggered tile reveals: parent gets .scroll-stagger, children get .reveal */
+    .scroll-stagger > .reveal.reveal-fx { transition-delay: 0ms; }
+    .scroll-stagger > .reveal.reveal-fx:nth-child(2) { transition-delay: 100ms; }
+    .scroll-stagger > .reveal.reveal-fx:nth-child(3) { transition-delay: 200ms; }
+    .scroll-stagger > .reveal.reveal-fx:nth-child(4) { transition-delay: 300ms; }
+    .scroll-stagger > .reveal.reveal-fx:nth-child(5) { transition-delay: 400ms; }
+    .scroll-stagger > .reveal.reveal-fx:nth-child(6) { transition-delay: 500ms; }
+    /* Pattern 3 — stat number counters (count-up controlled by scroll-reveals.js) */
+    .stat-counter { display: inline-block; font-variant-numeric: tabular-nums; }
+    @media (max-width: 768px) {
+      .reveal.reveal-fx { transform: translateY(16px); }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(2) { transition-delay: 60ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(3) { transition-delay: 120ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(4) { transition-delay: 180ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(5) { transition-delay: 240ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(6) { transition-delay: 300ms; }
+    }
     @media (prefers-reduced-motion: reduce) {
       .reveal.reveal-fx { opacity: 1; transform: none; transition: none; }
     }
@@ -1723,5 +1740,6 @@
   <script defer src="scripts/header-blur.js"></script>
   <script defer src="scripts/translations-manifest.js"></script>
   <script defer src="scripts/lang-toggle.js"></script>
+  <script defer src="scripts/scroll-reveals.js"></script>
 </body>
 </html>
