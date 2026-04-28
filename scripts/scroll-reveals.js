@@ -30,7 +30,7 @@
   var isMobile = window.matchMedia &&
     window.matchMedia('(max-width: 768px)').matches;
 
-  var DURATION = isMobile ? 1000 : 1500;
+  var DURATION = isMobile ? 2000 : 1500;
 
   function easeOutQuart(t) {
     return 1 - Math.pow(1 - t, 4);

@@ -502,8 +502,24 @@
       width: 100%;
       overflow: hidden;
     }
-    .hero-media { position: absolute; inset: 0; }
+    .hero-media { position: absolute; inset: 0; overflow: hidden; }
     .hero-media > * { width: 100%; height: 100%; }
+    /* Ken Burns slow zoom — mobile only, breaks up long vertical scroll on phones */
+    @media (max-width: 768px) {
+      .hero .hero-media img {
+        animation: ken-burns 18s ease-in-out infinite alternate;
+        transform-origin: center center;
+        will-change: transform;
+      }
+      @keyframes ken-burns {
+        0%   { transform: scale(1); }
+        100% { transform: scale(1.05); }
+      }
+    }
+    /* Reduced motion: kill the Ken Burns zoom */
+    @media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+      .hero .hero-media img { animation: none !important; }
+    }
     /* Gradient only bottom 60% — transparent at top so logo stays clean */
     .hero-overlay {
       position: absolute; inset: 0;
@@ -1188,12 +1204,16 @@
     /* Pattern 3 — stat number counters (count-up controlled by scroll-reveals.js) */
     .stat-counter { display: inline-block; font-variant-numeric: tabular-nums; }
     @media (max-width: 768px) {
-      .reveal.reveal-fx { transform: translateY(16px); }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(2) { transition-delay: 60ms; }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(3) { transition-delay: 120ms; }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(4) { transition-delay: 180ms; }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(5) { transition-delay: 240ms; }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(6) { transition-delay: 300ms; }
+      .reveal.reveal-fx {
+        transform: translateY(40px);
+        transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+                    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(2) { transition-delay: 150ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(3) { transition-delay: 300ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(4) { transition-delay: 450ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(5) { transition-delay: 600ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(6) { transition-delay: 750ms; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }

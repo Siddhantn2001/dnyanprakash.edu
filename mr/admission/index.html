@@ -1128,12 +1128,16 @@
     /* Pattern 3 — stat number counters (count-up controlled by scroll-reveals.js) */
     .stat-counter { display: inline-block; font-variant-numeric: tabular-nums; }
     @media (max-width: 768px) {
-      .reveal.reveal-fx { transform: translateY(16px); }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(2) { transition-delay: 60ms; }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(3) { transition-delay: 120ms; }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(4) { transition-delay: 180ms; }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(5) { transition-delay: 240ms; }
-      .scroll-stagger > .reveal.reveal-fx:nth-child(6) { transition-delay: 300ms; }
+      .reveal.reveal-fx {
+        transform: translateY(40px);
+        transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+                    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(2) { transition-delay: 150ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(3) { transition-delay: 300ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(4) { transition-delay: 450ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(5) { transition-delay: 600ms; }
+      .scroll-stagger > .reveal.reveal-fx:nth-child(6) { transition-delay: 750ms; }
     }
     @media (prefers-reduced-motion: reduce) {
       .reveal.reveal-fx { opacity: 1; transform: none; transition: none; }
