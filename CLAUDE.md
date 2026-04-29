@@ -605,6 +605,35 @@ When every box above is checked, show the owner the screenshots and say: *"Homep
 
 ---
 
+## 18. Page Consistency Checklist (post-homepage)
+
+When a new page lands or an existing page is touched, run this 7-point check. It catches drift that piecemeal edits introduce — partials are not auto-synced (see §8.14), so every page is its own copy and every page must be verified independently.
+
+**The 7 items:**
+
+1. **Sidebar present on editorial article pages** — pattern from `about/principals-note.html` (`.article-layout` grid + `<aside class="article-aside">` with pullquote, related-pages card, Instagram block, admissions CTA). Sticky on `lg:`.
+2. **Favicon links** — `<link rel="icon" href="../favicon.ico">` and the apple-touch-icon both point to the right relative path for the page's depth.
+3. **`scripts/scroll-reveals.js` loaded** — at the bottom of `<body>`, with the right relative path. Reveal animations break silently otherwise.
+4. **`scripts/hero-rotation.js` loaded only where needed** — homepage only. Other pages must NOT include it (it scans for `.hero-rotator` and is dead code on inner pages, but adding it everywhere is wasted bytes).
+5. **Nav block matches the master** — top nav, mega-menu, mobile drawer, utility bar (with language toggle on the right). Compare against `index.html` if unsure.
+6. **Footer matches the master** — three columns, identical contact block, social icons, copyright.
+7. **Student Life link in nav** points to `academics/student-life.html` (NOT the old `arts.html` slug). Mega-menu and mobile drawer both. *(This is the most recent rename and the most common drift point — leave it on the checklist until at least one full audit pass shows zero hits.)*
+
+**Editorial vs action vs data — sidebar applicability:**
+
+The sidebar pattern is for **editorial article pages** only. Other page types are exempt by design — flagging them as "missing a sidebar" is a false positive.
+
+| Page type | Sidebar? | Examples | Reason |
+|---|---|---|---|
+| **Editorial article** | Required | `about/principals-note.html`, `about/learning-through-action.html`, `alumni.html`, `alumni/stories.html`, news articles | Long-form prose; sidebar gives readers next-step affordances and breaks up the column. |
+| **Action page** | Forbidden | `contact.html`, `give.html` | Page exists to drive a single action (form, donation flow). A related-pages rail competes with the CTA. |
+| **Data / index page** | Forbidden | `about/at-a-glance.html`, `news/index.html`, `gallery.html` | Content IS a structured list, table, or grid. A sidebar reframes it as an article it isn't. |
+| **Section landing** | Optional | `about/index.html`, `academics/index.html`, `admission/index.html` | Judgement call — add a sidebar if there is enough lede prose to warrant one; skip if the page is mostly a tile grid. |
+
+**When auditing**, classify each page first, THEN run the 7-point check. Don't re-flag action/data pages as missing a sidebar — they are intentionally without one.
+
+---
+
 ## Session Notes — April 28, 2026 (Domain Live + Refinement Phase)
 
 ### 1. Site is live on the custom domain
