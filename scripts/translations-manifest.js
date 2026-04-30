@@ -18,6 +18,7 @@ window.MR_TRANSLATIONS_AVAILABLE = {
   "about/about-education.html": true,
   "about/learning-through-action.html": true,
   "admission/index.html": true,
+  "admission/faq.html": true,
   "alumni/stories.html": true,
   "alumni.html": true,
   "academics/student-life.html": true,
