@@ -1447,6 +1447,185 @@
       }
     }
     /* End R/GA Mobile Polish Pass */
+
+    /* =========================================================
+       Section 8.6c — Kishor Dnyanprakash Newsletter (added 2026-05-01)
+       Editorial-restraint card: text + cover meet at center via the
+       position-aware reveal system (header centered, editorial left,
+       cover right). Paper-feel cover treatment with warm-tinted
+       drop shadow + faint top-edge highlight to suggest grain.
+       ========================================================= */
+    .newsletter-section {
+      background: #ffffff;
+    }
+
+    .newsletter-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 80px;
+    }
+    .newsletter-header .section-eyebrow {
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    .newsletter-title {
+      font-family: 'Noto Serif Devanagari', 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 3.75rem);
+      font-weight: 500;
+      color: var(--color-text-primary);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin: 0 0 8px;
+    }
+    .newsletter-subtitle {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .newsletter-featured {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .newsletter-editorial {
+      padding-right: 20px;
+    }
+    .newsletter-issue-meta {
+      color: var(--color-primary);
+      font-family: 'Libre Franklin', 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      margin: 0 0 24px;
+    }
+    .newsletter-blurb-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 500;
+      color: var(--color-text-primary);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin: 0 0 28px;
+    }
+    .newsletter-blurb-body {
+      font-family: var(--font-sans);
+      font-size: 1.0625rem;
+      line-height: 1.7;
+      color: var(--color-text-primary);
+      margin: 0 0 20px;
+    }
+    .newsletter-read-link {
+      display: inline-block;
+      margin-top: 16px;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.125rem;
+      color: var(--color-primary);
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 2px;
+      transition: color 200ms ease, transform 200ms ease;
+    }
+    .newsletter-read-link:hover {
+      color: var(--color-primary-dark);
+      transform: translateX(4px);
+      text-decoration: none;
+    }
+    .newsletter-original-link-wrap {
+      margin-top: 18px;
+      margin-bottom: 0;
+    }
+    .newsletter-original-link {
+      font-family: 'Libre Franklin', 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.875rem;
+      color: #6b5d52;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(107, 93, 82, 0.3);
+      padding-bottom: 1px;
+      transition: color 200ms ease, border-color 200ms ease;
+    }
+    .newsletter-original-link:hover {
+      color: var(--color-text-primary);
+      border-bottom-color: rgba(26, 22, 18, 0.5);
+      text-decoration: none;
+    }
+
+    .newsletter-cover-wrap {
+      display: flex;
+      justify-content: center;
+    }
+    .newsletter-cover-link {
+      display: block;
+      transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .newsletter-cover-link:hover {
+      transform: translateY(-6px);
+      text-decoration: none;
+    }
+    .newsletter-cover {
+      display: block;
+      position: relative;
+      max-width: 480px;
+      width: 100%;
+    }
+    .newsletter-cover img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 2px;
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.04),
+        0 8px 24px rgba(60, 40, 20, 0.10),
+        0 24px 48px rgba(60, 40, 20, 0.08);
+      transition: box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .newsletter-cover-link:hover img {
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.04),
+        0 16px 32px rgba(60, 40, 20, 0.12),
+        0 32px 64px rgba(60, 40, 20, 0.10);
+    }
+    /* Top-edge highlight — suggests paper grain */
+    .newsletter-cover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.5), transparent);
+      pointer-events: none;
+      z-index: 2;
+      border-radius: 2px 2px 0 0;
+    }
+
+    @media (max-width: 768px) {
+      .newsletter-header {
+        margin-bottom: 48px;
+      }
+      .newsletter-featured {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .newsletter-editorial {
+        padding-right: 0;
+        order: 2;
+      }
+      .newsletter-cover-wrap {
+        order: 1;
+      }
+      .newsletter-cover {
+        max-width: 320px;
+      }
+    }
+    /* End Newsletter Section */
   </style>
 </head>
 <body>
@@ -1846,6 +2025,70 @@
             allowfullscreen>
           </iframe>
         </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         Section 8.6c — Kishor Dnyanprakash Newsletter (added 2026-05-01)
+         Position-aware reveals: header centered (alternating fallback),
+         editorial column left (reveals from left), cover right (reveals
+         from right). They meet at center. The PDF link opens in a new
+         tab; cover thumbnail is generated from the source PDF page 1.
+         ========================================================= -->
+    <section class="section-pad pad-quiet newsletter-section" aria-label="Kishor Dnyanprakash Newsletter">
+      <div class="container-main">
+
+        <!-- Section header -->
+        <header class="newsletter-header reveal">
+          <p class="section-eyebrow" style="margin: 0 auto 18px;">Publications</p>
+          <h2 class="newsletter-title">किशोर ज्ञानप्रकाश</h2>
+          <p class="newsletter-subtitle">The Newsletter</p>
+        </header>
+
+        <!-- Featured issue -->
+        <div class="newsletter-featured">
+
+          <!-- Editorial column (left on desktop) -->
+          <div class="newsletter-editorial reveal">
+            <p class="newsletter-issue-meta">अंक ८२&nbsp;&nbsp;·&nbsp;&nbsp;मे २०२६</p>
+            <h3 class="newsletter-blurb-title">Twenty-six years. Eighty-two issues.</h3>
+            <p class="newsletter-blurb-body">Twice each year since 1999, Kishor Dnyanprakash has carried the writing of our teachers, the work of our students, and the rhythms of school life in Latur. Edited by Satish Narhare. Published in Marathi.</p>
+            <p class="newsletter-blurb-body">This issue includes editorial reflections on leadership and child development, contributions from teachers and visiting writers, and the school&rsquo;s cultural life.</p>
+            <a href="pdfs/newsletters/issue-82.pdf" target="_blank" rel="noopener" class="newsletter-read-link">Read this issue →</a>
+            <p class="newsletter-original-link-wrap">
+              <a href="pdfs/newsletters/issue-82-original.pdf" target="_blank" rel="noopener" class="newsletter-original-link">Download print-quality original (42MB) ↓</a>
+            </p>
+          </div>
+
+          <!-- Cover column (right on desktop) -->
+          <div class="newsletter-cover-wrap reveal">
+            <a href="pdfs/newsletters/issue-82.pdf"
+               target="_blank"
+               rel="noopener"
+               class="newsletter-cover-link"
+               aria-label="Open Kishor Dnyanprakash Issue 82, May 2026 (PDF, opens in new tab)">
+              <picture class="newsletter-cover">
+                <source srcset="images/newsletters/issue-82-cover.webp 1x, images/newsletters/issue-82-cover@2x.webp 2x" type="image/webp">
+                <img src="images/newsletters/issue-82-cover.jpg"
+                     alt="Kishor Dnyanprakash Issue 82 cover, May 2026"
+                     loading="lazy"
+                     width="700"
+                     height="1041">
+              </picture>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Archive grid placeholder — re-enable when 3+ issues are online.
+        <div class="newsletter-archive">
+          <h3 class="archive-heading">Past Issues</h3>
+          <div class="archive-grid">
+            <a href="..." class="archive-card reveal">...</a>
+          </div>
+        </div>
+        -->
+
       </div>
     </section>
 
