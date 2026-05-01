@@ -1592,21 +1592,22 @@
     .coverflow-track.is-wrap-snap .cf-item {
       transition: none !important;
     }
+    /* ═══ BASE COVER ITEM — POLISHED ═══ */
     .cf-item {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 360px;
-      max-width: 75%;
+      width: 380px;
+      max-width: 78%;
       aspect-ratio: 0.685 / 1;
       transform-origin: center center;
       will-change: transform, filter, opacity;
-      transition:
-        transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
-        filter 600ms cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
       cursor: pointer;
       text-decoration: none;
+      transition:
+        transform 720ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 600ms cubic-bezier(0.16, 1, 0.3, 1) 80ms,
+        opacity 480ms cubic-bezier(0.4, 0, 0.2, 1) 40ms;
     }
     .cf-item picture,
     .cf-item img {
@@ -1616,45 +1617,107 @@
     }
     .cf-item img {
       object-fit: cover;
-      border-radius: 2px;
+      border-radius: 3px;
       box-shadow:
-        0 1px 2px rgba(0, 0, 0, 0.04),
-        0 8px 24px rgba(60, 40, 20, 0.10),
-        0 24px 48px rgba(60, 40, 20, 0.08);
-      transition: box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
+        0 1px 1px rgba(40, 24, 12, 0.06),
+        0 2px 4px rgba(40, 24, 12, 0.04),
+        0 12px 24px rgba(60, 40, 20, 0.08),
+        0 32px 64px rgba(60, 40, 20, 0.06);
+      transition: box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
+    /* ═══ ACTIVE: featured treatment ═══ */
     .cf-item[data-delta="0"] {
       transform: translate(-50%, -50%) translateX(0) scale(1);
-      filter: blur(0);
+      filter: blur(0) saturate(1);
       opacity: 1;
       z-index: 5;
       cursor: zoom-in;
     }
-    .cf-item[data-delta="-1"] {
-      transform: translate(-50%, -50%) translateX(80%) scale(0.82);
-      filter: blur(4px);
-      opacity: 0.55;
+    .cf-item[data-delta="0"] img {
+      box-shadow:
+        0 1px 2px rgba(40, 24, 12, 0.08),
+        0 4px 8px rgba(40, 24, 12, 0.06),
+        0 20px 40px rgba(60, 40, 20, 0.12),
+        0 48px 80px rgba(60, 40, 20, 0.10);
+    }
+    /* Hairline "now featured" cue — fades in after settle */
+    .cf-item[data-delta="0"]::after {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 32px;
+      height: 1px;
+      background: var(--color-primary);
+      opacity: 0;
+      transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1) 200ms;
+      pointer-events: none;
+    }
+    .cf-item[data-delta="0"].is-settled::after {
+      opacity: 1;
+    }
+    .cf-item[data-delta="0"]:hover {
+      transform: translate(-50%, -50%) translateX(0) scale(1.015);
+    }
+    .cf-item[data-delta="0"]:hover img {
+      box-shadow:
+        0 2px 4px rgba(40, 24, 12, 0.10),
+        0 8px 16px rgba(40, 24, 12, 0.08),
+        0 32px 64px rgba(60, 40, 20, 0.14),
+        0 64px 96px rgba(60, 40, 20, 0.12);
+    }
+
+    /* ═══ ADJACENT (delta ±1): older RIGHT, newer LEFT ═══ */
+    .cf-item[data-delta="1"] {
+      transform: translate(-50%, -50%) translateX(85%) scale(0.84);
+      filter: blur(3px) saturate(0.75) brightness(0.97);
+      opacity: 0.62;
       z-index: 3;
+    }
+    .cf-item[data-delta="-1"] {
+      transform: translate(-50%, -50%) translateX(-85%) scale(0.84);
+      filter: blur(3px) saturate(0.75) brightness(0.97);
+      opacity: 0.62;
+      z-index: 3;
+    }
+    /* Edge vignette on adjacent — recession illusion */
+    .cf-item[data-delta="1"]::before,
+    .cf-item[data-delta="-1"]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse at center,
+        transparent 60%,
+        rgba(255, 255, 255, 0.15) 100%
+      );
+      pointer-events: none;
+      z-index: 2;
+      border-radius: 3px;
+    }
+    .cf-item[data-delta="1"]:hover,
+    .cf-item[data-delta="-1"]:hover {
+      filter: blur(1.5px) saturate(0.9) brightness(1);
+      opacity: 0.82;
+    }
+
+    /* ═══ DISTANT (delta ±2): heavier depth ═══ */
+    .cf-item[data-delta="2"] {
+      transform: translate(-50%, -50%) translateX(155%) scale(0.68);
+      filter: blur(7px) saturate(0.55) brightness(0.94);
+      opacity: 0.32;
+      z-index: 2;
     }
     .cf-item[data-delta="-2"] {
-      transform: translate(-50%, -50%) translateX(140%) scale(0.66);
-      filter: blur(8px);
-      opacity: 0.28;
+      transform: translate(-50%, -50%) translateX(-155%) scale(0.68);
+      filter: blur(7px) saturate(0.55) brightness(0.94);
+      opacity: 0.32;
       z-index: 2;
     }
-    .cf-item[data-delta="1"] {
-      transform: translate(-50%, -50%) translateX(-80%) scale(0.82);
-      filter: blur(4px);
-      opacity: 0.55;
-      z-index: 3;
-    }
-    .cf-item[data-delta="2"] {
-      transform: translate(-50%, -50%) translateX(-140%) scale(0.66);
-      filter: blur(8px);
-      opacity: 0.28;
-      z-index: 2;
-    }
+
+    /* ═══ BEYOND ±2: hidden ═══ */
     .cf-item[data-delta="-3"],
     .cf-item[data-delta="-4"],
     .cf-item[data-delta="-5"],
@@ -1662,22 +1725,10 @@
     .cf-item[data-delta="4"],
     .cf-item[data-delta="5"] {
       transform: translate(-50%, -50%) translateX(0) scale(0.5);
-      filter: blur(12px);
+      filter: blur(12px) saturate(0);
       opacity: 0;
       pointer-events: none;
       z-index: 1;
-    }
-
-    .cf-item[data-delta="0"]:hover img {
-      box-shadow:
-        0 1px 2px rgba(0, 0, 0, 0.04),
-        0 16px 32px rgba(60, 40, 20, 0.12),
-        0 32px 64px rgba(60, 40, 20, 0.10);
-    }
-    .cf-item[data-delta="-1"]:hover,
-    .cf-item[data-delta="1"]:hover {
-      filter: blur(2px);
-      opacity: 0.75;
     }
 
     .coverflow-nav {
@@ -1762,15 +1813,24 @@
         height: 500px;
       }
       .cf-item {
-        width: 280px;
+        width: 290px;
       }
-      .cf-item[data-delta="-1"],
-      .cf-item[data-delta="1"] {
-        filter: blur(3px);
+      .cf-item[data-delta="1"],
+      .cf-item[data-delta="-1"] {
+        filter: blur(2.5px) saturate(0.78) brightness(0.97);
       }
-      .cf-item[data-delta="-2"],
-      .cf-item[data-delta="2"] {
-        filter: blur(5px);
+      .cf-item[data-delta="2"],
+      .cf-item[data-delta="-2"] {
+        filter: blur(5px) saturate(0.6) brightness(0.94);
+      }
+      /* Drop the vignette on mobile — perf cost not worth it */
+      .cf-item::before {
+        display: none;
+      }
+      /* Smaller hairline cue */
+      .cf-item[data-delta="0"]::after {
+        width: 24px;
+        bottom: -12px;
       }
       .coverflow-nav {
         opacity: 0.75;
@@ -1788,12 +1848,17 @@
         filter: none;
         opacity: 1;
       }
+      .cf-item[data-delta="0"]::after {
+        opacity: 1;
+        transition: none;
+      }
       .cf-item:not([data-delta="0"]) {
         transform: translate(-50%, -50%);
         filter: none;
         opacity: 0;
         pointer-events: none;
       }
+      .cf-item::before { display: none; }
     }
     /* End Newsletter Section */
   </style>
@@ -2238,10 +2303,10 @@
                  tabindex="0">
               <div class="coverflow-track" data-track></div>
               <div class="coverflow-dots" data-dots aria-hidden="true"></div>
-              <button type="button" class="coverflow-nav coverflow-nav-prev" data-nav-prev aria-label="Older issue">
+              <button type="button" class="coverflow-nav coverflow-nav-prev" data-nav-prev aria-label="Newer issue">
                 <span aria-hidden="true">←</span>
               </button>
-              <button type="button" class="coverflow-nav coverflow-nav-next" data-nav-next aria-label="Newer issue">
+              <button type="button" class="coverflow-nav coverflow-nav-next" data-nav-next aria-label="Older issue">
                 <span aria-hidden="true">→</span>
               </button>
             </div>

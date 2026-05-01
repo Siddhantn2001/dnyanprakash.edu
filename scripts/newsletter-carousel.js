@@ -119,6 +119,9 @@
     track.dataset.lastActive = String(activeIndex);
 
     const items = track.querySelectorAll('.cf-item');
+    items.forEach(function (item) {
+      item.classList.remove('is-settled');
+    });
     items.forEach(function (item, i) {
       item.setAttribute('data-delta', String(i - activeIndex));
     });
@@ -141,20 +144,34 @@
       originalTarget.textContent =
         'Download print-quality original (' + issue.originalSizeMb + 'MB) ↓';
     }
+
+    // Hairline cue under active fades in after settling (after the
+    // longest transition: transform 720ms). setTimeout instead of
+    // transitionend so it works on wrap-snap (transitions disabled).
+    const newActive = track.querySelector('.cf-item[data-delta="0"]');
+    if (newActive) {
+      clearTimeout(window._cfSettleTimer);
+      window._cfSettleTimer = setTimeout(function () {
+        newActive.classList.add('is-settled');
+      }, 750);
+    }
   }
 
-  // LEFT arrow → older (higher index, since older issues sit visually to the left)
-  // RIGHT arrow → newer (lower index)
-  prevBtn.addEventListener('click', function () { setActive(activeIndex + 1); });
-  nextBtn.addEventListener('click', function () { setActive(activeIndex - 1); });
+  // Older issues stack to the RIGHT of active. Conventions:
+  // - LEFT arrow / ArrowLeft → newer (-1) [array prev]
+  // - RIGHT arrow / ArrowRight → older (+1) [array next]
+  // - swipe LEFT (dx<0) → older (+1) [physical: content moves left, next from right comes in]
+  // - swipe RIGHT (dx>0) → newer (-1)
+  prevBtn.addEventListener('click', function () { setActive(activeIndex - 1); });
+  nextBtn.addEventListener('click', function () { setActive(activeIndex + 1); });
 
   root.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      setActive(activeIndex + 1);
+      setActive(activeIndex - 1);
     } else if (e.key === 'ArrowRight') {
       e.preventDefault();
-      setActive(activeIndex - 1);
+      setActive(activeIndex + 1);
     }
   });
 
