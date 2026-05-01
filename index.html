@@ -1561,24 +1561,57 @@
       display: flex;
       justify-content: center;
     }
-    .newsletter-cover-link {
-      display: block;
-      transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* ═══ COVERFLOW CAROUSEL ═══ */
+    .coverflow {
+      position: relative;
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      height: 620px;
+      padding-bottom: 32px;
+      overflow: hidden;
+      outline: none;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: pan-y;
     }
-    .newsletter-cover-link:hover {
-      transform: translateY(-6px);
+    .coverflow:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: -2px;
+      border-radius: 4px;
+    }
+    .coverflow-track {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cf-item {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 360px;
+      max-width: 75%;
+      aspect-ratio: 0.685 / 1;
+      transform-origin: center center;
+      will-change: transform, filter, opacity;
+      transition:
+        transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 600ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
       text-decoration: none;
     }
-    .newsletter-cover {
-      display: block;
-      position: relative;
-      max-width: 480px;
+    .cf-item picture,
+    .cf-item img {
       width: 100%;
+      height: 100%;
+      display: block;
     }
-    .newsletter-cover img {
-      display: block;
-      width: 100%;
-      height: auto;
+    .cf-item img {
+      object-fit: cover;
       border-radius: 2px;
       box-shadow:
         0 1px 2px rgba(0, 0, 0, 0.04),
@@ -1586,24 +1619,123 @@
         0 24px 48px rgba(60, 40, 20, 0.08);
       transition: box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .newsletter-cover-link:hover img {
+
+    .cf-item[data-delta="0"] {
+      transform: translate(-50%, -50%) translateX(0) scale(1);
+      filter: blur(0);
+      opacity: 1;
+      z-index: 5;
+      cursor: zoom-in;
+    }
+    .cf-item[data-delta="-1"] {
+      transform: translate(-50%, -50%) translateX(80%) scale(0.82);
+      filter: blur(4px);
+      opacity: 0.55;
+      z-index: 3;
+    }
+    .cf-item[data-delta="-2"] {
+      transform: translate(-50%, -50%) translateX(140%) scale(0.66);
+      filter: blur(8px);
+      opacity: 0.28;
+      z-index: 2;
+    }
+    .cf-item[data-delta="1"] {
+      transform: translate(-50%, -50%) translateX(-80%) scale(0.82);
+      filter: blur(4px);
+      opacity: 0.55;
+      z-index: 3;
+    }
+    .cf-item[data-delta="2"] {
+      transform: translate(-50%, -50%) translateX(-140%) scale(0.66);
+      filter: blur(8px);
+      opacity: 0.28;
+      z-index: 2;
+    }
+    .cf-item[data-delta="-3"],
+    .cf-item[data-delta="-4"],
+    .cf-item[data-delta="-5"],
+    .cf-item[data-delta="3"],
+    .cf-item[data-delta="4"],
+    .cf-item[data-delta="5"] {
+      transform: translate(-50%, -50%) translateX(0) scale(0.5);
+      filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .cf-item[data-delta="0"]:hover img {
       box-shadow:
         0 1px 2px rgba(0, 0, 0, 0.04),
         0 16px 32px rgba(60, 40, 20, 0.12),
         0 32px 64px rgba(60, 40, 20, 0.10);
     }
-    /* Top-edge highlight — suggests paper grain */
-    .newsletter-cover::before {
-      content: '';
+    .cf-item[data-delta="-1"]:hover,
+    .cf-item[data-delta="1"]:hover {
+      filter: blur(2px);
+      opacity: 0.75;
+    }
+
+    .coverflow-nav {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.5), transparent);
-      pointer-events: none;
-      z-index: 2;
-      border-radius: 2px 2px 0 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 50%;
+      color: #1a1612;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 200ms ease, background 200ms ease;
+    }
+    .coverflow:hover .coverflow-nav,
+    .coverflow:focus-within .coverflow-nav {
+      opacity: 1;
+    }
+    .coverflow-nav:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+    .coverflow-nav:disabled {
+      opacity: 0.2 !important;
+      cursor: not-allowed;
+    }
+    .coverflow-nav-prev { left: 8px; }
+    .coverflow-nav-next { right: 8px; }
+
+    .coverflow-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    .coverflow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #d4cdc6;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background 200ms ease, transform 200ms ease;
+    }
+    .coverflow-dot.is-active {
+      background: var(--color-primary);
+      transform: scale(1.3);
+    }
+    .coverflow-dot:hover {
+      background: var(--color-primary);
     }
 
     @media (max-width: 768px) {
@@ -1621,8 +1753,42 @@
       .newsletter-cover-wrap {
         order: 1;
       }
-      .newsletter-cover {
-        max-width: 320px;
+      .coverflow {
+        max-width: 420px;
+        height: 500px;
+      }
+      .cf-item {
+        width: 280px;
+      }
+      .cf-item[data-delta="-1"],
+      .cf-item[data-delta="1"] {
+        filter: blur(3px);
+      }
+      .cf-item[data-delta="-2"],
+      .cf-item[data-delta="2"] {
+        filter: blur(5px);
+      }
+      .coverflow-nav {
+        opacity: 0.75;
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cf-item {
+        transition: opacity 200ms ease;
+      }
+      .cf-item[data-delta="0"] {
+        transform: translate(-50%, -50%);
+        filter: none;
+        opacity: 1;
+      }
+      .cf-item:not([data-delta="0"]) {
+        transform: translate(-50%, -50%);
+        filter: none;
+        opacity: 0;
+        pointer-events: none;
       }
     }
     /* End Newsletter Section */
@@ -2050,32 +2216,31 @@
 
           <!-- Editorial column (left on desktop) -->
           <div class="newsletter-editorial reveal">
-            <p class="newsletter-issue-meta">अंक ८२&nbsp;&nbsp;·&nbsp;&nbsp;मे २०२६</p>
+            <p class="newsletter-issue-meta" data-meta-target>अंक ८२&nbsp;&nbsp;·&nbsp;&nbsp;मे २०२६</p>
             <h3 class="newsletter-blurb-title">Twenty-six years. Eighty-two issues.</h3>
             <p class="newsletter-blurb-body">Twice each year since 1999, Kishor Dnyanprakash has carried the writing of our teachers, the work of our students, and the rhythms of school life in Latur. Edited by Satish Narhare. Published in Marathi.</p>
             <p class="newsletter-blurb-body">This issue includes editorial reflections on leadership and child development, contributions from teachers and visiting writers, and the school&rsquo;s cultural life.</p>
-            <a href="pdfs/newsletters/issue-82.pdf" target="_blank" rel="noopener" class="newsletter-read-link">Read this issue →</a>
+            <a href="pdfs/newsletters/issue-82.pdf" target="_blank" rel="noopener" class="newsletter-read-link" data-pdf-target>Read this issue →</a>
             <p class="newsletter-original-link-wrap">
-              <a href="pdfs/newsletters/issue-82-original.pdf" target="_blank" rel="noopener" class="newsletter-original-link">Download print-quality original (42MB) ↓</a>
+              <a href="pdfs/newsletters/issue-82-original.pdf" target="_blank" rel="noopener" class="newsletter-original-link" data-original-target>Download print-quality original (40MB) ↓</a>
             </p>
           </div>
 
           <!-- Cover column (right on desktop) -->
           <div class="newsletter-cover-wrap reveal">
-            <a href="pdfs/newsletters/issue-82.pdf"
-               target="_blank"
-               rel="noopener"
-               class="newsletter-cover-link"
-               aria-label="Open Kishor Dnyanprakash Issue 82, May 2026 (PDF, opens in new tab)">
-              <picture class="newsletter-cover">
-                <source srcset="images/newsletters/issue-82-cover.webp 1x, images/newsletters/issue-82-cover@2x.webp 2x" type="image/webp">
-                <img src="images/newsletters/issue-82-cover.jpg"
-                     alt="Kishor Dnyanprakash Issue 82 cover, May 2026"
-                     loading="lazy"
-                     width="700"
-                     height="1041">
-              </picture>
-            </a>
+            <div class="coverflow"
+                 role="region"
+                 aria-label="Newsletter issues — use arrow keys to navigate"
+                 tabindex="0">
+              <div class="coverflow-track" data-track></div>
+              <div class="coverflow-dots" data-dots aria-hidden="true"></div>
+              <button type="button" class="coverflow-nav coverflow-nav-prev" data-nav-prev aria-label="Newer issue">
+                <span aria-hidden="true">←</span>
+              </button>
+              <button type="button" class="coverflow-nav coverflow-nav-next" data-nav-next aria-label="Older issue">
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -2546,5 +2711,6 @@
   <script defer src="scripts/lang-toggle.js"></script>
   <script defer src="scripts/scroll-reveals.js"></script>
   <script defer src="scripts/mobile-polish.js"></script>
+  <script defer src="scripts/newsletter-carousel.js"></script>
 </body>
 </html>
