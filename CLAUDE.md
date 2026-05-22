@@ -81,9 +81,9 @@ Divisions (UPDATED 2026-04-21 — now FOUR, not three):
   4. Narhare Learning Home  — added 2026, extension / supplementary programme
 
 Stats to display (UPDATED 2026-04-21 by owner):
-  - 27+ years of teaching experience (Mr. Satish Narhare, via Narhare Classes since 1989)
-  - 1400 enrolled students
-  - 500+ families on the waiting list each year
+  - 36+ years of teaching experience (Mr. Satish Narhare, via Narhare Classes since 1989)
+  - 1,500 enrolled students
+  - 600+ families on the waiting list each year
   - 20:1 student to teacher ratio
   - 73% faculty with advanced degrees
   - 4 divisions (Balbhavan, Balvikas Kendra, Vidyaniketan, Narhare Learning Home)
