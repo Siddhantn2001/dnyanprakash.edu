@@ -2740,6 +2740,188 @@
     </aside>
   </div>
 
+  <!-- =====================================================================
+       Welcome card — homepage only, shown once per visitor.
+       Markup + scoped styles here; behaviour in scripts/welcome-card.js.
+       ===================================================================== -->
+  <style>
+    .dp-welcome-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      background: rgba(26, 22, 18, 0.55);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      opacity: 0;
+      transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .dp-welcome-overlay[hidden] { display: none; }
+    .dp-welcome-overlay.is-visible { opacity: 1; }
+
+    .dp-welcome-card {
+      position: relative;
+      width: 100%;
+      max-width: 460px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      background: #ffffff;
+      border-radius: 3px;
+      padding: 40px;
+      text-align: center;
+      /* Warm, layered, downward ground-shadow — matches the site's card language. */
+      box-shadow: 0 4px 12px rgba(26, 22, 18, 0.10), 0 24px 56px rgba(26, 22, 18, 0.22);
+      transform: translateY(10px);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      outline: none;
+    }
+    .dp-welcome-overlay.is-visible .dp-welcome-card { transform: translateY(0); }
+    @media (max-width: 480px) {
+      .dp-welcome-card { padding: 28px; }
+    }
+
+    .dp-welcome-logo {
+      display: block;
+      height: 34px;
+      width: auto;
+      margin: 0 auto 22px;
+      object-fit: contain;
+    }
+
+    .dp-welcome-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 500;
+      font-size: 38px;
+      line-height: 1.1;
+      color: #1a1612;
+      margin: 0 0 16px;
+    }
+    @media (max-width: 480px) {
+      .dp-welcome-title { font-size: 32px; }
+    }
+
+    .dp-welcome-rule {
+      width: 48px;
+      height: 2px;
+      margin: 0 auto 24px;
+      border: 0;
+      background: #9E1B32;
+    }
+
+    .dp-welcome-mr {
+      font-family: 'Noto Sans Devanagari', 'Libre Franklin', sans-serif;
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: #3d342d;
+      margin: 0 0 24px;
+    }
+
+    .dp-welcome-sep {
+      width: 100%;
+      height: 1px;
+      margin: 0 0 24px;
+      border: 0;
+      background: #e7e2dc;
+    }
+
+    .dp-welcome-en {
+      font-family: 'Libre Franklin', system-ui, -apple-system, sans-serif;
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: #3d342d;
+      margin: 0 0 30px;
+    }
+
+    .dp-welcome-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 160px;
+      padding: 13px 32px;
+      border: 0;
+      border-radius: 3px;
+      background: #9E1B32;
+      color: #ffffff;
+      font-family: 'Libre Franklin', 'Noto Sans Devanagari', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(158, 27, 50, 0.18);
+      transition: background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .dp-welcome-btn:hover {
+      background: #6B0F1A;
+      box-shadow: 0 4px 12px rgba(158, 27, 50, 0.25);
+      transform: translateY(-1px);
+    }
+    .dp-welcome-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(158, 27, 50, 0.30);
+    }
+
+    .dp-welcome-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: #818386;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .dp-welcome-close:hover { background: #f1f2f2; color: #1a1612; }
+    .dp-welcome-close:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(158, 27, 50, 0.30);
+    }
+    .dp-welcome-close svg { width: 20px; height: 20px; }
+
+    body.dp-welcome-open { overflow: hidden; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dp-welcome-overlay,
+      .dp-welcome-card,
+      .dp-welcome-btn { transition: none; }
+      .dp-welcome-card { transform: none; }
+    }
+  </style>
+
+  <div id="dp-welcome" class="dp-welcome-overlay" hidden aria-hidden="true">
+    <div class="dp-welcome-card" role="dialog" aria-modal="true" aria-labelledby="dp-welcome-title" tabindex="-1">
+      <button type="button" class="dp-welcome-close" data-welcome-close aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <img src="images/00-school-logo.png" alt="" aria-hidden="true" class="dp-welcome-logo" />
+
+      <h2 id="dp-welcome-title" class="dp-welcome-title">Welcome</h2>
+      <hr class="dp-welcome-rule" aria-hidden="true" />
+
+      <p class="dp-welcome-mr" lang="mr">ज्ञानप्रकाश मातृभाषेतून शिक्षण देण्यासाठी समर्पित आहे. ही वेबसाइट अधिक व्यापक वाचकांपर्यंत पोहोचावी म्हणून येथील बहुतांश मजकूर इंग्रजीमध्ये आहे. कोणताही लेख मराठीत वाचण्यासाठी उजव्या कोपऱ्यात भाषा बदलण्याचा पर्याय उपलब्ध आहे.</p>
+
+      <hr class="dp-welcome-sep" aria-hidden="true" />
+
+      <p class="dp-welcome-en" lang="en">Dnyanprakash is dedicated to education through the mother tongue. Because this website is meant to reach a wider audience, most of its content is in English. You will find a language option in the top-right corner to read any article in Marathi.</p>
+
+      <button type="button" class="dp-welcome-btn" data-welcome-dismiss>समजले / Got it</button>
+    </div>
+  </div>
+
   <script>
     // Initialize Lucide icons
     if (window.lucide) window.lucide.createIcons();
@@ -2863,5 +3045,6 @@
   <script defer src="scripts/scroll-reveals.js"></script>
   <script defer src="scripts/mobile-polish.js"></script>
   <script defer src="scripts/newsletter-carousel.js"></script>
+  <script defer src="scripts/welcome-card.js"></script>
 </body>
 </html>
