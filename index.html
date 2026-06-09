@@ -175,6 +175,11 @@
     .font-display { font-family: var(--font-display); font-style: normal; font-weight: 400; }
     .font-sans-cond { font-family: var(--font-sans-cond); }
 
+    /* ---------- Shadow hierarchy ---------- */
+    .shadow-ground { box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .shadow-lift { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    .shadow-float { box-shadow: 0 12px 24px rgba(0,0,0,0.16); }
+
     /* ---------- Buttons ---------- */
     .btn {
       display: inline-flex;
@@ -551,6 +556,12 @@
       padding-top: 140px;
       color: #fff;
     }
+    .hero-text-block {
+      backdrop-filter: blur(2px);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 24px;
+      border-radius: 2px;
+    }
     /* Align hero content's left edge to the nav's logo (uses .main-nav-inner padding, no max-width cap) */
     .hero-content > .container-main {
       max-width: none;
@@ -728,12 +739,12 @@
       background: var(--color-primary);
       color: #fff;
       overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       transition: transform 0.35s ease, box-shadow 0.35s ease;
     }
     .news-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       text-decoration: none;
     }
     .news-card .news-heading-block {
@@ -977,12 +988,12 @@
       min-width: 0;
       will-change: transform;
       transform: scale(1) translateY(0);
-      box-shadow: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     .academics-card:hover {
       transform: scale(1.03) translateY(-6px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
     @media (prefers-reduced-motion: reduce) {
       .academics-card,
@@ -1036,6 +1047,14 @@
       grid-template-columns: 1fr 1fr;
       gap: 64px;
       align-items: center;
+    }
+    /* Image containers in teaser sections: subtle shadow + rounded corners */
+    .mission-stats-grid > div[style*="aspect-ratio"],
+    .mission-stats-grid .reveal > img,
+    .mission-stats-grid .reveal > picture {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      border-radius: 4px;
+      overflow: hidden;
     }
     @media (max-width: 1024px) {
       .mission-stats-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -2221,7 +2240,7 @@
 
       <div class="hero-content">
         <div class="container-main w-full">
-          <div class="max-w-3xl">
+          <div class="max-w-3xl hero-text-block">
             <h1 class="hero-title">Know &amp; Inspire</h1>
             <p class="hero-sub">A center for joyful, research-informed learning in Latur since 1999.</p>
             <div class="flex flex-wrap gap-4">
