@@ -1,0 +1,278 @@
+/* ═══════════════════════════════════════════════════════════════
+   Landing Page Elevation Layer
+   Additive-only: new visual layer for index.html
+   Kill switch: remove <link> tag from index.html <head>
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────
+   MOVE 1: SCALE COURAGE — Typography
+   ───────────────────────────────────────────────────────────── */
+
+/* Hero headline — own the viewport */
+.hero .hero-title {
+  font-size: clamp(48px, 7.5vw, 84px);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+
+/* Section h2 headlines — commanding but readable */
+section h2.section-title {
+  font-size: clamp(38px, 4.5vw, 58px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+/* Eyebrows — tiny labels, huge contrast with headlines */
+.section-eyebrow,
+.mega-eyebrow {
+  letter-spacing: 0.18em;
+  opacity: 0.72;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Newsletter section Devanagari heading */
+.newsletter-header h2 {
+  font-size: clamp(38px, 4.5vw, 58px);
+  line-height: 1.15;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOVE 2: AIR — Vertical Rhythm
+   ───────────────────────────────────────────────────────────── */
+
+section.section-pad {
+  padding-top: clamp(80px, 12vw, 160px);
+  padding-bottom: clamp(80px, 12vw, 160px);
+}
+
+/* Breathing room between headline and content */
+.section-eyebrow {
+  margin-bottom: 12px;
+}
+
+section h2.section-title {
+  margin-bottom: 56px;
+}
+
+/* Hero specific spacing */
+.hero {
+  min-height: clamp(85vh, 100vh, 100vh);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOVE 3: GHOST DEPTH LAYER — Decorative Background Text
+   ───────────────────────────────────────────────────────────── */
+
+/* Ghost text containers (injected via JS, aria-hidden) */
+.ghost-text {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  overflow: hidden;
+}
+
+.ghost-text.behind-content {
+  z-index: 1;
+}
+
+/* Section numbers (injected via JS) */
+.section-number {
+  position: absolute;
+  font-family: 'Libre Franklin', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: rgba(129, 131, 134, 0.5);
+  top: -32px;
+  left: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOVE 4: WARM BANDS — Section Background Rhythm
+   ───────────────────────────────────────────────────────────── */
+
+/* Alternate warm cream bands on select sections */
+section[data-band="warm"] {
+  background: #f7f4ef;
+}
+
+section[data-band="white"] {
+  background: #ffffff;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOVE 5: UNIFIED IMAGE TREATMENT — Consistent Shadows & Radius
+   ───────────────────────────────────────────────────────────── */
+
+/* Images in teaser sections */
+.mission-stats-grid img,
+.mission-stats-grid picture,
+.news-card img {
+  border-radius: 3px;
+}
+
+/* Ground shadow on standalone images */
+.mission-stats-grid > div[style*="aspect-ratio"] img,
+.mission-stats-grid > div[style*="aspect-ratio"] picture,
+.academics-card .ac-img img,
+.academics-card .ac-img picture {
+  box-shadow: 0 8px 20px rgba(60, 40, 20, 0.12);
+  border-radius: 3px;
+  transition: box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Hover lift on linked images */
+a.academics-card:hover .ac-img img,
+a.academics-card:hover .ac-img picture {
+  box-shadow: 0 16px 40px rgba(60, 40, 20, 0.18);
+  transform: translateY(-4px);
+}
+
+/* Newsletter carousel — already elevated; refine shadows */
+.newsletter-carousel-cover {
+  box-shadow: 0 8px 24px rgba(60, 40, 20, 0.14);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOVE 6: ARRIVAL & PARALLAX — Hero Motion
+   ───────────────────────────────────────────────────────────── */
+
+/* Hero parallax — applied via JS */
+.hero-media {
+  will-change: transform;
+}
+
+/* Entrance animations (applied via JS with data attributes) */
+.hero-title[data-entrance],
+.hero-sub[data-entrance],
+.hero-ctas[data-entrance] {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: entranceRise var(--entrance-duration, 700ms) cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hero-sub[data-entrance] {
+  --entrance-duration: 850ms;
+}
+
+.hero-ctas[data-entrance] {
+  --entrance-duration: 1100ms;
+}
+
+@keyframes entranceRise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title[data-entrance],
+  .hero-sub[data-entrance],
+  .hero-ctas[data-entrance] {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .hero-media {
+    transform: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOVE 7: SIGNATURE DETAILS — Polish
+   ───────────────────────────────────────────────────────────── */
+
+/* Selection — brand red */
+::selection {
+  background: rgba(158, 27, 50, 0.9);
+  color: #fff;
+}
+
+/* Focus ring — visible but refined */
+:focus-visible {
+  outline: 2px solid #9E1B32;
+  outline-offset: 3px;
+}
+
+/* Scrollbar (webkit) — warm theme */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(241, 242, 242, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(129, 131, 134, 0.4);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(129, 131, 134, 0.6);
+}
+
+/* Smooth scroll for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced button hover visibility */
+.btn-primary {
+  box-shadow: 0 2px 4px rgba(158, 27, 50, 0.15);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 12px 28px rgba(158, 27, 50, 0.25);
+  transform: translateY(-3px);
+  background: #6B0F1A;
+}
+
+.btn-outline {
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-outline:hover {
+  box-shadow: 0 8px 20px rgba(158, 27, 50, 0.18);
+  transform: translateY(-2px);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Responsive Adjustments
+   ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  section.section-pad {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+
+  section h2.section-title {
+    margin-bottom: 40px;
+  }
+
+  .section-number {
+    font-size: 12px;
+    top: -28px;
+  }
+
+  /* Disable parallax on mobile */
+  .hero-media {
+    transform: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  section.section-pad {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
