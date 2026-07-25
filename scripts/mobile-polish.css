@@ -82,11 +82,15 @@
       transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
     transition-delay: var(--reveal-delay, 0ms);
   }
-  .reveal-left  { transform: translate3d(-40px, 0, 0); }
-  .reveal-right { transform: translate3d(40px, 0, 0); }
-
-  .reveal.reveal-fx.reveal-left  { transform: translate3d(-40px, 0, 0); }
-  .reveal.reveal-fx.reveal-right { transform: translate3d(40px, 0, 0); }
+  /* Mobile is single-column, so the desktop "text and image meet at
+     center" horizontal choreography doesn't apply — and the off-screen
+     translateX start-state leaked horizontal scroll width on narrow
+     viewports (fix/mobile-horizontal-overflow). Use a vertical rise
+     instead: same fade-in feel, zero horizontal overflow. */
+  .reveal-left,
+  .reveal-right,
+  .reveal.reveal-fx.reveal-left,
+  .reveal.reveal-fx.reveal-right { transform: translate3d(0, 32px, 0); }
   .reveal.reveal-fx.reveal-left,
   .reveal.reveal-fx.reveal-right {
     transition:
@@ -116,6 +120,28 @@
    drops the unsupported value. CLAUDE.md §11 forbids overflow:hidden
    on <body>, so we keep <body> untouched. */
 html { overflow-x: hidden; overflow-x: clip; }
+
+/* Robust horizontal containment for the two homepage sections whose
+   decorative content extends past the viewport (fix/mobile-horizontal-
+   overflow): the newsletter coverflow's off-screen fanned covers and the
+   ghost "1999" / "८२" watermarks. The root-level clip above is silently
+   ignored by iOS Safari < 16 (no `clip` support → falls back to
+   `overflow-x: hidden` on the root, which iOS does NOT honor for
+   horizontal touch-panning), so the page could be swiped sideways to
+   reveal blank space. Clipping on a mid-page block element works reliably
+   cross-browser and is allowed — CLAUDE.md §11's ban is on <body> only.
+
+   `overflow-x: clip` (modern) keeps overflow-y visible, so the coverflow
+   ground shadows still bleed downward; the preceding `overflow-x: hidden`
+   is the old-iOS fallback (there the sections' generous .pad-quiet
+   vertical padding contains the shadows). Applied at all widths — on
+   desktop the fan is already clipped at the viewport edge by the root
+   rule, so this changes nothing visually there. */
+.newsletter-section,
+.mission-stats {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
 
 /* ========================================================================
    View transitions — cross-page fade. Top-level so it applies on all widths.
