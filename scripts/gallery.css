@@ -197,14 +197,16 @@ body.lightbox-open { overflow: hidden; }
      lets the page keep moving once the window bottoms out, so the section
      never traps the reader. */
 
-  /* Both edges dissolve. The bottom fade doubles as the scroll affordance;
-     the top one keeps rows from hard-cutting against the heading. Masks paint
-     against the element box, not the content, so these stay pinned to the
-     window edges while the photos move underneath. */
+  /* Bottom edge only. The top stays fully opaque so the first row of photos
+     is crisp and sits cleanly under the GALLERY label — an earlier version
+     faded the top 8% too, which read as a white wash over the images. The
+     bottom fade doubles as the scroll affordance. Masks paint against the
+     element box, not the content, so it stays pinned to the window edge
+     while the photos move underneath. */
   -webkit-mask-image: linear-gradient(180deg,
-    rgba(0, 0, 0, 0) 0%, #000 8%, #000 85%, rgba(0, 0, 0, 0.72) 94%, rgba(0, 0, 0, 0) 100%);
+    #000 0%, #000 85%, rgba(0, 0, 0, 0.72) 94%, rgba(0, 0, 0, 0) 100%);
   mask-image: linear-gradient(180deg,
-    rgba(0, 0, 0, 0) 0%, #000 8%, #000 85%, rgba(0, 0, 0, 0.72) 94%, rgba(0, 0, 0, 0) 100%);
+    #000 0%, #000 85%, rgba(0, 0, 0, 0.72) 94%, rgba(0, 0, 0, 0) 100%);
 
   /* Thin, brand-tinted scrollbar — an intentional detail, not an OS slab. */
   scrollbar-width: thin;
@@ -265,7 +267,10 @@ body.lightbox-open { overflow: hidden; }
   color: var(--color-text-muted);
 }
 .gallery-strip-foot {
-  justify-content: flex-start;
+  /* Right-aligned so it stacks flush with "All News →" in the NEWS sub-label
+     below — both links share .container-main, so flex-end puts them on the
+     same right edge. */
+  justify-content: flex-end;
   margin-top: 14px;
 }
 @media (max-width: 640px) {
