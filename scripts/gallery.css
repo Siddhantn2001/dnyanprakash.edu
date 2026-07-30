@@ -1,0 +1,223 @@
+/* =========================================================================
+   GALLERY — shared styles for the photo system.
+
+   Three parts:
+     1. Lightbox      moved verbatim out of gallery.html's inline <style> so
+                      the homepage strip can reuse the same viewer.
+     2. Tile          the frame every photo sits in — hover zoom + the
+                      ground-plane shadow language from the newsletter
+                      coverflow, and the fade-in the render script triggers.
+     3. Homepage strip masonry columns and the faded/blurred lower edge.
+
+   Easing is the site token cubic-bezier(0.22, 1, 0.36, 1) throughout.
+   ========================================================================= */
+
+/* ═══════════════════ 1. Lightbox ═══════════════════ */
+.gallery-img img { cursor: zoom-in; }
+.lightbox {
+  position: fixed; inset: 0;
+  background: rgba(10, 8, 8, 0.94);
+  z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.lightbox.is-open { opacity: 1; pointer-events: auto; }
+.lightbox-stage {
+  position: relative;
+  max-width: 1200px; width: 100%;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+.lightbox-img {
+  max-width: 100%; max-height: 78vh;
+  object-fit: contain;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+  background: #111;
+}
+.lightbox-caption {
+  color: rgba(255,255,255,0.88);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  text-align: center;
+  max-width: 720px;
+  line-height: 1.5;
+}
+.lightbox-counter {
+  color: rgba(255,255,255,0.55);
+  font-family: var(--font-sans-cond);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.lightbox-btn {
+  position: absolute;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.18);
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.25s;
+  z-index: 2;
+}
+.lightbox-btn:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); }
+.lightbox-close { top: 24px; right: 24px; }
+.lightbox-prev { top: 50%; left: 24px; transform: translateY(-50%); }
+.lightbox-next { top: 50%; right: 24px; transform: translateY(-50%); }
+.lightbox-prev:hover { transform: translateY(-50%) translateX(-3px); }
+.lightbox-next:hover { transform: translateY(-50%) translateX(3px); }
+body.lightbox-open { overflow: hidden; }
+@media (max-width: 640px) {
+  .lightbox-btn { width: 44px; height: 44px; font-size: 22px; }
+  .lightbox-close { top: 12px; right: 12px; }
+  .lightbox-prev { left: 8px; }
+  .lightbox-next { right: 8px; }
+}
+
+/* ═══════════════════ 2. Tile ═══════════════════ */
+/* Scoped to the homepage strip on purpose. /gallery.html's Activities panel is
+   now rendered from the same list, but it sits alongside four hand-built tabs
+   with square, flat, un-animated tiles — giving only that one tab rounded
+   corners, shadows and hover zoom would make it the odd tab out. The gallery
+   page therefore keeps exactly the look it had. To upgrade that page, widen
+   these selectors to `.gallery-panel .gallery-img` and restyle all five tabs
+   together, not just this one. */
+.gallery-strip-frame .gallery-img {
+  position: relative;
+  border-radius: 8px;
+  border: 1px solid rgba(120, 90, 70, 0.14);
+  overflow: hidden;
+  background: var(--color-bg-alt);
+  /* Ground-plane shadow — pools downward only, matching the coverflow.
+     Contact + ambient layers at rest; the distant pool arrives on hover. */
+  box-shadow:
+    0 1px 2px -1px rgba(60, 40, 20, 0.10),
+    0 6px 10px -6px rgba(60, 40, 20, 0.10);
+  transition:
+    box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 800ms cubic-bezier(0.22, 1, 0.36, 1) var(--gal-delay, 0ms),
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1) var(--gal-delay, 0ms);
+}
+/* Fade-in on scroll (IntersectionObserver in gallery-render.js). */
+.gallery-strip-frame .gallery-img {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.gallery-strip-frame .gallery-img.is-in {
+  opacity: 1;
+  transform: none;
+}
+.gallery-strip-frame .gallery-img img {
+  transition:
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+/* Hover: image zooms inside the clipped frame, shadow lifts off the page. */
+@media (hover: hover) {
+  .gallery-strip-frame .gallery-img:hover {
+    box-shadow:
+      0 2px 4px -1px rgba(60, 40, 20, 0.12),
+      0 14px 22px -8px rgba(60, 40, 20, 0.16),
+      0 30px 44px -18px rgba(60, 40, 20, 0.10);
+  }
+  .gallery-strip-frame .gallery-img:hover img {
+    transform: scale(1.04);
+    filter: saturate(1.05);
+  }
+}
+.gallery-strip-frame .gallery-img img:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════ 3. Homepage strip ═══════════════════ */
+.gallery-strip-masonry {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.gallery-masonry-col {
+  flex: 1 1 0;
+  min-width: 0;          /* lets columns shrink below content width — the
+                            guard against the old mobile h-scroll bug */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* Second and third columns start lower, so the grid reads as masonry rather
+   than as three tidy stacks. */
+.gallery-masonry-col:nth-child(2) { margin-top: 28px; }
+.gallery-masonry-col:nth-child(3) { margin-top: 56px; }
+
+/* Soft blur over the dissolving rows, masked so it only bites near the floor.
+   Static (no looping animation behind it), so a backdrop blur is cheap here. */
+.gallery-strip-veil {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 34%;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  -webkit-mask-image: linear-gradient(180deg,
+    rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.7) 55%, #000 100%);
+  mask-image: linear-gradient(180deg,
+    rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.7) 55%, #000 100%);
+}
+
+.gallery-strip-frame {
+  position: relative;
+  /* Clip on the wrapper, never on <body> — the homepage has had a mobile
+     horizontal-swipe regression before (fix/mobile-horizontal-overflow). */
+  overflow: hidden;
+  max-width: 100%;
+  /* A teaser is a BAND, not the whole grid. Twelve tiles at true aspect
+     ratios run ~1450px tall on desktop and far more in one column on a
+     phone; without this the "fade at the bottom" would land a screen and a
+     half below the fold and read as a very long gallery that happens to end
+     softly. Cutting the frame here is what makes the fade mean "there is
+     more". */
+  max-height: 560px;
+  /* The dissolve belongs on the frame — the clipped box — not on the
+     masonry inside it, whose own bottom edge is far below the cut. */
+  -webkit-mask-image: linear-gradient(180deg,
+    #000 0%, #000 52%, rgba(0, 0, 0, 0.45) 80%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(180deg,
+    #000 0%, #000 52%, rgba(0, 0, 0, 0.45) 80%, rgba(0, 0, 0, 0) 100%);
+}
+@media (max-width: 900px) { .gallery-strip-frame { max-height: 460px; } }
+@media (max-width: 560px) { .gallery-strip-frame { max-height: 400px; } }
+
+.gallery-strip-foot {
+  display: flex;
+  justify-content: center;
+  margin-top: 26px;
+}
+
+@media (max-width: 900px) {
+  .gallery-strip-masonry { gap: 12px; }
+  .gallery-masonry-col { gap: 12px; }
+  .gallery-masonry-col:nth-child(2) { margin-top: 20px; }
+}
+@media (max-width: 360px) {
+  .gallery-masonry-col:nth-child(2),
+  .gallery-masonry-col:nth-child(3) { margin-top: 0; }
+}
+
+/* Reduced motion: no drift, no zoom — tiles simply are. */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-strip-frame .gallery-img {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .gallery-strip-frame .gallery-img img { transition: none; }
+  .gallery-strip-frame .gallery-img:hover img { transform: none; }
+}
