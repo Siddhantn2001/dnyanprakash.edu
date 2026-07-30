@@ -150,6 +150,9 @@ body.lightbox-open { overflow: hidden; }
   /* Belt and braces against the old mobile horizontal-swipe bug: the column
      box can never exceed its container. */
   max-width: 100%;
+  overflow-x: clip;
+  padding-right: 10px;   /* clearance so tiles never sit under the scrollbar */
+  padding-bottom: 4px;
 }
 .gallery-strip-frame .gallery-img {
   /* A tile must never be split across a column break. */
@@ -171,46 +174,55 @@ body.lightbox-open { overflow: hidden; }
 
 /* Soft blur over the dissolving rows, masked so it only bites near the floor.
    Static (no looping animation behind it), so a backdrop blur is cheap here. */
-/* A whisper of blur on the very last rows only. Was 34% tall at blur(7px),
-   which is what turned the bottom of the strip milky. pointer-events:none —
-   tiles underneath stay clickable right to the floor. */
-.gallery-strip-veil {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 15%;
-  pointer-events: none;
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
-  -webkit-mask-image: linear-gradient(180deg,
-    rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 60%, #000 100%);
-  mask-image: linear-gradient(180deg,
-    rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 60%, #000 100%);
-}
+/* The blur veil was removed when the strip became a scrolling window: a
+   veil pinned inside a scroll box scrolls away with the content. The frame's
+   own edge masks do the dissolving now. */
 
 .gallery-strip-frame {
   position: relative;
-  /* Clip on the wrapper, never on <body> — the homepage has had a mobile
-     horizontal-swipe regression before (fix/mobile-horizontal-overflow). */
-  overflow: hidden;
+  /* A fixed window: the masonry scrolls INSIDE it, so the page does not grow
+     with the photo count. Height is tuned to show ~2.5 rows — clearly more
+     below, without swallowing the screen. */
+  height: 680px;
+  overflow-y: auto;
+  /* HARD RULE — the page must never swipe sideways. This box is the classic
+     cause of that bug, so horizontal scrolling is clipped here, clipped on the
+     masonry inside it, and the finger is restricted to the vertical axis.
+     (fix/mobile-horizontal-overflow) */
+  overflow-x: hidden;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
   max-width: 100%;
-  /* A teaser is a BAND, not the whole grid. Twelve tiles at true aspect
-     ratios run ~1450px tall on desktop and far more in one column on a
-     phone; without this the "fade at the bottom" would land a screen and a
-     half below the fold and read as a very long gallery that happens to end
-     softly. Cutting the frame here is what makes the fade mean "there is
-     more". */
-  max-height: 560px;
-  /* The dissolve belongs on the frame — the clipped box — not on the
-     masonry inside it, whose own bottom edge is far below the cut.
-     Fully opaque until 84%, so only the last sliver softens: enough to say
-     "there is more", not enough to wash out the photos above it. */
+  /* Deliberately NO overscroll-behavior: contain — scroll chaining is what
+     lets the page keep moving once the window bottoms out, so the section
+     never traps the reader. */
+
+  /* Both edges dissolve. The bottom fade doubles as the scroll affordance;
+     the top one keeps rows from hard-cutting against the heading. Masks paint
+     against the element box, not the content, so these stay pinned to the
+     window edges while the photos move underneath. */
   -webkit-mask-image: linear-gradient(180deg,
-    #000 0%, #000 84%, rgba(0, 0, 0, 0.72) 93%, rgba(0, 0, 0, 0) 100%);
+    rgba(0, 0, 0, 0) 0%, #000 8%, #000 85%, rgba(0, 0, 0, 0.72) 94%, rgba(0, 0, 0, 0) 100%);
   mask-image: linear-gradient(180deg,
-    #000 0%, #000 84%, rgba(0, 0, 0, 0.72) 93%, rgba(0, 0, 0, 0) 100%);
+    rgba(0, 0, 0, 0) 0%, #000 8%, #000 85%, rgba(0, 0, 0, 0.72) 94%, rgba(0, 0, 0, 0) 100%);
+
+  /* Thin, brand-tinted scrollbar — an intentional detail, not an OS slab. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(158, 27, 50, 0.32) transparent;
 }
-@media (max-width: 900px) { .gallery-strip-frame { max-height: 460px; } }
-@media (max-width: 560px) { .gallery-strip-frame { max-height: 400px; } }
+.gallery-strip-frame::-webkit-scrollbar { width: 6px; }
+.gallery-strip-frame::-webkit-scrollbar-track { background: transparent; }
+.gallery-strip-frame::-webkit-scrollbar-thumb {
+  background: rgba(158, 27, 50, 0.30);
+  border-radius: 999px;
+}
+.gallery-strip-frame::-webkit-scrollbar-thumb:hover { background: rgba(158, 27, 50, 0.52); }
+.gallery-strip-frame:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+@media (max-width: 900px) { .gallery-strip-frame { height: 520px; } }
+@media (max-width: 560px) { .gallery-strip-frame { height: 440px; } }
 
 .gallery-strip-foot {
   display: flex;
@@ -227,4 +239,36 @@ body.lightbox-open { overflow: hidden; }
   }
   .gallery-strip-frame .gallery-img img { transition: none; }
   .gallery-strip-frame .gallery-img:hover img { transform: none; }
+}
+
+/* ═══════════════════ 4. "Happening" section rhythm ═══════════════════ */
+/* Quiet dividers under the one section heading — deliberately NOT eyebrow
+   red or heading scale, so they read as labels rather than as competing
+   headings. */
+.happening-sub {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 26px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+.happening-sub--news { margin-top: 30px; }   /* the gap that used to be a gulf */
+.happening-sub-label {
+  font-family: var(--font-sans-cond);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.gallery-strip-foot {
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+@media (max-width: 640px) {
+  .happening-sub { margin: 20px 0 12px; }
+  .happening-sub--news { margin-top: 24px; }
 }

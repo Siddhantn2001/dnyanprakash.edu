@@ -142,23 +142,40 @@
   var reduced = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var io = (!reduced && 'IntersectionObserver' in window)
-    ? new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          e.target.classList.add('is-in');
-          io.unobserve(e.target);
-        });
-      }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' })
-    : null;
+  var canObserve = !reduced && 'IntersectionObserver' in window;
 
+  /* Tiles inside a scrolling window MUST be observed against that window — a
+     page-viewport observer fires once when the box scrolls into the page and
+     then never again, so every tile below the fold of the box would stay
+     stuck at opacity 0. Passing root makes the reveal follow the INTERNAL
+     scroll, which is the whole point of the window. */
   function observeTiles(el) {
     var tiles = el.querySelectorAll('.gallery-img');
+    /* The nearest scrolling ancestor, if any, becomes the observer root. */
+    var root = el.closest('[data-gallery-scroll]');
+
+    if (!canObserve) {
+      for (var k = 0; k < tiles.length; k++) tiles[k].classList.add('is-in');
+      return;
+    }
+
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        obs.unobserve(e.target);
+      });
+    }, {
+      root: root || null,
+      threshold: 0.08,
+      rootMargin: root ? '0px 0px -4% 0px' : '0px 0px -6% 0px'
+    });
+
     for (var i = 0; i < tiles.length; i++) {
-      if (!io) { tiles[i].classList.add('is-in'); continue; }
-      /* Short stagger within a flush, capped so late tiles never feel stalled. */
-      tiles[i].style.setProperty('--gal-delay', Math.min(i, 9) * 70 + 'ms');
-      io.observe(tiles[i]);
+      /* Stagger only the first screenful. Tiles reached by scrolling should
+         rise the moment they appear, not wait out a queue. */
+      tiles[i].style.setProperty('--gal-delay', (i < 6 ? i * 70 : 0) + 'ms');
+      obs.observe(tiles[i]);
     }
   }
 
