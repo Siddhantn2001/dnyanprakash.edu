@@ -527,6 +527,29 @@
     }
     .hero-media { position: absolute; inset: 0; overflow: hidden; }
     .hero-media > * { width: 100%; height: 100%; }
+    /* Softly blurred foreground — the building and sky stay crisp while the
+       lawn and benches melt under the headline. Implemented as a masked
+       duplicate of the hero image rather than backdrop-filter, so the blur
+       rasterises once instead of re-computing every frame under the mobile
+       Ken Burns zoom (that runs 18s on loop; a live backdrop blur over half
+       the viewport is exactly the wrong thing to hand a low-end phone).
+       Lives inside .hero-media so it inherits the same zoom and stays in
+       register with the sharp layer. */
+    .hero-blur {
+      position: absolute;
+      inset: 0;
+      object-fit: cover;
+      filter: blur(14px);
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(180deg,
+        rgba(0, 0, 0, 0) 48%,
+        rgba(0, 0, 0, 0.55) 68%,
+        rgba(0, 0, 0, 1) 88%);
+      mask-image: linear-gradient(180deg,
+        rgba(0, 0, 0, 0) 48%,
+        rgba(0, 0, 0, 0.55) 68%,
+        rgba(0, 0, 0, 1) 88%);
+    }
     /* Ken Burns slow zoom — mobile only, breaks up long vertical scroll on phones */
     @media (max-width: 768px) {
       .hero .hero-media img {
@@ -2249,6 +2272,14 @@
           src="images/01-hero.jpg"
           alt="Dnyanprakash school building exterior with landscaped foreground"
           class="w-full h-full object-cover"
+        />
+        <!-- Blurred duplicate, masked to fade in over the lower half. Same
+             src, so it is served from cache — no second download. -->
+        <img
+          src="images/01-hero.jpg"
+          alt=""
+          aria-hidden="true"
+          class="hero-blur"
         />
       </div>
       <div class="hero-overlay" aria-hidden="true"></div>
