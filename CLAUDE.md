@@ -634,6 +634,36 @@ The sidebar pattern is for **editorial article pages** only. Other page types ar
 
 ---
 
+## 19. Adding gallery photos
+
+**One list, two places.** `scripts/gallery-photos.js` is the single source of truth for school photos. The homepage gallery strip and the Activities panel of `/gallery.html` are both rendered from it by `scripts/gallery-render.js`, so a photo added to the list appears at the top of BOTH automatically and pushes older ones down.
+
+When Sid says *"add these photos to the gallery"*:
+
+1. **Process each new photo through the standard image pipeline** into `images/gallery/upkram/` with the next sequential names (`upkram-080`, `upkram-081`, …): auto-orient, strip EXIF, resize to 900px wide, and emit all four variants — `.jpg`, `.webp`, `@2x.jpg`, `@2x.webp`. Every photo needs all four; the renderer builds the `<picture>` srcset from the `base` stem and assumes they exist.
+2. **PREPEND the new photos to the TOP of `window.DP_GALLERY_PHOTOS`** in `scripts/gallery-photos.js` — newest first. Each entry needs:
+   - `base` — the filename stem, no extension
+   - `alt` — alt text (also used as the lightbox caption)
+   - `orientation` — `"landscape"` or `"portrait"`
+   - `w`, `h` — the **true** pixel size of the 1x file. Read it, don't guess: the homepage masonry sets each tile's `aspect-ratio` from these, and that variety (4:3, 16:9, 2.2:1 panoramas) is what gives the grid its rhythm. A wrong ratio letterboxes or crops the photo.
+3. **That is all.** No HTML edits. Do not add tiles to `gallery.html`, `index.html`, or anywhere else.
+4. **Never hardcode gallery tiles.** If a photo needs to appear somewhere, it goes in the list.
+
+**Files in the system** (all shared, all dev-maintained):
+
+| File | Role |
+|---|---|
+| `scripts/gallery-photos.js` | The list. The only file a photo-add touches. |
+| `scripts/gallery-render.js` | Builds tiles into any `[data-gallery-render]` element. `"grid"` = uniform 4:3 (gallery page); `"masonry"` = true aspect ratios in round-robin columns (homepage strip). Honours `data-count` and `data-columns`. |
+| `scripts/lightbox.js` | Shared viewer. Any container marked `data-lightbox-group` becomes browsable; prev/next stay within that group. |
+| `scripts/gallery.css` | Lightbox styles + homepage strip styles (masonry columns, hover, faded lower edge). |
+
+**Homepage strip specifics:** shows the newest 12, capped to a fixed-height band (560px desktop / 460 tablet / 400 mobile) whose lower edge fades and blurs into the page — that cut is what makes the fade mean *"there is more"*, so don't remove the `max-height` when adding photos. Columns: 3 desktop, 2 down to 360px, 1 below.
+
+**Gallery page styling note:** the Activities panel is rendered from the list but deliberately keeps the flat, square tile look of the four hand-built tabs beside it. If that page is ever upgraded to the strip's rounded/shadowed tiles, restyle all five tabs together — see the comment at the top of section 2 in `scripts/gallery.css`.
+
+---
+
 ## Session Notes — April 28, 2026 (Domain Live + Refinement Phase)
 
 ### 1. Site is live on the custom domain

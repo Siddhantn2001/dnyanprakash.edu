@@ -2031,6 +2031,8 @@
   </script>
   <!-- Footer gradient glow layer -->
   <link rel="stylesheet" href="./scripts/footer-glow.css" />
+  <!-- Shared gallery system: photo list, renderer, lightbox -->
+  <link rel="stylesheet" href="scripts/gallery.css" />
 </head>
 <body>
   <!-- Scroll progress signature (Move 4) — 2px brand-red bar that fills
@@ -2318,6 +2320,39 @@
               <a href="gallery.html" class="btn btn-hero-secondary">Take a Virtual Tour</a>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         Gallery strip — teaser for /gallery.html.
+
+         Tiles are built from window.DP_GALLERY_PHOTOS (scripts/gallery-photos.js)
+         by scripts/gallery-render.js: the 12 newest photos, at their true
+         aspect ratios, in a 3-column masonry. Photos added to that one list
+         appear here AND on /gallery.html automatically — never hardcode tiles.
+         See "Adding gallery photos" in CLAUDE.md.
+
+         The lower edge fades and blurs into the page, which is the cue that
+         there is more behind "View All Photos".
+         ========================================================= -->
+    <section class="section-pad pad-image" aria-label="Photo gallery" style="padding-bottom: 20px;">
+      <div class="container-main">
+        <div class="section-eyebrow">Gallery</div>
+        <div class="gallery-strip-frame">
+          <div
+            class="gallery-strip-masonry"
+            data-gallery-render="masonry"
+            data-count="12"
+            data-columns="3"
+            data-lightbox-group
+          ></div>
+          <div class="gallery-strip-veil" aria-hidden="true"></div>
+        </div>
+        <div class="gallery-strip-foot">
+          <a href="gallery.html" class="news-read">View All Photos
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
         </div>
       </div>
     </section>
@@ -3134,6 +3169,9 @@
   (65 [FILLED 2026-04-21] images/65-learning-through-action-hero.jpg — about/learning-through-action.html page hero)
   =====================================================================
   -->
+  <script defer src="scripts/gallery-photos.js"></script>
+  <script defer src="scripts/gallery-render.js"></script>
+  <script defer src="scripts/lightbox.js"></script>
   <script defer src="scripts/header-blur.js"></script>
   <script defer src="scripts/translations-manifest.js"></script>
   <script defer src="scripts/lang-toggle.js"></script>
