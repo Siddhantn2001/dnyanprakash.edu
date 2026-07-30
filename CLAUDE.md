@@ -658,7 +658,9 @@ When Sid says *"add these photos to the gallery"*:
 | `scripts/lightbox.js` | Shared viewer. Any container marked `data-lightbox-group` becomes browsable; prev/next stay within that group. |
 | `scripts/gallery.css` | Lightbox styles + homepage strip styles (masonry columns, hover, faded lower edge). |
 
-**Homepage strip specifics:** shows the newest 12, capped to a fixed-height band (560px desktop / 460 tablet / 400 mobile) whose lower edge fades and blurs into the page — that cut is what makes the fade mean *"there is more"*, so don't remove the `max-height` when adding photos. Columns: 3 desktop, 2 down to 360px, 1 below.
+**Homepage strip specifics:** shows 15 photos chosen by `selectMixed()` — it walks newest-first but prefers a photo whose *height class* differs from the one just placed, so tall 4:3 tiles alternate with wide panoramas and the columns interlock instead of reading as loose rows. Any portrait in the window is force-included, because the library currently holds exactly **one** portrait photo (`upkram-074`) out of 79, and it is the single most valuable tile for breaking the rhythm. If Sid ever supplies more portrait-orientation photos, the strip gets noticeably better for free.
+
+Layout is real CSS `columns` (3 desktop / 2 down to 320px), gap 14px desktop / 12px mobile, capped to a fixed-height band (560/460/400px) whose last ~16% fades and takes a whisper of blur. **Both the cap and the light fade matter:** the cap is what makes the fade mean *"there is more"* rather than "a long gallery that ends softly", and the fade must stay a whisper — an earlier version faded from 52% and washed out half the strip. Don't remove the `max-height` when adding photos.
 
 **Gallery page styling note:** the Activities panel is rendered from the list but deliberately keeps the flat, square tile look of the four hand-built tabs beside it. If that page is ever upgraded to the strip's rounded/shadowed tiles, restyle all five tabs together — see the comment at the top of section 2 in `scripts/gallery.css`.
 

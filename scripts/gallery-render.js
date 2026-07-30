@@ -7,15 +7,15 @@
         Uniform 4:3 grid — what /gallery.html's Activities panel uses. Every
         tile the same shape, matching the other tabs on that page.
 
-     <div data-gallery-render="masonry" data-count="12"></div>
-        True-aspect-ratio masonry — what the homepage strip uses. Columns are
-        real elements filled round-robin, so the newest photos land across the
-        TOP row (CSS `columns` would fill the first column top-to-bottom and
-        bury the newest photo mid-page).
+     <div data-gallery-render="masonry" data-count="15"></div>
+        True-aspect-ratio masonry in CSS columns — what the homepage strip
+        uses. Photos are chosen by selectMixed() so tall and wide tiles
+        alternate and the columns interlock instead of reading as loose rows.
 
    Optional attributes
-     data-count="12"    how many photos, from the top of the list. Default: all
-     data-columns="3"   desktop column count for masonry. Default: 3
+     data-count="15"    how many photos. Masonry picks a mixed set of this
+                        size from the newest; grid takes the newest N.
+                        Default: all. Column count is pure CSS (gallery.css).
 
    Tiles carry .gallery-img, so scripts/lightbox.js picks them up and the
    existing gallery page styling applies unchanged.
@@ -50,9 +50,9 @@
     pic.appendChild(source);
 
     var img = document.createElement('img');
-    /* Masonry fills columns round-robin, so DOM order is 1,4,7 | 2,5,8 | ...
-       The lightbox sorts on this so next/prev still walk the photos in the
-       order they are actually read on screen. */
+    /* Reading order for the lightbox. CSS columns fill top-to-bottom in DOM
+       order, so this matches what the eye follows; it is stamped explicitly
+       so the lightbox never has to infer order from layout. */
     if (typeof photo.__i === 'number') img.setAttribute('data-lb-index', photo.__i);
     img.src = stem + '.jpg';
     img.srcset = stem + '.jpg 1x, ' + stem + '@2x.jpg 2x';
@@ -67,15 +67,54 @@
     return d;
   }
 
-  function columnsFor(el) {
-    var max = parseInt(el.getAttribute('data-columns'), 10) || 3;
-    var w = window.innerWidth;
-    /* Two columns hold down to 360px: inside a bounded band, one column
-       shows barely two photos and reads thin, while two still form a mosaic.
-       Below 360 the tiles get too small to read, so drop to one. */
-    if (w < 360) return 1;
-    if (w < 900) return 2;
-    return max;
+  /* Height class of a photo at a fixed column width. This — not the
+     "portrait"/"landscape" label — is what decides how tiles interlock.
+     tall ~0.75 (4:3), mid ~0.56 (16:9), wide ~0.45 (panorama), and a true
+     portrait lands at 2.2. */
+  function bucket(p) {
+    var r = (p.h && p.w) ? p.h / p.w : 0.75;
+    if (r >= 1) return 'portrait';
+    if (r >= 0.7) return 'tall';
+    if (r >= 0.5) return 'mid';
+    return 'wide';
+  }
+
+  /* Pick n photos that interlock, staying as new as possible.
+
+     Taking the newest n outright gives runs of identical 4:3 tiles, which is
+     what made the strip read as loose rows. Instead: walk newest-first and
+     prefer the newest candidate whose height class differs from the one just
+     placed, so tall tiles alternate with wide ones and the columns mesh.
+     Any portrait in the window is placed early — there is currently exactly
+     one portrait in the whole library, so it is the single most valuable tile
+     for breaking up the rhythm. */
+  function selectMixed(all, n) {
+    var pool = all.slice(0, Math.min(all.length, Math.max(n * 3, n)));
+    var used = [], out = [], last = null;
+
+    var portrait = -1;
+    for (var i = 0; i < pool.length; i++) {
+      if (bucket(pool[i]) === 'portrait') { portrait = i; break; }
+    }
+    if (portrait > -1 && n > 1) { out.push(pool[portrait]); used[portrait] = 1; last = 'portrait'; }
+
+    while (out.length < n) {
+      var pick = -1, fallback = -1;
+      for (var j = 0; j < pool.length; j++) {
+        if (used[j]) continue;
+        if (fallback < 0) fallback = j;
+        if (bucket(pool[j]) !== last) { pick = j; break; }
+      }
+      if (pick < 0) pick = fallback;
+      if (pick < 0) break;
+      used[pick] = 1;
+      out.push(pool[pick]);
+      last = bucket(pool[pick]);
+    }
+    /* The portrait was pushed first to guarantee inclusion; slot it back a
+       little so the strip does not open on the one odd-shaped tile. */
+    if (portrait > -1 && out.length > 2) out.splice(2, 0, out.shift());
+    return out;
   }
 
   function renderGrid(el, list) {
@@ -85,27 +124,21 @@
     el.appendChild(frag);
   }
 
+  /* Masonry is CSS `columns` — the browser balances the column heights, which
+     packs tighter than hand-built flex columns ever did. It also fills column
+     one top-to-bottom in DOM order, so DOM order IS reading order here and
+     the lightbox's index needs no remapping. */
   function renderMasonry(el, list) {
-    var n = columnsFor(el);
-    if (el.__dpColumns === n && el.childElementCount) return; /* nothing to redo */
-    el.__dpColumns = n;
     el.textContent = '';
-
-    var cols = [];
-    for (var i = 0; i < n; i++) {
-      var c = document.createElement('div');
-      c.className = 'gallery-masonry-col';
-      cols.push(c);
-      el.appendChild(c);
-    }
-    /* Round-robin so the newest photos sit across the top row. */
-    list.forEach(function (p, i) { cols[i % n].appendChild(tile(p, true)); });
+    var frag = document.createDocumentFragment();
+    list.forEach(function (p) { frag.appendChild(tile(p, true)); });
+    el.appendChild(frag);
   }
 
-  /* Tile fade-in. Deliberately NOT the site's .reveal system: that one slides
+  /* Tiles rise in. Deliberately NOT the site's .reveal system: that one slides
      elements in horizontally from whichever side of the viewport they sit on,
-     which reads as noise on a dense photo grid. Tiles get a quiet fade + 10px
-     upward drift instead, each fired once. */
+     which reads as noise on a dense photo grid. Tiles fade up 24px instead,
+     each fired once, staggered 70ms so the mosaic cascades. */
   var reduced = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -124,41 +157,30 @@
     for (var i = 0; i < tiles.length; i++) {
       if (!io) { tiles[i].classList.add('is-in'); continue; }
       /* Short stagger within a flush, capped so late tiles never feel stalled. */
-      tiles[i].style.setProperty('--gal-delay', Math.min(i, 8) * 60 + 'ms');
+      tiles[i].style.setProperty('--gal-delay', Math.min(i, 9) * 70 + 'ms');
       io.observe(tiles[i]);
     }
   }
 
-  function run(isInitial) {
-    targets.forEach(function (el) {
-      var mode = el.getAttribute('data-gallery-render');
-      /* The uniform grid is width-independent — build it once. Re-rendering it
-         on resize would replace every tile with a fresh un-observed node and
-         strip the .is-in they had already earned, leaving them invisible. */
-      if (mode !== 'masonry' && !isInitial) return;
+  /* Both layouts are now width-independent — CSS handles the reflow — so
+     everything is built exactly once. No resize re-render, which also means
+     no risk of replacing revealed tiles with fresh invisible ones. */
+  targets.forEach(function (el) {
+    var mode = el.getAttribute('data-gallery-render');
+    var count = parseInt(el.getAttribute('data-count'), 10);
 
-      var count = parseInt(el.getAttribute('data-count'), 10);
-      var list = (count > 0 ? photos.slice(0, count) : photos.slice())
-        .map(function (p, i) {
-          if (p.__i === i) return p;
-          var c = Object.create(p); c.__i = i; return c;
-        });
-      var cols = el.__dpColumns;
-
-      if (mode === 'masonry') renderMasonry(el, list);
-      else renderGrid(el, list);
-
-      /* Re-observe only when tiles were actually rebuilt. */
-      if (isInitial || el.__dpColumns !== cols) observeTiles(el);
+    var list;
+    if (mode === 'masonry') {
+      list = count > 0 ? selectMixed(photos, count) : photos.slice();
+    } else {
+      list = count > 0 ? photos.slice(0, count) : photos.slice();
+    }
+    list = list.map(function (p, i) {
+      var c = Object.create(p); c.__i = i; return c;
     });
-  }
 
-  run(true);
-
-  /* Masonry column count is width-dependent — re-flow on resize, debounced. */
-  var t;
-  window.addEventListener('resize', function () {
-    clearTimeout(t);
-    t = setTimeout(function () { run(false); }, 150);
-  }, { passive: true });
+    if (mode === 'masonry') renderMasonry(el, list);
+    else renderGrid(el, list);
+    observeTiles(el);
+  });
 })();

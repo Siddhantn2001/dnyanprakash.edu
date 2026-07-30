@@ -105,10 +105,12 @@ body.lightbox-open { overflow: hidden; }
     opacity 800ms cubic-bezier(0.22, 1, 0.36, 1) var(--gal-delay, 0ms),
     transform 800ms cubic-bezier(0.22, 1, 0.36, 1) var(--gal-delay, 0ms);
 }
-/* Fade-in on scroll (IntersectionObserver in gallery-render.js). */
+/* Rise-in on scroll (IntersectionObserver in gallery-render.js). 24px of
+   travel — 10px was too small to register as motion, which is what made the
+   strip look static. */
 .gallery-strip-frame .gallery-img {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(24px);
 }
 .gallery-strip-frame .gallery-img.is-in {
   opacity: 1;
@@ -129,7 +131,7 @@ body.lightbox-open { overflow: hidden; }
       0 30px 44px -18px rgba(60, 40, 20, 0.10);
   }
   .gallery-strip-frame .gallery-img:hover img {
-    transform: scale(1.04);
+    transform: scale(1.05);
     filter: saturate(1.05);
   }
 }
@@ -139,37 +141,50 @@ body.lightbox-open { overflow: hidden; }
 }
 
 /* ═══════════════════ 3. Homepage strip ═══════════════════ */
+/* Real CSS columns: the browser balances column heights, so tiles of mixed
+   height interlock and pack tight. Hand-built flex columns could not do this
+   — they left ragged bottoms and read as three loose stacks. */
 .gallery-strip-masonry {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
+  columns: 3;
+  column-gap: 14px;
+  /* Belt and braces against the old mobile horizontal-swipe bug: the column
+     box can never exceed its container. */
+  max-width: 100%;
 }
-.gallery-masonry-col {
-  flex: 1 1 0;
-  min-width: 0;          /* lets columns shrink below content width — the
-                            guard against the old mobile h-scroll bug */
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.gallery-strip-frame .gallery-img {
+  /* A tile must never be split across a column break. */
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  display: block;
+  width: 100%;
+  margin-bottom: 14px;   /* the vertical rhythm — matches column-gap so the
+                            mosaic reads evenly spaced in both axes */
 }
-/* Second and third columns start lower, so the grid reads as masonry rather
-   than as three tidy stacks. */
-.gallery-masonry-col:nth-child(2) { margin-top: 28px; }
-.gallery-masonry-col:nth-child(3) { margin-top: 56px; }
+@media (max-width: 900px) {
+  .gallery-strip-masonry { columns: 2; column-gap: 12px; }
+  .gallery-strip-frame .gallery-img { margin-bottom: 12px; }
+}
+/* Two columns hold all the way down to 320px. One column showed barely two
+   photos inside the band, which reads sparse — exactly what this pass is
+   fixing. At 320 the tiles land ~134px wide: small, but a mosaic. */
 
 /* Soft blur over the dissolving rows, masked so it only bites near the floor.
    Static (no looping animation behind it), so a backdrop blur is cheap here. */
+/* A whisper of blur on the very last rows only. Was 34% tall at blur(7px),
+   which is what turned the bottom of the strip milky. pointer-events:none —
+   tiles underneath stay clickable right to the floor. */
 .gallery-strip-veil {
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  height: 34%;
+  height: 15%;
   pointer-events: none;
-  -webkit-backdrop-filter: blur(7px);
-  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
   -webkit-mask-image: linear-gradient(180deg,
-    rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.7) 55%, #000 100%);
+    rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 60%, #000 100%);
   mask-image: linear-gradient(180deg,
-    rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.7) 55%, #000 100%);
+    rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 60%, #000 100%);
 }
 
 .gallery-strip-frame {
@@ -186,11 +201,13 @@ body.lightbox-open { overflow: hidden; }
      more". */
   max-height: 560px;
   /* The dissolve belongs on the frame — the clipped box — not on the
-     masonry inside it, whose own bottom edge is far below the cut. */
+     masonry inside it, whose own bottom edge is far below the cut.
+     Fully opaque until 84%, so only the last sliver softens: enough to say
+     "there is more", not enough to wash out the photos above it. */
   -webkit-mask-image: linear-gradient(180deg,
-    #000 0%, #000 52%, rgba(0, 0, 0, 0.45) 80%, rgba(0, 0, 0, 0) 100%);
+    #000 0%, #000 84%, rgba(0, 0, 0, 0.72) 93%, rgba(0, 0, 0, 0) 100%);
   mask-image: linear-gradient(180deg,
-    #000 0%, #000 52%, rgba(0, 0, 0, 0.45) 80%, rgba(0, 0, 0, 0) 100%);
+    #000 0%, #000 84%, rgba(0, 0, 0, 0.72) 93%, rgba(0, 0, 0, 0) 100%);
 }
 @media (max-width: 900px) { .gallery-strip-frame { max-height: 460px; } }
 @media (max-width: 560px) { .gallery-strip-frame { max-height: 400px; } }
@@ -199,16 +216,6 @@ body.lightbox-open { overflow: hidden; }
   display: flex;
   justify-content: center;
   margin-top: 26px;
-}
-
-@media (max-width: 900px) {
-  .gallery-strip-masonry { gap: 12px; }
-  .gallery-masonry-col { gap: 12px; }
-  .gallery-masonry-col:nth-child(2) { margin-top: 20px; }
-}
-@media (max-width: 360px) {
-  .gallery-masonry-col:nth-child(2),
-  .gallery-masonry-col:nth-child(3) { margin-top: 0; }
 }
 
 /* Reduced motion: no drift, no zoom — tiles simply are. */
