@@ -634,6 +634,46 @@ The sidebar pattern is for **editorial article pages** only. Other page types ar
 
 ---
 
+## 19. Adding gallery photos
+
+**One list, two places.** `scripts/gallery-photos.js` is the single source of truth for school photos. The homepage gallery strip and the Activities panel of `/gallery.html` are both rendered from it by `scripts/gallery-render.js`, so a photo added to the list appears at the top of BOTH automatically and pushes older ones down.
+
+When Sid says *"add these photos to the gallery"*:
+
+1. **Process each new photo through the standard image pipeline** into `images/gallery/upkram/` with the next sequential names (`upkram-080`, `upkram-081`, …): auto-orient, strip EXIF, resize to 900px wide, and emit all four variants — `.jpg`, `.webp`, `@2x.jpg`, `@2x.webp`. Every photo needs all four; the renderer builds the `<picture>` srcset from the `base` stem and assumes they exist.
+2. **PREPEND the new photos to the TOP of `window.DP_GALLERY_PHOTOS`** in `scripts/gallery-photos.js` — newest first. Each entry needs:
+   - `base` — the filename stem, no extension
+   - `alt` — alt text (also used as the lightbox caption)
+   - `orientation` — `"landscape"` or `"portrait"`
+   - `w`, `h` — the **true** pixel size of the 1x file. Read it, don't guess: the homepage masonry sets each tile's `aspect-ratio` from these, and that variety (4:3, 16:9, 2.2:1 panoramas) is what gives the grid its rhythm. A wrong ratio letterboxes or crops the photo.
+3. **That is all.** No HTML edits. Do not add tiles to `gallery.html`, `index.html`, or anywhere else.
+4. **Never hardcode gallery tiles.** If a photo needs to appear somewhere, it goes in the list.
+
+**Files in the system** (all shared, all dev-maintained):
+
+| File | Role |
+|---|---|
+| `scripts/gallery-photos.js` | The list. The only file a photo-add touches. |
+| `scripts/gallery-render.js` | Builds tiles into any `[data-gallery-render]` element. `"grid"` = uniform 4:3 (gallery page); `"masonry"` = true aspect ratios in round-robin columns (homepage strip). Honours `data-count` and `data-columns`. |
+| `scripts/lightbox.js` | Shared viewer. Any container marked `data-lightbox-group` becomes browsable; prev/next stay within that group. |
+| `scripts/gallery.css` | Lightbox styles + homepage strip styles (masonry columns, hover, faded lower edge). |
+
+**Homepage strip specifics:** it lives inside the single "Happening at Dnyanprakash" section on the homepage — one `<h2>`, with quiet `GALLERY` and `NEWS` sub-labels dividing the two bodies beneath it. Do not add a second heading or restore the old separate "Gallery" eyebrow section.
+
+The masonry sits in a **fixed-height window that scrolls internally** (`.gallery-strip-frame`, 680/520/440px), holding ~30% of the library (24 photos) chosen by `selectMixed()` — it walks newest-first but prefers a photo whose *height class* differs from the one just placed, so tall 4:3 tiles alternate with wide panoramas and the columns interlock. Any portrait in the window is force-included, because the library currently holds exactly **one** portrait photo (`upkram-074`) out of 79. If Sid supplies more portrait-orientation photos the strip improves for free, no code change.
+
+Three things here are load-bearing — changing them breaks the feature:
+
+- **The reveal observer's `root` is the scroll window**, not the page. A page-viewport observer fires once when the box scrolls into view and never again, so every tile below the box's fold would stay stuck at `opacity: 0`. This is what makes photos rise in as you scroll *inside* the window.
+- **`overflow-x: hidden` + `touch-action: pan-y`** on the window, and `overflow-x: clip` on the masonry. An internal-scroll box is the classic cause of the mobile horizontal-swipe bug this site has already had once. Re-verify `scrollWidth === clientWidth` at 375 **and** 320 after touching this.
+- **No `overscroll-behavior: contain`.** Scroll chaining is what lets the page keep moving once the window bottoms out; adding `contain` traps the reader in the box.
+
+Layout is real CSS `columns` (3 desktop / 2 down to 320px), gap 14/12px. Both edges of the window are masked — a small top fade so rows don't hard-cut under the heading, and a bottom fade that doubles as the scroll affordance. Keep the fade a whisper: an earlier version faded from 52% and washed out half the strip.
+
+**Gallery page styling note:** the Activities panel is rendered from the list but deliberately keeps the flat, square tile look of the four hand-built tabs beside it. If that page is ever upgraded to the strip's rounded/shadowed tiles, restyle all five tabs together — see the comment at the top of section 2 in `scripts/gallery.css`.
+
+---
+
 ## Session Notes — April 28, 2026 (Domain Live + Refinement Phase)
 
 ### 1. Site is live on the custom domain

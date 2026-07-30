@@ -2031,6 +2031,8 @@
   </script>
   <!-- Footer gradient glow layer -->
   <link rel="stylesheet" href="./scripts/footer-glow.css" />
+  <!-- Shared gallery system: photo list, renderer, lightbox -->
+  <link rel="stylesheet" href="scripts/gallery.css" />
 </head>
 <body>
   <!-- Scroll progress signature (Move 4) — 2px brand-red bar that fills
@@ -2323,13 +2325,55 @@
     </section>
 
     <!-- =========================================================
-         Section 8.4 — Featured News (3-column grid, all cards visible)
+         Section 8.4 — Happening at Dnyanprakash
+
+         ONE section, ONE heading, two bodies under it: the gallery window
+         and the news tiles. They used to be two sections with competing
+         headings ("Gallery" eyebrow above, "Happening at Dnyanprakash"
+         below); the sub-labels are now quiet dividers, not headings.
+
+         Gallery tiles are built from window.DP_GALLERY_PHOTOS
+         (scripts/gallery-photos.js) by scripts/gallery-render.js: ~30% of the
+         library, chosen by selectMixed() so tall and wide tiles interlock.
+         Photos added to that one list appear here AND on /gallery.html
+         automatically — never hardcode tiles. See CLAUDE.md §19.
+
+         The masonry scrolls INSIDE a fixed-height window, so the page does
+         not grow with the photo count. Reveals inside it are observed
+         against the window, not the page.
          ========================================================= -->
-    <section class="section-pad pad-image reveal" aria-label="Featured News">
+    <section class="section-pad pad-image reveal" aria-labelledby="happening-heading">
       <div class="container-main">
         <div class="section-eyebrow">In This Section</div>
-        <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
-          <h2 class="section-title" style="margin-bottom:0; text-transform:uppercase; letter-spacing:0.01em;">Happening at Dnyanprakash</h2>
+        <h2 id="happening-heading" class="section-title" style="margin-bottom:0; text-transform:uppercase; letter-spacing:0.01em;">Happening at Dnyanprakash</h2>
+
+        <!-- ---------- Gallery ---------- -->
+        <div class="happening-sub">
+          <span class="happening-sub-label">Gallery</span>
+        </div>
+        <div
+          class="gallery-strip-frame"
+          data-gallery-scroll
+          tabindex="0"
+          role="region"
+          aria-label="Recent photos, scrollable"
+        >
+          <div
+            class="gallery-strip-masonry"
+            data-gallery-render="masonry"
+            data-count="24"
+            data-lightbox-group
+          ></div>
+        </div>
+        <div class="gallery-strip-foot">
+          <a href="gallery.html" class="news-read">View All Photos
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <!-- ---------- News ---------- -->
+        <div class="happening-sub happening-sub--news">
+          <span class="happening-sub-label">News</span>
           <a href="news/index.html" class="news-read">All News
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </a>
@@ -3134,6 +3178,9 @@
   (65 [FILLED 2026-04-21] images/65-learning-through-action-hero.jpg — about/learning-through-action.html page hero)
   =====================================================================
   -->
+  <script defer src="scripts/gallery-photos.js"></script>
+  <script defer src="scripts/gallery-render.js"></script>
+  <script defer src="scripts/lightbox.js"></script>
   <script defer src="scripts/header-blur.js"></script>
   <script defer src="scripts/translations-manifest.js"></script>
   <script defer src="scripts/lang-toggle.js"></script>

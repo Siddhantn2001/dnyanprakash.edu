@@ -1066,73 +1066,8 @@
       transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .gallery-img:hover img { transform: scale(1.04); }
-    /* ---------- Lightbox ---------- */
-    .gallery-img img { cursor: zoom-in; }
-    .lightbox {
-      position: fixed; inset: 0;
-      background: rgba(10, 8, 8, 0.94);
-      z-index: 100;
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .lightbox.is-open { opacity: 1; pointer-events: auto; }
-    .lightbox-stage {
-      position: relative;
-      max-width: 1200px; width: 100%;
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-    }
-    .lightbox-img {
-      max-width: 100%; max-height: 78vh;
-      object-fit: contain;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.55);
-      background: #111;
-    }
-    .lightbox-caption {
-      color: rgba(255,255,255,0.88);
-      font-family: var(--font-sans);
-      font-size: 15px;
-      text-align: center;
-      max-width: 720px;
-      line-height: 1.5;
-    }
-    .lightbox-counter {
-      color: rgba(255,255,255,0.55);
-      font-family: var(--font-sans-cond);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-    .lightbox-btn {
-      position: absolute;
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.18);
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      font-size: 28px;
-      line-height: 1;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-                  border-color 0.25s;
-      z-index: 2;
-    }
-    .lightbox-btn:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); }
-    .lightbox-close { top: 24px; right: 24px; }
-    .lightbox-prev { top: 50%; left: 24px; transform: translateY(-50%); }
-    .lightbox-next { top: 50%; right: 24px; transform: translateY(-50%); }
-    .lightbox-prev:hover { transform: translateY(-50%) translateX(-3px); }
-    .lightbox-next:hover { transform: translateY(-50%) translateX(3px); }
-    body.lightbox-open { overflow: hidden; }
-    @media (max-width: 640px) {
-      .lightbox-btn { width: 44px; height: 44px; font-size: 22px; }
-      .lightbox-close { top: 12px; right: 12px; }
-      .lightbox-prev { left: 8px; }
-      .lightbox-next { right: 8px; }
+    /* Lightbox styles now live in scripts/gallery.css (shared with the
+       homepage gallery strip). */
     }
 
 
@@ -1352,6 +1287,8 @@
   </script>
   <!-- Footer gradient glow layer -->
   <link rel="stylesheet" href="./scripts/footer-glow.css" />
+  <!-- Shared gallery system: photo list, renderer, lightbox -->
+  <link rel="stylesheet" href="scripts/gallery.css" />
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -1656,7 +1593,7 @@
           <button type="button" class="gallery-tab" data-tab="sports" style="padding: 12px 18px; background:transparent; border:0; border-bottom: 3px solid transparent; font-family: var(--font-sans-cond); font-size: 14px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; color: var(--color-text-muted);">Sports</button>
           <button type="button" class="gallery-tab" data-tab="activities" style="padding: 12px 18px; background:transparent; border:0; border-bottom: 3px solid transparent; font-family: var(--font-sans-cond); font-size: 14px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; color: var(--color-text-muted);">Activities</button>
         </div>
-              <div class="gallery-panel" data-panel="campus" >
+              <div class="gallery-panel" data-lightbox-group data-panel="campus" >
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/41-gallery.webp" type="image/webp"><img src="images/41-gallery.jpg" alt="Gallery Campus — Main building exterior" loading="lazy" class="w-full h-full object-cover" /></picture></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/42-gallery.webp" type="image/webp"><img src="images/42-gallery.jpg" alt="Gallery Campus — Library interior" loading="lazy" class="w-full h-full object-cover" /></picture></div>
@@ -1674,7 +1611,7 @@
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-07.jpg" alt="Gallery Campus" loading="lazy" class="w-full h-full object-cover" /></div>
         </div>
       </div>
-      <div class="gallery-panel" data-panel="events" hidden>
+      <div class="gallery-panel" data-lightbox-group data-panel="events" hidden>
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/47-gallery.jpg" alt="Gallery Events — Annual day stage" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/48-gallery.jpg" alt="Gallery Events — Sports day relay" loading="lazy" class="w-full h-full object-cover" /></div>
@@ -1691,7 +1628,7 @@
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-13.jpg" alt="Gallery Events" loading="lazy" class="w-full h-full object-cover" /></div>
         </div>
       </div>
-      <div class="gallery-panel" data-panel="academics" hidden>
+      <div class="gallery-panel" data-lightbox-group data-panel="academics" hidden>
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/53-gallery.jpg" alt="Gallery Academics — Balbhavan classroom" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/54-gallery.jpg" alt="Gallery Academics — Primary reading circle" loading="lazy" class="w-full h-full object-cover" /></div>
@@ -1708,7 +1645,7 @@
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-19.jpg" alt="Gallery Academics" loading="lazy" class="w-full h-full object-cover" /></div>
         </div>
       </div>
-      <div class="gallery-panel" data-panel="sports" hidden>
+      <div class="gallery-panel" data-lightbox-group data-panel="sports" hidden>
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/59-gallery.jpg" alt="Gallery Sports — Kabaddi team" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/60-gallery.jpg" alt="Gallery Sports — Athletics training" loading="lazy" class="w-full h-full object-cover" /></div>
@@ -1726,86 +1663,11 @@
         </div>
       </div>
       <div class="gallery-panel" data-panel="activities" hidden>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-001.webp 1x, images/gallery/upkram/upkram-001@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-001.jpg" srcset="images/gallery/upkram/upkram-001.jpg 1x, images/gallery/upkram/upkram-001@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-002.webp 1x, images/gallery/upkram/upkram-002@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-002.jpg" srcset="images/gallery/upkram/upkram-002.jpg 1x, images/gallery/upkram/upkram-002@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-003.webp 1x, images/gallery/upkram/upkram-003@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-003.jpg" srcset="images/gallery/upkram/upkram-003.jpg 1x, images/gallery/upkram/upkram-003@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-004.webp 1x, images/gallery/upkram/upkram-004@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-004.jpg" srcset="images/gallery/upkram/upkram-004.jpg 1x, images/gallery/upkram/upkram-004@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-005.webp 1x, images/gallery/upkram/upkram-005@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-005.jpg" srcset="images/gallery/upkram/upkram-005.jpg 1x, images/gallery/upkram/upkram-005@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-006.webp 1x, images/gallery/upkram/upkram-006@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-006.jpg" srcset="images/gallery/upkram/upkram-006.jpg 1x, images/gallery/upkram/upkram-006@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-007.webp 1x, images/gallery/upkram/upkram-007@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-007.jpg" srcset="images/gallery/upkram/upkram-007.jpg 1x, images/gallery/upkram/upkram-007@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-008.webp 1x, images/gallery/upkram/upkram-008@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-008.jpg" srcset="images/gallery/upkram/upkram-008.jpg 1x, images/gallery/upkram/upkram-008@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-009.webp 1x, images/gallery/upkram/upkram-009@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-009.jpg" srcset="images/gallery/upkram/upkram-009.jpg 1x, images/gallery/upkram/upkram-009@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-010.webp 1x, images/gallery/upkram/upkram-010@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-010.jpg" srcset="images/gallery/upkram/upkram-010.jpg 1x, images/gallery/upkram/upkram-010@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-011.webp 1x, images/gallery/upkram/upkram-011@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-011.jpg" srcset="images/gallery/upkram/upkram-011.jpg 1x, images/gallery/upkram/upkram-011@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-012.webp 1x, images/gallery/upkram/upkram-012@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-012.jpg" srcset="images/gallery/upkram/upkram-012.jpg 1x, images/gallery/upkram/upkram-012@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-013.webp 1x, images/gallery/upkram/upkram-013@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-013.jpg" srcset="images/gallery/upkram/upkram-013.jpg 1x, images/gallery/upkram/upkram-013@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-014.webp 1x, images/gallery/upkram/upkram-014@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-014.jpg" srcset="images/gallery/upkram/upkram-014.jpg 1x, images/gallery/upkram/upkram-014@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-015.webp 1x, images/gallery/upkram/upkram-015@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-015.jpg" srcset="images/gallery/upkram/upkram-015.jpg 1x, images/gallery/upkram/upkram-015@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-016.webp 1x, images/gallery/upkram/upkram-016@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-016.jpg" srcset="images/gallery/upkram/upkram-016.jpg 1x, images/gallery/upkram/upkram-016@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-017.webp 1x, images/gallery/upkram/upkram-017@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-017.jpg" srcset="images/gallery/upkram/upkram-017.jpg 1x, images/gallery/upkram/upkram-017@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-018.webp 1x, images/gallery/upkram/upkram-018@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-018.jpg" srcset="images/gallery/upkram/upkram-018.jpg 1x, images/gallery/upkram/upkram-018@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-019.webp 1x, images/gallery/upkram/upkram-019@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-019.jpg" srcset="images/gallery/upkram/upkram-019.jpg 1x, images/gallery/upkram/upkram-019@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-020.webp 1x, images/gallery/upkram/upkram-020@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-020.jpg" srcset="images/gallery/upkram/upkram-020.jpg 1x, images/gallery/upkram/upkram-020@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-021.webp 1x, images/gallery/upkram/upkram-021@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-021.jpg" srcset="images/gallery/upkram/upkram-021.jpg 1x, images/gallery/upkram/upkram-021@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-022.webp 1x, images/gallery/upkram/upkram-022@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-022.jpg" srcset="images/gallery/upkram/upkram-022.jpg 1x, images/gallery/upkram/upkram-022@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-023.webp 1x, images/gallery/upkram/upkram-023@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-023.jpg" srcset="images/gallery/upkram/upkram-023.jpg 1x, images/gallery/upkram/upkram-023@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-024.webp 1x, images/gallery/upkram/upkram-024@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-024.jpg" srcset="images/gallery/upkram/upkram-024.jpg 1x, images/gallery/upkram/upkram-024@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-025.webp 1x, images/gallery/upkram/upkram-025@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-025.jpg" srcset="images/gallery/upkram/upkram-025.jpg 1x, images/gallery/upkram/upkram-025@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-026.webp 1x, images/gallery/upkram/upkram-026@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-026.jpg" srcset="images/gallery/upkram/upkram-026.jpg 1x, images/gallery/upkram/upkram-026@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-027.webp 1x, images/gallery/upkram/upkram-027@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-027.jpg" srcset="images/gallery/upkram/upkram-027.jpg 1x, images/gallery/upkram/upkram-027@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-028.webp 1x, images/gallery/upkram/upkram-028@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-028.jpg" srcset="images/gallery/upkram/upkram-028.jpg 1x, images/gallery/upkram/upkram-028@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-029.webp 1x, images/gallery/upkram/upkram-029@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-029.jpg" srcset="images/gallery/upkram/upkram-029.jpg 1x, images/gallery/upkram/upkram-029@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-030.webp 1x, images/gallery/upkram/upkram-030@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-030.jpg" srcset="images/gallery/upkram/upkram-030.jpg 1x, images/gallery/upkram/upkram-030@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-031.webp 1x, images/gallery/upkram/upkram-031@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-031.jpg" srcset="images/gallery/upkram/upkram-031.jpg 1x, images/gallery/upkram/upkram-031@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-032.webp 1x, images/gallery/upkram/upkram-032@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-032.jpg" srcset="images/gallery/upkram/upkram-032.jpg 1x, images/gallery/upkram/upkram-032@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-033.webp 1x, images/gallery/upkram/upkram-033@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-033.jpg" srcset="images/gallery/upkram/upkram-033.jpg 1x, images/gallery/upkram/upkram-033@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-034.webp 1x, images/gallery/upkram/upkram-034@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-034.jpg" srcset="images/gallery/upkram/upkram-034.jpg 1x, images/gallery/upkram/upkram-034@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-035.webp 1x, images/gallery/upkram/upkram-035@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-035.jpg" srcset="images/gallery/upkram/upkram-035.jpg 1x, images/gallery/upkram/upkram-035@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-036.webp 1x, images/gallery/upkram/upkram-036@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-036.jpg" srcset="images/gallery/upkram/upkram-036.jpg 1x, images/gallery/upkram/upkram-036@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-037.webp 1x, images/gallery/upkram/upkram-037@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-037.jpg" srcset="images/gallery/upkram/upkram-037.jpg 1x, images/gallery/upkram/upkram-037@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-038.webp 1x, images/gallery/upkram/upkram-038@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-038.jpg" srcset="images/gallery/upkram/upkram-038.jpg 1x, images/gallery/upkram/upkram-038@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-039.webp 1x, images/gallery/upkram/upkram-039@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-039.jpg" srcset="images/gallery/upkram/upkram-039.jpg 1x, images/gallery/upkram/upkram-039@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-040.webp 1x, images/gallery/upkram/upkram-040@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-040.jpg" srcset="images/gallery/upkram/upkram-040.jpg 1x, images/gallery/upkram/upkram-040@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-041.webp 1x, images/gallery/upkram/upkram-041@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-041.jpg" srcset="images/gallery/upkram/upkram-041.jpg 1x, images/gallery/upkram/upkram-041@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-042.webp 1x, images/gallery/upkram/upkram-042@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-042.jpg" srcset="images/gallery/upkram/upkram-042.jpg 1x, images/gallery/upkram/upkram-042@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-043.webp 1x, images/gallery/upkram/upkram-043@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-043.jpg" srcset="images/gallery/upkram/upkram-043.jpg 1x, images/gallery/upkram/upkram-043@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-044.webp 1x, images/gallery/upkram/upkram-044@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-044.jpg" srcset="images/gallery/upkram/upkram-044.jpg 1x, images/gallery/upkram/upkram-044@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-045.webp 1x, images/gallery/upkram/upkram-045@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-045.jpg" srcset="images/gallery/upkram/upkram-045.jpg 1x, images/gallery/upkram/upkram-045@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-046.webp 1x, images/gallery/upkram/upkram-046@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-046.jpg" srcset="images/gallery/upkram/upkram-046.jpg 1x, images/gallery/upkram/upkram-046@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-047.webp 1x, images/gallery/upkram/upkram-047@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-047.jpg" srcset="images/gallery/upkram/upkram-047.jpg 1x, images/gallery/upkram/upkram-047@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-048.webp 1x, images/gallery/upkram/upkram-048@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-048.jpg" srcset="images/gallery/upkram/upkram-048.jpg 1x, images/gallery/upkram/upkram-048@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-049.webp 1x, images/gallery/upkram/upkram-049@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-049.jpg" srcset="images/gallery/upkram/upkram-049.jpg 1x, images/gallery/upkram/upkram-049@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-050.webp 1x, images/gallery/upkram/upkram-050@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-050.jpg" srcset="images/gallery/upkram/upkram-050.jpg 1x, images/gallery/upkram/upkram-050@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-051.webp 1x, images/gallery/upkram/upkram-051@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-051.jpg" srcset="images/gallery/upkram/upkram-051.jpg 1x, images/gallery/upkram/upkram-051@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-052.webp 1x, images/gallery/upkram/upkram-052@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-052.jpg" srcset="images/gallery/upkram/upkram-052.jpg 1x, images/gallery/upkram/upkram-052@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-053.webp 1x, images/gallery/upkram/upkram-053@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-053.jpg" srcset="images/gallery/upkram/upkram-053.jpg 1x, images/gallery/upkram/upkram-053@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-054.webp 1x, images/gallery/upkram/upkram-054@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-054.jpg" srcset="images/gallery/upkram/upkram-054.jpg 1x, images/gallery/upkram/upkram-054@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-055.webp 1x, images/gallery/upkram/upkram-055@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-055.jpg" srcset="images/gallery/upkram/upkram-055.jpg 1x, images/gallery/upkram/upkram-055@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-056.webp 1x, images/gallery/upkram/upkram-056@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-056.jpg" srcset="images/gallery/upkram/upkram-056.jpg 1x, images/gallery/upkram/upkram-056@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-057.webp 1x, images/gallery/upkram/upkram-057@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-057.jpg" srcset="images/gallery/upkram/upkram-057.jpg 1x, images/gallery/upkram/upkram-057@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-058.webp 1x, images/gallery/upkram/upkram-058@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-058.jpg" srcset="images/gallery/upkram/upkram-058.jpg 1x, images/gallery/upkram/upkram-058@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-059.webp 1x, images/gallery/upkram/upkram-059@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-059.jpg" srcset="images/gallery/upkram/upkram-059.jpg 1x, images/gallery/upkram/upkram-059@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-060.webp 1x, images/gallery/upkram/upkram-060@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-060.jpg" srcset="images/gallery/upkram/upkram-060.jpg 1x, images/gallery/upkram/upkram-060@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-061.webp 1x, images/gallery/upkram/upkram-061@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-061.jpg" srcset="images/gallery/upkram/upkram-061.jpg 1x, images/gallery/upkram/upkram-061@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-062.webp 1x, images/gallery/upkram/upkram-062@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-062.jpg" srcset="images/gallery/upkram/upkram-062.jpg 1x, images/gallery/upkram/upkram-062@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-063.webp 1x, images/gallery/upkram/upkram-063@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-063.jpg" srcset="images/gallery/upkram/upkram-063.jpg 1x, images/gallery/upkram/upkram-063@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-064.webp 1x, images/gallery/upkram/upkram-064@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-064.jpg" srcset="images/gallery/upkram/upkram-064.jpg 1x, images/gallery/upkram/upkram-064@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-065.webp 1x, images/gallery/upkram/upkram-065@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-065.jpg" srcset="images/gallery/upkram/upkram-065.jpg 1x, images/gallery/upkram/upkram-065@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-066.webp 1x, images/gallery/upkram/upkram-066@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-066.jpg" srcset="images/gallery/upkram/upkram-066.jpg 1x, images/gallery/upkram/upkram-066@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-067.webp 1x, images/gallery/upkram/upkram-067@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-067.jpg" srcset="images/gallery/upkram/upkram-067.jpg 1x, images/gallery/upkram/upkram-067@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-068.webp 1x, images/gallery/upkram/upkram-068@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-068.jpg" srcset="images/gallery/upkram/upkram-068.jpg 1x, images/gallery/upkram/upkram-068@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-069.webp 1x, images/gallery/upkram/upkram-069@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-069.jpg" srcset="images/gallery/upkram/upkram-069.jpg 1x, images/gallery/upkram/upkram-069@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-070.webp 1x, images/gallery/upkram/upkram-070@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-070.jpg" srcset="images/gallery/upkram/upkram-070.jpg 1x, images/gallery/upkram/upkram-070@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-071.webp 1x, images/gallery/upkram/upkram-071@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-071.jpg" srcset="images/gallery/upkram/upkram-071.jpg 1x, images/gallery/upkram/upkram-071@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-072.webp 1x, images/gallery/upkram/upkram-072@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-072.jpg" srcset="images/gallery/upkram/upkram-072.jpg 1x, images/gallery/upkram/upkram-072@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-073.webp 1x, images/gallery/upkram/upkram-073@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-073.jpg" srcset="images/gallery/upkram/upkram-073.jpg 1x, images/gallery/upkram/upkram-073@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-074.webp 1x, images/gallery/upkram/upkram-074@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-074.jpg" srcset="images/gallery/upkram/upkram-074.jpg 1x, images/gallery/upkram/upkram-074@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-075.webp 1x, images/gallery/upkram/upkram-075@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-075.jpg" srcset="images/gallery/upkram/upkram-075.jpg 1x, images/gallery/upkram/upkram-075@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-076.webp 1x, images/gallery/upkram/upkram-076@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-076.jpg" srcset="images/gallery/upkram/upkram-076.jpg 1x, images/gallery/upkram/upkram-076@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-077.webp 1x, images/gallery/upkram/upkram-077@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-077.jpg" srcset="images/gallery/upkram/upkram-077.jpg 1x, images/gallery/upkram/upkram-077@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-078.webp 1x, images/gallery/upkram/upkram-078@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-078.jpg" srcset="images/gallery/upkram/upkram-078.jpg 1x, images/gallery/upkram/upkram-078@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
-          <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/gallery/upkram/upkram-079.webp 1x, images/gallery/upkram/upkram-079@2x.webp 2x" type="image/webp"><img src="images/gallery/upkram/upkram-079.jpg" srcset="images/gallery/upkram/upkram-079.jpg 1x, images/gallery/upkram/upkram-079@2x.jpg 2x" alt="Dnyanprakash school activity" loading="lazy" class="w-full h-full object-cover" /></picture></div>
+        <!-- Tiles are built from window.DP_GALLERY_PHOTOS by scripts/gallery-render.js.
+             To add photos, edit scripts/gallery-photos.js — never add tiles here.
+             See "Adding gallery photos" in CLAUDE.md. -->
+        <div data-gallery-render="grid" data-lightbox-group
+             style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;"></div>
         </div>
       </div>
       </div>
@@ -2040,82 +1902,11 @@
     })();
   </script>
 
-    <script>
-      (function(){
-        const lightbox = document.getElementById('lightbox');
-        if (!lightbox) return;
-        const lbImg = lightbox.querySelector('.lightbox-img');
-        const lbCap = lightbox.querySelector('.lightbox-caption');
-        const lbCtr = lightbox.querySelector('.lightbox-counter');
-        const btnClose = lightbox.querySelector('.lightbox-close');
-        const btnPrev = lightbox.querySelector('.lightbox-prev');
-        const btnNext = lightbox.querySelector('.lightbox-next');
-        let list = [];
-        let current = 0;
-
-        function render() {
-          if (!list.length) return;
-          current = ((current % list.length) + list.length) % list.length;
-          const node = list[current];
-          lbImg.src = node.src;
-          lbImg.alt = node.alt || '';
-          lbCap.textContent = node.alt || '';
-          lbCtr.textContent = (current + 1) + ' / ' + list.length;
-        }
-        function open(panelImgs, idx) {
-          list = panelImgs;
-          current = idx;
-          render();
-          lightbox.classList.add('is-open');
-          lightbox.setAttribute('aria-hidden', 'false');
-          document.body.classList.add('lightbox-open');
-        }
-        function close() {
-          lightbox.classList.remove('is-open');
-          lightbox.setAttribute('aria-hidden', 'true');
-          document.body.classList.remove('lightbox-open');
-          lbImg.src = '';
-        }
-        function prev() { current--; render(); }
-        function next() { current++; render(); }
-
-        document.querySelectorAll('.gallery-panel').forEach(function(panel){
-          panel.addEventListener('click', function(e){
-            const img = e.target.closest('.gallery-img img');
-            if (!img) return;
-            const panelImgs = Array.prototype.slice.call(panel.querySelectorAll('.gallery-img img'));
-            const idx = panelImgs.indexOf(img);
-            if (idx < 0) return;
-            open(panelImgs, idx);
-          });
-        });
-
-        btnClose.addEventListener('click', close);
-        btnPrev.addEventListener('click', prev);
-        btnNext.addEventListener('click', next);
-        lightbox.addEventListener('click', function(e){
-          if (e.target === lightbox || e.target.classList.contains('lightbox-stage')) close();
-        });
-        document.addEventListener('keydown', function(e){
-          if (!lightbox.classList.contains('is-open')) return;
-          if (e.key === 'Escape') close();
-          else if (e.key === 'ArrowLeft') prev();
-          else if (e.key === 'ArrowRight') next();
-        });
-
-        // Touch swipe (mobile)
-        let touchX = null;
-        lightbox.addEventListener('touchstart', function(e){
-          if (e.touches.length === 1) touchX = e.touches[0].clientX;
-        }, { passive: true });
-        lightbox.addEventListener('touchend', function(e){
-          if (touchX == null) return;
-          const dx = (e.changedTouches[0].clientX) - touchX;
-          if (Math.abs(dx) > 50) { if (dx > 0) prev(); else next(); }
-          touchX = null;
-        });
-      })();
-    </script>
+    <!-- Lightbox behaviour now lives in scripts/lightbox.js (shared with the
+         homepage gallery strip). Markup is injected by that script. -->
+  <script defer src="scripts/gallery-photos.js"></script>
+  <script defer src="scripts/gallery-render.js"></script>
+  <script defer src="scripts/lightbox.js"></script>
   <script defer src="scripts/header-blur.js"></script>
   <script defer src="scripts/translations-manifest.js"></script>
   <script defer src="scripts/lang-toggle.js"></script>
