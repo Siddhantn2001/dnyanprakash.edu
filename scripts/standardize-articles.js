@@ -237,9 +237,13 @@ function buildAsideLinks(rel) {
                 <a href="${p}admission/index.html">Admissions</a>`;
 }
 
-const ADMISSIONS_CTA = `            <div class="aside-cta">
-              <p>Admissions open for the 2026&ndash;27 academic year.</p>
-              <a href="https://www.dnyanprakash.techvium.in/online_admission" target="_blank" rel="noopener" class="aside-cta-btn">Apply Online</a>
+// Takes the page's relative prefix ("", "../", "../../") because the button is
+// now an internal link to contact.html rather than the external admission
+// portal. `p` from buildAsideLinks() is not in scope at the call site, so the
+// prefix is passed in explicitly.
+const ADMISSIONS_CTA = (p = '') => `            <div class="aside-cta">
+              <p>Applications for the 2026&ndash;27 academic year are closed.</p>
+              <a href="${p}contact.html" class="aside-cta-btn">Contact Us</a>
             </div>`;
 
 const INSTAGRAM_BLOCK = `            <div class="aside-instagram">
@@ -377,7 +381,7 @@ ${asideLinks}
               </div>
             </div>
 ${INSTAGRAM_BLOCK}
-${ADMISSIONS_CTA}
+${ADMISSIONS_CTA(relPrefix(fileRel))}
           </aside>
         </div>
       </div>
