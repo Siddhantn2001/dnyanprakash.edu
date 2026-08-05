@@ -143,6 +143,19 @@ html { overflow-x: hidden; overflow-x: clip; }
   overflow-x: clip;
 }
 
+/* Footer subscribe row containment (fix/mobile-horizontal-overflow). The
+   input + "Subscribe" button floored the footer column at ~313px and pushed
+   it ~13px past a 320px viewport. minmax(0, 1fr) drops the grid track's
+   automatic minimum from min-content to 0; min-width: 0 lets the email input
+   shrink below its intrinsic width. Placed here (not just index.html) because
+   every page carries its own copy of the footer per §8.14 — this one shared
+   rule fixes all 48 pages at once. Loads after each page's inline <style>, so
+   it wins on equal specificity. */
+@media (max-width: 900px) {
+  .footer-grid { grid-template-columns: minmax(0, 1fr); }
+}
+.footer-subscribe input { min-width: 0; }
+
 /* ========================================================================
    View transitions — cross-page fade. Top-level so it applies on all widths.
    navigation: auto → browser fades old view out and new view in on
@@ -168,7 +181,16 @@ html { overflow-x: hidden; overflow-x: clip; }
 /* ========================================================================
    Scroll progress signature — 2px brand-red bar at top, fills L→R.
    Width is driven by --scroll-progress (set by mobile-polish.js).
-   Hidden on desktop; visible on mobile only.
+
+   Retired on mobile (owner request, 2026-08-05): on a phone the bar
+   duplicates the browser's own right-edge scroll indicator, and two
+   progress affordances competing at the top of a 48px condensed header
+   reads as noise. `display: none` is the base value and the mobile
+   `display: block` override that used to switch it on is gone, so the
+   bar is now inert at every width — desktop included, where it was
+   never enabled in the first place. To bring it back on desktop only,
+   add a `@media (min-width: 769px) { .scroll-progress { display: block } }`
+   block; the element and its JS driver are still on every page.
    ======================================================================== */
 .scroll-progress {
   position: fixed;
@@ -183,12 +205,6 @@ html { overflow-x: hidden; overflow-x: clip; }
   display: none;
 }
 
-@media (max-width: 768px) {
-  .scroll-progress {
-    display: block;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .scroll-progress {
     transition: none;
@@ -199,6 +215,57 @@ html { overflow-x: hidden; overflow-x: clip; }
    Mobile-only polish — every rule below is inside the mobile breakpoint.
    ======================================================================== */
 @media (max-width: 768px) {
+  /* ====================================================================
+     Mobile header sizing (owner request, 2026-08-05)
+
+     Before: 149px on the homepage (37px utility strip + 112px nav row,
+     60px logo) and 118px on inner pages — a block, not a bar, and it did
+     not change on scroll.
+
+     After:  89px full / 48px condensed once .is-scrolled lands. That is
+     -40% on the homepage and -25% on inner pages in the full state, and
+     -68% / -59% while the visitor is actually reading.
+
+     The whole reduction comes out of the nav row. The utility strip (36px
+     of content plus its 1px rule) is already slim and is the only home the
+     language toggle has, so it keeps its height in the full state and
+     disappears entirely in the condensed one.
+
+     ---- Why the flow height never changes ----
+     .site-header is position: sticky, which means it still occupies its
+     box in normal flow. Shrinking that box mid-scroll would drag every
+     following pixel up by the delta — a visible 41px jolt at the trigger
+     point. So the condensed state shrinks only what is *painted*, and
+     hands the reclaimed 41px straight back as padding-bottom:
+
+         full:      37 utility + 52 nav +  0 padding = 89
+         condensed:  0 utility + 48 nav + 41 padding = 89
+
+     Every one of those three tracks animates on the same duration and
+     easing, so the sum holds at 89px on every intermediate frame, not
+     just at the endpoints. The padding band is transparent, so what the
+     visitor sees is a slim floating bar with content passing beneath it.
+     `pointer-events` is handed back to the header's real children only,
+     so that transparent band cannot swallow taps meant for the page.
+
+     ---- Why !important ----
+     index.html loads this file at the TOP of <head>, before its inline
+     <style> (the other 46 pages load it after). Source order is therefore
+     unreliable, and the inline rules it has to beat are themselves
+     !important at (0,3,1) — e.g. `.site-header:not(.nav-solid)
+     .site-header-logo img { height: 60px !important }`. The selectors
+     below lead with the `header` element to reach (0,3,2) and win on
+     specificity regardless of which file came first.
+     ==================================================================== */
+  :root {
+    --dp-hdr-utility: 36px;        /* utility strip content height, full state */
+    --dp-hdr-nav: 52px;            /* main nav row, full state */
+    --dp-hdr-nav-condensed: 48px;  /* main nav row, scrolled */
+    --dp-hdr-full: 89px;           /* 36 + 1px utility border + 52 — keep in sync */
+    --dp-hdr-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dp-hdr-dur: 320ms;
+  }
+
   /* ----- Sticky nav (Move 3) -----
      Switch from absolute (overlay) to sticky on mobile. Hero compensates
      via negative margin so it bleeds up under the sticky transparent nav.
@@ -208,15 +275,115 @@ html { overflow-x: hidden; overflow-x: clip; }
     position: sticky !important;
     top: 0;
     z-index: 30;
-    transition: background 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    transition:
+      background 0.28s var(--dp-hdr-ease),
+      padding-bottom var(--dp-hdr-dur) var(--dp-hdr-ease);
+  }
+
+  /* ---- Utility strip: height unchanged, collapses to nothing when scrolled.
+     `overflow: hidden` is what lets the inner row animate to height 0
+     without its 12px text spilling over the nav bar on the way down. ---- */
+  header.site-header [data-section="utility-bar"] {
+    overflow: hidden;
+    transition:
+      opacity 220ms var(--dp-hdr-ease),
+      border-bottom-width var(--dp-hdr-dur) var(--dp-hdr-ease);
+  }
+  header.site-header [data-section="utility-bar"] > div {
+    height: var(--dp-hdr-utility) !important;
+    min-height: 0 !important;
+    transition: height var(--dp-hdr-dur) var(--dp-hdr-ease);
+  }
+  /* The language toggle and its neighbours ship as anchors whose boxes are
+     only as tall as their 12px text — an 18px tap target, well under the
+     40px minimum. Grow the hit area with a transparent ::after rather than
+     by touching the anchors' own box, because the strip is full of
+     Tailwind `hidden sm:flex` / `hidden md:inline` links (phone, Students,
+     Parents) — any `display` declaration here outranks `.hidden` at
+     (0,1,0) and drags all of them back on screen, where they wrap the
+     strip onto two lines and run off the right edge.
+     A display:none anchor renders no pseudo-element, so this is inert on
+     exactly the links that are meant to stay hidden.
+     ±4px of horizontal growth is safe: the tightest neighbour gap in the
+     strip is gap-3 (12px), leaving 4px of dead space between hit areas. */
+  header.site-header [data-section="utility-bar"] a {
+    position: relative;
+  }
+  header.site-header [data-section="utility-bar"] a::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -4px;
+    right: -4px;
+    height: var(--dp-hdr-utility);
+    transform: translateY(-50%);
+  }
+
+  /* ---- Nav row: 112px (home) / 81px (inner) -> 52px, 48px when scrolled ---- */
+  header.site-header .main-nav > div {
+    height: var(--dp-hdr-nav) !important;
+    min-height: var(--dp-hdr-nav) !important;
+    transition:
+      height var(--dp-hdr-dur) var(--dp-hdr-ease),
+      min-height var(--dp-hdr-dur) var(--dp-hdr-ease);
+  }
+
+  /* ---- Logo: 60px (home) / 52px (inner) -> 42px, 36px when scrolled.
+     Both variants spelled out because each inline rule they override sits
+     at (0,3,1); a shared 2-class selector would lose. 36px still renders
+     the ज्ञानप्रकाश wordmark at ~15px and the शैक्षणिक प्रकल्प, लातूर
+     subtitle at ~8px on a 3x panel — do not go below this. ---- */
+  header.site-header:not(.nav-solid) .site-header-logo img,
+  header.site-header.nav-solid .site-header-logo img {
+    height: 42px !important;
+    transition: height var(--dp-hdr-dur) var(--dp-hdr-ease);
+  }
+  /* Logo link keeps a 44px tap target even though the mark is 42px. */
+  header.site-header .site-header-logo {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  /* ---- Condensed state ---- */
+  header.site-header.is-scrolled {
+    /* Hand back exactly what the strip + nav row gave up, so flow height
+       holds at --dp-hdr-full and nothing below the header moves. */
+    padding-bottom: calc(var(--dp-hdr-full) - var(--dp-hdr-nav-condensed));
+    /* .nav-solid paints #fff on .site-header itself; that would make the
+       reclaimed band a white slab instead of a transparent gap. */
+    background: transparent !important;
+    /* The band is empty space — let taps through to the page under it. */
+    pointer-events: none;
+  }
+  header.site-header.is-scrolled > * {
+    pointer-events: auto;
+  }
+  header.site-header.is-scrolled [data-section="utility-bar"] {
+    opacity: 0;
+    border-bottom-width: 0 !important;
+  }
+  header.site-header.is-scrolled [data-section="utility-bar"] > div {
+    height: 0 !important;
+  }
+  header.site-header.is-scrolled .main-nav > div {
+    height: var(--dp-hdr-nav-condensed) !important;
+    min-height: var(--dp-hdr-nav-condensed) !important;
+  }
+  header.site-header.is-scrolled:not(.nav-solid) .site-header-logo img,
+  header.site-header.is-scrolled.nav-solid .site-header-logo img {
+    height: 36px !important;
   }
 
   /* Homepage hero bleeds under the now-in-flow sticky header.
-     36px utility bar + ~80px main nav ≈ 116px to compensate.
+     Pulled up by exactly --dp-hdr-full so the hero starts at y=0 and the
+     transparent overlay nav sits on photography for its whole height —
+     matching desktop. (The old -116px against a 149px header left a 33px
+     white band above the hero, and the utility bar's white-on-white text
+     was invisible inside it.)
      The .hero class only exists on the homepage (other pages use
      .page-hero / .article-hero), so this won't affect inner pages. */
   .hero {
-    margin-top: -116px;
+    margin-top: calc(-1 * var(--dp-hdr-full));
   }
 
   /* Scrolled state — solid backdrop + dark text once user has scrolled
@@ -296,7 +463,14 @@ html { overflow-x: hidden; overflow-x: clip; }
       opacity: 1;
       transform: none;
     }
-    .site-header {
+    /* Header condensing still happens — it just snaps between the two
+       states instead of easing, so a reduced-motion visitor gets the
+       same slim bar without the animated height change. */
+    .site-header,
+    header.site-header [data-section="utility-bar"],
+    header.site-header [data-section="utility-bar"] > div,
+    header.site-header .main-nav > div,
+    header.site-header .site-header-logo img {
       transition: none !important;
     }
   }
