@@ -660,7 +660,7 @@ When Sid says *"add these photos to the gallery"*:
 
 **Homepage strip specifics:** it lives inside the single "Happening at Dnyanprakash" section on the homepage — one `<h2>`, with quiet `GALLERY` and `NEWS` sub-labels dividing the two bodies beneath it. Do not add a second heading or restore the old separate "Gallery" eyebrow section.
 
-The masonry sits in a **fixed-height window that scrolls internally** (`.gallery-strip-frame`, 680/520/440px), holding ~30% of the library (24 photos) chosen by `selectMixed()` — it walks newest-first but prefers a photo whose *height class* differs from the one just placed, so tall 4:3 tiles alternate with wide panoramas and the columns interlock. Any portrait in the window is force-included, because the library currently holds exactly **one** portrait photo (`upkram-074`) out of 79. If Sid supplies more portrait-orientation photos the strip improves for free, no code change.
+The masonry sits in a **fixed-height window that scrolls internally** (`.gallery-strip-frame`, 680/520/440px), holding 24 photos chosen by `selectMixed()` — it walks newest-first but prefers a photo whose *height class* differs from the one just placed, so tall 4:3 tiles alternate with wide panoramas and the columns interlock. The newest portrait in the pool is force-included; any further portraits are picked up naturally by the alternation loop. The library holds **9** portraits out of 104 (`upkram-081/083/084/085/092/094/096/098`, plus the original `upkram-074`), which is what lets the columns properly interlock — more portrait-orientation photos improve the strip for free, no code change.
 
 Three things here are load-bearing — changing them breaks the feature:
 

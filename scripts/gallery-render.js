@@ -85,9 +85,11 @@
      what made the strip read as loose rows. Instead: walk newest-first and
      prefer the newest candidate whose height class differs from the one just
      placed, so tall tiles alternate with wide ones and the columns mesh.
-     Any portrait in the window is placed early — there is currently exactly
-     one portrait in the whole library, so it is the single most valuable tile
-     for breaking up the rhythm. */
+     The newest portrait in the pool is placed unconditionally, because a
+     portrait is the most valuable tile for breaking up the rhythm and the
+     alternation loop alone would not guarantee one. Any further portraits get
+     picked up naturally by that loop, since their height class differs from
+     whatever landscape preceded them. */
   function selectMixed(all, n) {
     var pool = all.slice(0, Math.min(all.length, Math.max(n * 3, n)));
     var used = [], out = [], last = null;
