@@ -1,0 +1,378 @@
+/* ============================================================================
+   apple-design.css — Apple-design pass (.claude/skills/apple-design/SKILL.md)
+
+   Loaded LAST in <head> on every page (see scripts/inject-apple-design.js), so
+   it wins on source order against each page's inline <style> AND against
+   scripts/mobile-polish.css. Where mobile-polish.css already uses !important
+   (the whole mobile header block does), the rules here match its specificity
+   and use !important too — that is deliberate, not sloppy.
+
+   Brand system is unchanged: #9E1B32, Playfair Display, Libre Franklin, Noto
+   Devanagari, cubic-bezier(0.22, 1, 0.36, 1) as base easing. This file only
+   changes materials, type metrics, response and motion.
+
+   Sections are added one phase at a time and banner-marked, so any single
+   phase can be reverted by reverting its commit.
+
+     PHASE 1 — Materials & chrome (§12)
+   ============================================================================ */
+
+/* ============================================================================
+   PHASE 1 — MATERIALS & CHROME  (skill §12)
+
+   Diagnosis of the starting point (measured, screenshots/apple/baseline):
+     - The "glass" header was rgba(255,255,255,0.92) + blur(14px). At 92%
+       opacity nothing reads through it — it is an opaque bar that consumes a
+       fixed strip, which is precisely what §12 says not to build.
+     - It was closed with a hard 1px divider — §12 asks for a scroll edge
+       effect instead.
+     - Mobile header: 90px at rest / 48px painted when condensed.
+     - Drawer, lightbox and welcome card all entered as flat opacity fades —
+       §12 "materialize, don't just fade".
+
+   Material scale used throughout this file. Weight is carried by BLUR and
+   SATURATION, not by opacity — that is what makes a surface read as thick
+   glass rather than as tinted plastic. Bigger surface ⇒ thicker material.
+
+     --mat-heavy    structural chrome that spans an edge (header, drawer)
+     --mat-medium   large floating panels (mega-menu)
+     --mat-light    small interactive chips (lightbox buttons)
+   ============================================================================ */
+
+:root {
+  /* Blur/saturate pairs — the "thickness" of each material tier. */
+  --mat-heavy-blur: 30px;
+  --mat-heavy-sat: 180%;
+  --mat-medium-blur: 22px;
+  --mat-medium-sat: 165%;
+  --mat-light-blur: 14px;
+  --mat-light-sat: 150%;
+
+  /* Tints. Low enough that content genuinely shows through; high enough that
+     16px text on top still clears contrast once vibrancy (below) is applied. */
+  --mat-tint-heavy: rgba(255, 255, 255, 0.70);
+  --mat-tint-medium: rgba(255, 255, 255, 0.82);
+  --mat-tint-scrim: rgba(26, 22, 18, 0.58);
+
+  /* The bright top edge is light catching the leading face of the material. */
+  --mat-edge-light: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+  /* Depth shadows. A bigger surface reads as thicker, so it casts further. */
+  --mat-shadow-heavy: 0 8px 28px rgba(26, 22, 18, 0.10);
+  --mat-shadow-medium: 0 16px 40px -8px rgba(26, 22, 18, 0.16);
+
+  /* Materialize timing — blur radius and scale move together on the same
+     curve so the surface reads as one object arriving, not two properties. */
+  --mat-in: 460ms cubic-bezier(0.22, 1, 0.36, 1);
+  --mat-out: 280ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* ----------------------------------------------------------------------------
+   1.1 — Mobile header geometry.  90px → 75px at rest, 48px → 42px condensed.
+
+   mobile-polish.css derives every header rule from four custom properties, so
+   redefining them here re-sizes the whole assembly (including the homepage
+   hero's negative margin, which is calc'd from --dp-hdr-full) without
+   duplicating a single selector.
+
+   Every number is derived from one hard floor, documented in mobile-polish.css:
+   the logo may not render below 36px or the "शैक्षणिक प्रकल्प, लातूर" subtitle
+   stops being legible. So:
+
+     condensed nav 42px = 36px logo + 3px optical breathing top and bottom
+     full nav      46px = 38px logo + 4px
+     utility strip 28px = 12px text on a 1.0 line box + 8px above and below
+     full total    75px = 28 + 1px rule + 46
+
+   The utility strip keeps its place rather than being deleted: on inner pages
+   it is the only one-tap route to Parent Login and the मराठी toggle (§17), and
+   neither has another home in the mobile chrome. See the report for the
+   further −29px available if those move.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  :root {
+    --dp-hdr-utility: 28px;
+    --dp-hdr-nav: 46px;
+    --dp-hdr-nav-condensed: 42px;
+    --dp-hdr-full: 75px; /* 28 + 1px rule + 46 — keep in sync with the three above */
+  }
+
+  header.site-header:not(.nav-solid) .site-header-logo img,
+  header.site-header.nav-solid .site-header-logo img {
+    height: 38px !important;
+  }
+  header.site-header.is-scrolled:not(.nav-solid) .site-header-logo img,
+  header.site-header.is-scrolled.nav-solid .site-header-logo img {
+    height: 36px !important; /* documented floor — do not go below */
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   1.2 — The header as a real translucent material.
+
+   0.92 → 0.70 tint, 14px → 30px blur, 1.4 → 1.8 saturation. The saturation
+   bump is what stops the blurred backdrop turning grey and washed out; it is
+   also what makes brand red and photography read as colour through the glass.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .site-header.is-scrolled .main-nav,
+  .site-header.is-scrolled [data-section="utility-bar"] {
+    background: var(--mat-tint-heavy) !important;
+    -webkit-backdrop-filter: blur(var(--mat-heavy-blur)) saturate(var(--mat-heavy-sat));
+    backdrop-filter: blur(var(--mat-heavy-blur)) saturate(var(--mat-heavy-sat));
+    /* §12: the hard divider is replaced by the scroll edge effect in 1.3. */
+    border-bottom: 0 solid transparent !important;
+    box-shadow: var(--mat-edge-light), var(--mat-shadow-heavy);
+  }
+
+  /* Inner pages (.nav-solid) paint solid white on the header itself, which
+     would sit behind the glass and defeat it. Clear it so the material has
+     the page content to blur, not a white slab. */
+  .site-header.nav-solid.is-scrolled {
+    background: transparent !important;
+  }
+
+  /* ------------------------------------------------------------------------
+     1.3 — Scroll edge effect (§12: "scroll edge effects, not hard dividers").
+
+     A masked backdrop-filter below the bar: the blur is full strength where
+     content meets the chrome and tapers to nothing 24px down, so content
+     dissolves into the header instead of being cut by a line. The tint
+     gradient rides along so the taper is tonal as well as optical.
+
+     Only painted in .is-scrolled — §12 is explicit that the edge effect
+     belongs "only where floating UI actually overlaps content".
+     ------------------------------------------------------------------------ */
+  .site-header .main-nav::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 24px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.55),
+      rgba(255, 255, 255, 0)
+    );
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  }
+  .site-header.is-scrolled .main-nav::after {
+    opacity: 1;
+  }
+
+  /* ------------------------------------------------------------------------
+     1.4 — Vibrancy (§12: "don't use flat gray text over translucent
+     surfaces — higher contrast, slightly heavier weight, small tracking bump").
+
+     The old scrolled state dropped utility-bar text to --color-text-muted
+     (#818386) over glass, which is exactly the flat grey §12 warns about.
+     ------------------------------------------------------------------------ */
+  .site-header.is-scrolled .nav-link,
+  .site-header.is-scrolled [data-mobile-open],
+  .site-header:not(.nav-solid).is-scrolled .nav-link,
+  .site-header:not(.nav-solid).is-scrolled [data-mobile-open] {
+    color: var(--color-text-primary, #2b2724) !important;
+    font-weight: 600 !important;
+    letter-spacing: calc(var(--tracking-nav, 0.12em) + 0.01em) !important;
+    text-shadow: none !important;
+  }
+  .site-header.is-scrolled [data-section="utility-bar"] a,
+  .site-header.is-scrolled [data-section="utility-bar"] button,
+  .site-header.is-scrolled [data-section="utility-bar"] span,
+  .site-header:not(.nav-solid).is-scrolled [data-section="utility-bar"] a,
+  .site-header:not(.nav-solid).is-scrolled [data-section="utility-bar"] button,
+  .site-header:not(.nav-solid).is-scrolled [data-section="utility-bar"] span {
+    /* #56514c — a warm dark grey, not #818386. Clears 4.5:1 on the glass. */
+    color: #56514c !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  /* Colour belongs on a solid layer, not on the translucent foreground
+     (§12) — the brand-red hamburger/globe icons keep full saturation by
+     sitting on the glass rather than being tinted into it. */
+  .site-header.is-scrolled [data-section="utility-bar"] svg {
+    opacity: 0.85;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   1.5 — Desktop mega-panel: a non-blocking parallel surface.
+
+   §12: "A parallel, non-blocking panel uses translucency and offset WITHOUT a
+   scrim so the flow isn't broken." So: no scrim, and the page stays visible
+   through it — the panel is a parallel layer, not a modal task.
+
+   Tint is 0.93, HIGHER than the header's 0.70, and that is the rule rather
+   than an exception to it. §12: "Bigger surfaces should read as thicker:
+   stronger blur + a deeper shadow than small chips." The header is a 42px
+   strip carrying 13px uppercase labels; this panel is ~400px tall, carries a
+   paragraph of 15px body copy, and lands over whatever photography the page
+   happens to have behind it. Thicker material transmits less.
+
+   The first attempt used 0.82 / 22px and it failed exactly where §12 warns it
+   would — over the Principal's Note hero the "Our History / Coming soon" row
+   became unreadable ("never stack a light translucent surface on another —
+   legibility collapses"). 0.93 / 34px keeps the frosted read (tonality and
+   colour still shift through it as the page scrolls) without costing the copy.
+   -------------------------------------------------------------------------- */
+@media (min-width: 769px) {
+  .mega-panel {
+    background: rgba(255, 255, 255, 0.93) !important;
+    -webkit-backdrop-filter: blur(34px) saturate(var(--mat-heavy-sat));
+    backdrop-filter: blur(34px) saturate(var(--mat-heavy-sat));
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    /* Context-aware separation (§12): a deeper shadow than a chip would get,
+       because this surface is large and frequently lands over busy imagery. */
+    box-shadow: var(--mat-edge-light), var(--mat-shadow-medium);
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   1.6 — Mobile drawer: heavy structural material + materialize on enter.
+
+   §12 "materialize, don't just fade": blur radius and scale animate together,
+   so the panel reads as glass condensing into place rather than a white card
+   being cross-faded in. Scale is a 2% inflation — small enough to stay
+   non-vestibular, large enough to see.
+
+   Dim to focus: the drawer BLOCKS, so it gets a scrim, and the scrim's blur
+   goes 2px → 12px to push the page back behind it.
+   -------------------------------------------------------------------------- */
+.mobile-panel {
+  background: rgba(255, 255, 255, 0.86) !important;
+  -webkit-backdrop-filter: blur(var(--mat-heavy-blur)) saturate(var(--mat-heavy-sat));
+  backdrop-filter: blur(var(--mat-heavy-blur)) saturate(var(--mat-heavy-sat));
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.6), -12px 0 40px rgba(26, 22, 18, 0.18);
+  transform: translateX(100%) scale(1.02);
+  transform-origin: 100% 50%;
+  transition: transform var(--mat-out), -webkit-backdrop-filter var(--mat-out);
+}
+.mobile-drawer.is-open .mobile-panel {
+  transform: translateX(0) scale(1);
+  transition: transform var(--mat-in), -webkit-backdrop-filter var(--mat-in);
+}
+
+.mobile-backdrop {
+  background: var(--mat-tint-scrim) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  backdrop-filter: blur(12px) saturate(120%);
+  transition: opacity var(--mat-out);
+}
+.mobile-drawer.is-open .mobile-backdrop {
+  transition: opacity var(--mat-in);
+}
+
+/* Drawer sits on glass — same vibrancy rule as the header (§12). Never stack a
+   light translucent surface on another, so the accordion rows stay untinted;
+   only their type is strengthened. */
+.mobile-accordion summary {
+  font-weight: 600;
+  color: var(--color-text-primary, #2b2724);
+}
+.mobile-accordion {
+  border-bottom-color: rgba(43, 39, 36, 0.14);
+}
+
+/* ----------------------------------------------------------------------------
+   1.7 — Lightbox: a modal task. Scrim + push-back + materialize.
+   -------------------------------------------------------------------------- */
+.lightbox {
+  -webkit-backdrop-filter: blur(20px) saturate(115%);
+  backdrop-filter: blur(20px) saturate(115%);
+  transition: opacity var(--mat-out);
+}
+.lightbox.is-open {
+  transition: opacity var(--mat-in);
+}
+.lightbox .lightbox-stage {
+  transform: scale(0.94);
+  filter: blur(6px);
+  transition: transform var(--mat-out), filter var(--mat-out);
+}
+.lightbox.is-open .lightbox-stage {
+  transform: scale(1);
+  filter: blur(0);
+  transition: transform var(--mat-in), filter var(--mat-in);
+}
+
+/* Lightbox chrome is small and interactive ⇒ LIGHT material (§12: lighter
+   materials draw attention to interactive elements). */
+.lightbox-btn {
+  background: rgba(255, 255, 255, 0.14) !important;
+  -webkit-backdrop-filter: blur(var(--mat-light-blur)) saturate(var(--mat-light-sat));
+  backdrop-filter: blur(var(--mat-light-blur)) saturate(var(--mat-light-sat));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* ----------------------------------------------------------------------------
+   1.8 — Welcome card: also a modal task. Same treatment, same reasoning.
+
+   Exit stays at 300ms because welcome-card.js listens for the overlay's
+   transitionend with a 400ms safety timeout — a longer exit would be cut off
+   mid-animation when that fallback fires.
+   -------------------------------------------------------------------------- */
+.dp-welcome-overlay {
+  background: var(--mat-tint-scrim) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(115%);
+  backdrop-filter: blur(16px) saturate(115%);
+}
+.dp-welcome-card {
+  transform: translateY(10px) scale(0.96);
+  filter: blur(8px);
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.6, 1),
+              filter 300ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+.dp-welcome-overlay.is-visible .dp-welcome-card {
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  transition: transform var(--mat-in), filter var(--mat-in);
+}
+
+/* ----------------------------------------------------------------------------
+   1.9 — Scroll progress: desktop only.
+
+   The bar was switched off at every width on 2026-08-05 because on a phone it
+   duplicated the browser's own right-edge scroll indicator. Desktop browsers
+   have no such indicator on a trackpad, so the signature is restored there and
+   stays off on mobile, as briefed.
+   -------------------------------------------------------------------------- */
+@media (min-width: 769px) {
+  .scroll-progress {
+    display: block;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   1.10 — Fallbacks.
+
+   §14 asks for three independent signals; the reduced-transparency and
+   contrast branches land in Phase 6. This block covers the capability case
+   only: a browser with no backdrop-filter gets opaque surfaces, because a 70%
+   tint with nothing behind it is unreadable.
+   -------------------------------------------------------------------------- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header.is-scrolled .main-nav,
+  .site-header.is-scrolled [data-section="utility-bar"] {
+    background: rgba(255, 255, 255, 0.97) !important;
+  }
+  .mobile-panel {
+    background: #ffffff !important;
+  }
+  .mega-panel {
+    background: #ffffff !important;
+  }
+  .lightbox-btn {
+    background: rgba(255, 255, 255, 0.22) !important;
+  }
+  .site-header .main-nav::after {
+    display: none;
+  }
+}
