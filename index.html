@@ -10,9 +10,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500&family=Playfair+Display:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500&family=Noto+Serif+Devanagari:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
+  <!-- Noto Serif Devanagari is loaded here because .newsletter-title
+       ("किशोर ज्ञानप्रकाश") has always ASKED for it in CSS while this page never
+       loaded it — only the /mr/ pages did — so the site's one Devanagari display
+       heading rendered in whatever the visitor's OS happened to substitute.
+       This is the homepage's only Devanagari display type; inner English pages
+       do not need the family. -->
 
   <!-- Favicon / touch icons (generated from the square brand logo) -->
   <link rel="icon" type="image/x-icon" href="/images/favicon/favicon.ico?v=3">
@@ -2357,7 +2363,12 @@
     <section class="section-pad pad-image reveal" aria-labelledby="happening-heading">
       <div class="container-main">
         <div class="section-eyebrow">In This Section</div>
-        <h2 id="happening-heading" class="section-title" style="margin-bottom:0; text-transform:uppercase; letter-spacing:0.01em;">Happening at Dnyanprakash</h2>
+        <!-- Uppercase treatment kept (deliberate design decision); the tracking
+             now comes from the caps tier in apple-design.css instead of an
+             inline one-off. The old inline `letter-spacing:0.01em` made this the
+             only heading on the site tracked APART while every sibling
+             .section-title was tracked together — §16, "nothing is random". -->
+        <h2 id="happening-heading" class="section-title section-title-caps" style="margin-bottom:0;">Happening at Dnyanprakash</h2>
 
         <!-- ---------- Gallery ---------- -->
         <div class="happening-sub">
@@ -2502,7 +2513,12 @@
         <!-- Section header -->
         <header class="newsletter-header reveal">
           <p class="section-eyebrow" style="margin: 0 auto 18px;">Publications</p>
-          <h2 class="newsletter-title">किशोर ज्ञानप्रकाश</h2>
+          <!-- lang="mr" is what lets the :lang(mr) Devanagari type scale in
+               apple-design.css reach this heading. Without it the run inherits
+               Playfair's Latin metrics on an lang="en" page. Also correct for
+               screen readers, which otherwise read Devanagari with an English
+               voice. -->
+          <h2 class="newsletter-title" lang="mr">किशोर ज्ञानप्रकाश</h2>
           <p class="newsletter-subtitle">The Newsletter</p>
         </header>
 
@@ -2511,7 +2527,7 @@
 
           <!-- Editorial column (left on desktop) -->
           <div class="newsletter-editorial reveal">
-            <p class="newsletter-issue-meta" data-meta-target>अंक ८२&nbsp;&nbsp;·&nbsp;&nbsp;मे २०२६</p>
+            <p class="newsletter-issue-meta" data-meta-target lang="mr">अंक ८२&nbsp;&nbsp;·&nbsp;&nbsp;मे २०२६</p>
             <h3 class="newsletter-blurb-title">Twenty-six years. Eighty-two issues.</h3>
             <p class="newsletter-blurb-body">Twice each year since 1999, Kishor Dnyanprakash has carried the writing of our teachers, the work of our students, and the rhythms of school life in Latur. Edited by Satish Narhare. Published in Marathi for parents.</p>
             <p class="newsletter-blurb-body">This issue includes editorial reflections on leadership and child development, contributions from teachers and visiting writers, and the school&rsquo;s cultural life.</p>

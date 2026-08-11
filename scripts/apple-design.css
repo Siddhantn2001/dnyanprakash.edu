@@ -461,3 +461,335 @@
     display: none;
   }
 }
+
+/* ============================================================================
+   PHASE 2 — TYPOGRAPHY  (skill §15)
+
+   Measured starting point (index.html, computed values, not source values):
+
+     element                 size            leading   tracking   note
+     hero h1                 48 → 84px       1.05      -0.015em   ONE value across a 36px range
+     section h2              38 → 58px       1.10      -0.01em    ONE value across a 20px range
+     "Happening…" h2         58px            1.10      +0.010em   inline one-off, tracked APART
+     stat number             64 → 88px       1.00       0em       88px display numerals, untracked
+     academics h3            24px            1.15       0em
+     news headline           22px            1.20       0em
+     eyebrow                 11–12px         1.50      +0.16em    correct direction already
+     newsletter h2 (मराठी)   38 → 58px       1.15      -0.010em   NEGATIVE tracking on Devanagari
+     body                    15–17px         1.55       0em
+
+   Three things are wrong here against §15:
+
+   1. "Tracking is size-specific — never one value for all sizes. A fixed
+      letter-spacing is wrong somewhere." The hero carries -0.015em whether it
+      renders at 48px or 84px. -0.015em is roughly right at 48px and much too
+      loose at 84px. Same story on the section headings.
+
+   2. "Leading tracks size inversely." The scale here is nearly FLAT — 1.05 at
+      84px, 1.10 at 58px, 1.15 at 24px, 1.20 at 22px. The spread across a 4×
+      size range is 0.15. It should open up much more as size drops.
+
+   3. Devanagari inherits Latin metrics. Negative tracking pulls a matra
+      toward the neighbouring consonant cluster, and 1.15 leading does not
+      clear the marks that sit above AND below the baseline.
+
+   The fix is a tracking scale and a leading scale keyed to size tier, applied
+   with clamp() so both track the fluid size instead of stepping at a
+   breakpoint. Tier boundaries follow the sizes actually in use on the site.
+   ============================================================================ */
+
+:root {
+  /* --- Tracking, by size tier. Negative grows with size (§15). --- */
+  --track-display-xl: -0.032em;   /* ≥ 72px — hero at desktop, stat numerals */
+  --track-display-lg: -0.026em;   /* 48–72px */
+  --track-display-md: -0.020em;   /* 32–48px */
+  --track-display-sm: -0.013em;   /* 20–32px */
+  --track-body: 0em;              /* 15–19px — body sits at 0 */
+  --track-small: 0.008em;         /* 12–14px running text, slightly positive */
+  --track-label: 0.16em;          /* uppercase micro-labels (unchanged) */
+
+  /* All-caps display is its own case: caps have tighter sidebearings than
+     lowercase, so they need a touch MORE than the mixed-case tier at the same
+     size — but still far less than the +0.01em one-off this replaces. */
+  --track-caps-lg: 0.004em;
+
+  /* --- Leading, inverse to size (§15). --- */
+  --lead-display-xl: 1.00;   /* ≥ 72px */
+  --lead-display-lg: 1.05;   /* 48–72 */
+  --lead-display-md: 1.10;   /* 32–48 */
+  --lead-display-sm: 1.24;   /* 20–32 — was 1.15/1.20, the flattest part of the old scale */
+  --lead-body: 1.62;
+  --lead-lede: 1.58;
+
+  /* --- Devanagari. Its own scale, not a tweak of the Latin one. --- */
+  --deva-lead-display: 1.34;  /* matras sit above AND below — 1.15 clipped them */
+  --deva-lead-body: 1.85;
+  --deva-track: 0em;          /* never negative: it collides matra with consonant */
+  --deva-track-label: 0.02em; /* the established Marathi eyebrow value */
+  --deva-weight-display: 600; /* Noto Serif Devanagari 400 reads lighter than Playfair 400 */
+}
+
+/* ----------------------------------------------------------------------------
+   2.1 — Latin display type. Size via clamp(), tracking and leading per tier.
+
+   Selectors lead with `section h2.section-title` / `.hero .hero-title` to match
+   the specificity landing-elevation.css already uses, so this wins on source
+   order rather than on !important.
+   -------------------------------------------------------------------------- */
+
+/* Hero — the widest size range on the site: it renders at 48px on a phone and
+   84px on a desktop. Tracking is TIERED to that range rather than set once.
+
+   An em value alone is not enough here, and that is the whole point of §15: em
+   tracking is proportional, so it holds the same OPTICAL looseness at every
+   size, while large type needs to get proportionally TIGHTER as it grows.
+
+   (A first attempt expressed this as clamp(-0.032em, -0.015em - 0.35vw,
+   -0.021em). It measured -0.032em at BOTH 48px and 84px — mixing em against
+   vw made the preferred term more negative than the minimum at every width, so
+   it pinned to the min. Media queries are less clever and actually work.) */
+.hero .hero-title,
+.hero-title {
+  font-size: clamp(3rem, 7.5vw, 5.25rem);
+  line-height: var(--lead-display-lg);
+  font-weight: 400;
+}
+@media (max-width: 768px) {           /* renders ~48px */
+  .hero .hero-title,
+  .hero-title { letter-spacing: -0.021em; }
+}
+@media (min-width: 769px) and (max-width: 1279px) {  /* renders ~58–70px */
+  .hero .hero-title,
+  .hero-title { letter-spacing: -0.028em; }
+}
+@media (min-width: 1280px) {          /* renders 84px */
+  .hero .hero-title,
+  .hero-title { letter-spacing: -0.034em; }
+}
+
+/* Section headings — 38px on a phone, 58px on desktop. Same tiering. */
+section h2.section-title,
+.section-title {
+  font-size: clamp(2.375rem, 4.5vw, 3.625rem);
+  line-height: var(--lead-display-md);
+}
+@media (max-width: 768px) {           /* renders 38px */
+  section h2.section-title,
+  .section-title { letter-spacing: -0.018em; }
+}
+@media (min-width: 769px) and (max-width: 1279px) {  /* renders 38–57px */
+  section h2.section-title,
+  .section-title { letter-spacing: -0.022em; }
+}
+@media (min-width: 1280px) {          /* 4.5vw caps out at 58px here */
+  section h2.section-title,
+  .section-title { letter-spacing: -0.026em; }
+}
+
+/* The one uppercase section heading. It was carrying an inline
+   `letter-spacing: 0.01em`, which made the largest heading on the homepage the
+   only one tracked APART — §16, "nothing is random". The uppercase treatment
+   is kept (it is a deliberate design decision); the tracking now comes from
+   the caps tier instead of a hardcoded one-off. */
+.section-title-caps {
+  text-transform: uppercase;
+  letter-spacing: var(--track-caps-lg);
+}
+
+/* Editorial headings that are not .section-title */
+h1 {
+  font-size: clamp(2.125rem, 3.2vw, 2.875rem);
+  line-height: var(--lead-display-md);
+  letter-spacing: var(--track-display-md);
+  margin: 0 0 1.5625rem; /* was 25px — rem so it scales with the user's text size */
+}
+h2 {
+  line-height: var(--lead-display-md);
+  letter-spacing: var(--track-display-md);
+  margin: 0 0 1.5625rem;
+}
+h3 {
+  /* 24px sits in the SM tier: smaller type wants LOOSER leading, so 1.15 → 1.24.
+     This is the correction that makes the scale genuinely inverse. */
+  line-height: var(--lead-display-sm);
+  letter-spacing: var(--track-display-sm);
+  margin: 0 0 1.5625rem;
+}
+
+/* Card and tile headings — 20–24px, SM tier. */
+.news-headline,
+.academics-card h3,
+.event-title,
+.mega-title {
+  line-height: var(--lead-display-sm);
+  letter-spacing: var(--track-display-sm);
+}
+
+/* Display numerals. 88px of Playfair with zero tracking was the single
+   loosest-set type on the site. Tabular figures keep the slider from
+   reflowing as the number changes. */
+.stat-num,
+.stat-counter {
+  letter-spacing: var(--track-display-xl);
+  line-height: var(--lead-display-xl);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----------------------------------------------------------------------------
+   2.2 — Body copy. Leading opens up (§15: looser on body), tracking stays 0.
+   -------------------------------------------------------------------------- */
+.prose p,
+.prose ul li,
+.mission-body p,
+.mega-desc,
+.meet-desc {
+  line-height: var(--lead-body);
+  letter-spacing: var(--track-body);
+}
+.prose p {
+  margin: 0 0 1.125rem; /* was 18px */
+}
+p.lede,
+.lede {
+  line-height: var(--lead-lede);
+  letter-spacing: var(--track-body);
+}
+
+/* Small running text — the one place §15 asks for POSITIVE tracking, because
+   at 12–14px letterforms crowd. Explicitly NOT applied to Devanagari (2.3). */
+.news-cat,
+.event-time,
+.breadcrumb,
+.footer-links a {
+  letter-spacing: var(--track-small);
+}
+
+/* ----------------------------------------------------------------------------
+   2.3 — Devanagari.
+
+   :lang(mr) rather than html[lang="mr"] on purpose. It matches on the COMPUTED
+   language, so one rule set covers both cases:
+     - a whole Marathi page (<html lang="mr">), and
+     - a Devanagari run inside an English page (<span lang="mr">), which is
+       what "किशोर ज्ञानप्रकाश", "अंक ८२ · मे २०२६" and the मराठी toggle label
+       are. Those three were previously unreachable by any Devanagari rule and
+       were inheriting Playfair's metrics.
+
+   Everything here is the OPPOSITE of the Latin scale in one respect: tracking
+   never goes negative, at any size. Devanagari glyph clusters are drawn as
+   units (consonant + matra + conjunct); pulling them together visually merges
+   marks into the letter beside them.
+   -------------------------------------------------------------------------- */
+   Two selector forms are needed, and both are load-bearing:
+
+     :root:lang(mr) X   a whole Marathi page. The :root prefix is not
+                        decoration — every /mr/ page carries an inline
+                        `html[lang="mr"] .article-heading h1` block at
+                        specificity (0,2,2), and a plain `:lang(mr) .x h1`
+                        is only (0,2,1), so it LOSES. Measured: the /mr/ tree
+                        kept its old 1.2 leading until this prefix was added.
+
+     X:lang(mr)         a Devanagari run inside an English page, where the
+                        lang attribute sits ON the element itself — a
+                        descendant combinator never matches it.
+   -------------------------------------------------------------------------- */
+:lang(mr) {
+  letter-spacing: var(--deva-track);
+}
+
+:root:lang(mr) h1,
+:root:lang(mr) h2,
+:root:lang(mr) h3,
+:root:lang(mr) .section-title,
+:root:lang(mr) .hero-title,
+:root:lang(mr) .article-heading h1,
+:root:lang(mr) .page-hero-content h1,
+:root:lang(mr) .newsletter-title,
+h1:lang(mr),
+h2:lang(mr),
+h3:lang(mr),
+.section-title:lang(mr),
+.hero-title:lang(mr),
+.newsletter-title:lang(mr) {
+  line-height: var(--deva-lead-display);
+  letter-spacing: var(--deva-track);
+  font-weight: var(--deva-weight-display);
+}
+
+:root:lang(mr) body,
+:root:lang(mr) p,
+:root:lang(mr) li,
+:root:lang(mr) .prose p,
+:root:lang(mr) .prose .lede,
+:root:lang(mr) .article-heading .lede,
+:root:lang(mr) .mission-body p,
+p:lang(mr),
+li:lang(mr) {
+  line-height: var(--deva-lead-body);
+  letter-spacing: var(--deva-track);
+}
+
+/* Devanagari has no uppercase letterforms, so wide tracking just opens gaps
+   between clusters and text-transform does nothing but confuse copy/paste.
+
+   Scoped to :lang(mr) and NOT applied to .lang-toggle-label unconditionally:
+   that label is मराठी on English pages but "English" on Marathi pages, and the
+   Latin word should keep the site's uppercase utility style. lang-toggle.js now
+   sets the element's lang attribute alongside the text, so each state gets the
+   treatment for the script it is actually rendering. */
+:root:lang(mr) .section-eyebrow,
+:root:lang(mr) .mega-eyebrow,
+:root:lang(mr) .aside-card-eyebrow,
+:root:lang(mr) .article-heading .eyebrow,
+:root:lang(mr) .eyebrow,
+:root:lang(mr) .news-cat,
+.newsletter-issue-meta:lang(mr),
+.lang-toggle-label:lang(mr) {
+  letter-spacing: var(--deva-track-label);
+  text-transform: none;
+  /* A label is not body copy: it must not inherit the 1.85 body leading, which
+     the blanket `:root:lang(mr) body` rule above would otherwise hand it. */
+  line-height: 1.5;
+}
+
+/* The homepage newsletter heading "किशोर ज्ञानप्रकाश". Two separate faults:
+
+   1. It asked for 'Noto Serif Devanagari' in CSS but index.html never loaded
+      that family — only the /mr/ pages do — so it rendered in whatever
+      Devanagari serif the visitor's OS happened to have, or none. That is a
+      real loading bug, not a refinement; the family is now requested in
+      index.html's <link>.
+   2. It carried line-height 1.1 and letter-spacing -0.01em, both inherited
+      from the Latin display scale. Devanagari matras sit above AND below the
+      baseline, so 1.1 crowds them, and negative tracking pulls a matra into
+      the cluster beside it.
+
+   The <h2> is now lang="mr"-tagged, so the :lang(mr) rules above reach it and
+   these are only the size and family concerns. */
+.newsletter-title {
+  font-size: clamp(2.375rem, 4.5vw, 3.625rem);
+}
+
+/* ----------------------------------------------------------------------------
+   2.4 — Respect the user's text-size setting (§15).
+
+   Root font-size stays at the browser default instead of being pinned to 16px,
+   so a visitor who raises text size in their OS/browser gets larger type; the
+   rem-based margins above then scale the layout WITH it rather than leaving
+   bigger text in the same boxes.
+   -------------------------------------------------------------------------- */
+html {
+  font-size: 100%;
+}
+
+/* Optical sizing where the face supports it (Playfair Display ships an
+   `opsz` axis on its variable cut; a no-op on the static cut). */
+.hero-title,
+.section-title,
+h1,
+h2,
+h3,
+.news-headline,
+.stat-num {
+  font-optical-sizing: auto;
+}

@@ -135,6 +135,12 @@
     if (metaTarget) {
       metaTarget.innerHTML =
         'अंक ' + issue.number + '&nbsp;&nbsp;·&nbsp;&nbsp;' + issue.dateMr;
+      /* This string is Devanagari on an lang="en" page. Tagging it is what
+         lets the :lang(mr) type scale in apple-design.css give it Devanagari
+         tracking instead of the Latin +0.05em it was inheriting, which opened
+         gaps between glyph clusters. The static markup carries lang="mr" too;
+         this keeps it correct after a re-render. */
+      metaTarget.setAttribute('lang', 'mr');
     }
     if (pdfTarget) {
       pdfTarget.href = issue.pdfPath;

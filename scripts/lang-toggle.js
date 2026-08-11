@@ -42,10 +42,19 @@
     if (!toggle) return;
     var label = toggle.querySelector('.lang-toggle-label');
 
+    /* The label swaps script as well as text — "English" is Latin, "मराठी" is
+       Devanagari — so the lang attribute swaps with it. That is what lets the
+       :lang(mr) type scale in apple-design.css apply Devanagari leading and
+       tracking to the मराठी state while leaving the Latin state on the site's
+       normal uppercase utility styling. It also stops a screen reader reading
+       Devanagari with an English voice (and vice versa). */
     if (isMarathi) {
       toggle.setAttribute('href', englishUrl);
       toggle.setAttribute('aria-label', 'Switch to English');
-      if (label) label.textContent = 'English';
+      if (label) {
+        label.textContent = 'English';
+        label.setAttribute('lang', 'en');
+      }
       return;
     }
 
@@ -53,7 +62,10 @@
     var hasMarathi = manifest[logicalPath] === true;
     toggle.setAttribute('href', hasMarathi ? marathiUrl : '#');
     toggle.setAttribute('aria-label', 'Switch to Marathi');
-    if (label) label.textContent = 'मराठी';
+    if (label) {
+      label.textContent = 'मराठी';
+      label.setAttribute('lang', 'mr');
+    }
 
     toggle.addEventListener('click', function (e) {
       if (hasMarathi) return;
