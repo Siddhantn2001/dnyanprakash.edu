@@ -126,10 +126,106 @@
     apply();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupLangToggleRelocation);
-  } else {
+  /* --------------------------------------------------------------------------
+     PHASE 3 — Press feedback on pointer-DOWN (§1 Response, §10 Gesture details).
+
+     §1: "Respond on pointer-down, not on release. Highlight a button the instant
+     it's pressed. Waiting for click/touch-up to show feedback feels dead."
+     §10: "Tap: highlight on touch-DOWN (instant), commit on touch-UP. Add ~10px
+     of hysteresis/hit padding around the target, and allow cancel-by-dragging-
+     away and back."
+
+     One delegated listener on the document rather than a listener per element:
+     the gallery, the coverflow and the news carousel all inject their targets
+     after load, and delegation covers them without re-binding.
+
+     Deliberately NOT using setPointerCapture here. Capture would redirect the
+     event stream away from the element and can interfere with a link's native
+     activation; nothing in this feature needs the pointer once it has left the
+     target — it only needs to know that it did. Phase 4's drag gestures are a
+     different matter and do capture.
+
+     Every listener is passive, so none of this can block scrolling. A finger
+     that starts on a card and then scrolls fires pointercancel, which clears the
+     pressed state — the card must not sit there looking held down.
+     -------------------------------------------------------------------------- */
+  var PRESSABLE = [
+    'a[href]', 'button', 'summary', '[role="button"]',
+    '.news-card', '.academics-card', '.meet-card', '.event-row',
+    '.cf-item', '.gallery-img', '.coverflow-dot', '.news-carousel-dot',
+  ].join(',');
+
+  var SLOP = 10; // §10's ~10px of hysteresis around the target
+
+  function setupPressFeedback() {
+    var pressed = null; // { el, rect, inside }
+
+    function mark(el) { el.classList.add('dp-pressed'); }
+    function unmark(el) { if (el) el.classList.remove('dp-pressed'); }
+
+    function end() {
+      if (pressed) unmark(pressed.el);
+      pressed = null;
+    }
+
+    document.addEventListener('pointerdown', function (e) {
+      // Primary button / any touch or pen contact only.
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      var el = e.target.closest && e.target.closest(PRESSABLE);
+      if (!el) return;
+      if (el.hasAttribute('disabled') || el.getAttribute('aria-disabled') === 'true') return;
+      // Inert "coming soon" links are styled pointer-events:none, but a parent
+      // could still match — check the computed value rather than trusting markup.
+      if (getComputedStyle(el).pointerEvents === 'none') return;
+
+      end();
+      pressed = { el: el, rect: el.getBoundingClientRect(), inside: true };
+      el.classList.add('dp-pressable');
+      mark(el);
+    }, { passive: true });
+
+    document.addEventListener('pointermove', function (e) {
+      if (!pressed) return;
+      var r = pressed.rect;
+      // Hysteresis measured against the TARGET's bounds, not radially from the
+      // touch-down point: "dragging away from the target" is what the user
+      // perceives, and on a 340px card a radial test would cancel while the
+      // finger is still comfortably on it.
+      var inside =
+        e.clientX >= r.left - SLOP && e.clientX <= r.right + SLOP &&
+        e.clientY >= r.top - SLOP && e.clientY <= r.bottom + SLOP;
+      if (inside === pressed.inside) return;
+      pressed.inside = inside;
+      if (inside) mark(pressed.el);   // dragged back — re-arm (§10)
+      else unmark(pressed.el);
+    }, { passive: true });
+
+    ['pointerup', 'pointercancel', 'contextmenu', 'dragstart'].forEach(function (ev) {
+      document.addEventListener(ev, end, { passive: true });
+    });
+    window.addEventListener('blur', end);
+
+    /* NOT bound to 'scroll'. An earlier cut was, as belt-and-braces for a touch
+       turning into a scroll — and it made the press state fire-and-vanish:
+       any scroll event cancelled it, including momentum still settling from a
+       previous flick, so touching a card while the page was gliding killed the
+       highlight instantly. Event trace: scroll@8910 -> pointerdown@8933 ->
+       pressed -> cleared by the next settling scroll tick.
+
+       pointercancel is the correct and sufficient signal — every engine fires
+       it for a touch pointer the moment the browser takes the gesture over for
+       scrolling — and the pointermove hysteresis above is the backstop. */
+  }
+
+  function init() {
     setupLangToggleRelocation();
+    setupPressFeedback();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 
   global.DPMotion = DPMotion;

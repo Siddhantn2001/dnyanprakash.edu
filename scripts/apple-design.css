@@ -793,3 +793,231 @@ h3,
 .stat-num {
   font-optical-sizing: auto;
 }
+
+/* ============================================================================
+   PHASE 3 — RESPONSE & TOUCH  (skill §1 Response, §10 Gesture details)
+
+   Why mobile felt dead: every affordance on this site expressed itself through
+   :hover, and a phone has no hover. Measured at 375px across five pages, 34
+   distinct interactive targets rendered under 44px — including page-control
+   dots at 6×6 and 7×7 — and the newsletter's prev/next arrows were not merely
+   small but `opacity: 0` until :hover/:focus-within, i.e. permanently invisible
+   on a touch device.
+
+   §1: "Respond on pointer-down, not on release. Waiting for click/touch-up to
+   show feedback feels dead." §10: "Tap: highlight on touch-DOWN (instant),
+   commit on touch-UP. Add ~10px of hysteresis/hit padding around the target,
+   and allow cancel-by-dragging-away and back."
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   3.1 — Remove latency from the input path (§1).
+
+   touch-action: manipulation opts every control out of double-tap-to-zoom, and
+   with it the ~300ms click delay browsers hold in reserve to detect that
+   gesture. The viewport meta already suppresses this in modern engines; this
+   makes it explicit and covers the rest.
+   -------------------------------------------------------------------------- */
+a[href],
+button,
+summary,
+label,
+input,
+select,
+textarea,
+[role="button"],
+.news-card,
+.academics-card,
+.cf-item,
+.gallery-img img {
+  touch-action: manipulation;
+}
+
+/* ----------------------------------------------------------------------------
+   3.2 — Press feedback, applied on pointer-DOWN.
+
+   .dp-pressed is added by apple-design.js the instant a pointer goes down and
+   removed on up/cancel — or as soon as the pointer strays more than 10px
+   outside the target, and re-added if it comes back (§10's cancel-by-dragging-
+   away-and-back).
+
+   Scale is inverse to element size: a 340px-wide card needs far less than a 7px
+   dot to read as "pressed" at all. In goes fast (90ms, §1's ~100ms); out is
+   slower (180ms) so release feels like settling rather than snapping.
+   -------------------------------------------------------------------------- */
+.dp-pressable {
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dp-pressed {
+  transition: transform 90ms ease-out, opacity 90ms ease-out;
+}
+
+/* Buttons — the skill's own value. */
+.btn.dp-pressed,
+button.dp-pressed,
+.btn-hero-primary.dp-pressed,
+.btn-hero-secondary.dp-pressed,
+.dp-welcome-btn.dp-pressed,
+.aside-cta-btn.dp-pressed,
+.aside-instagram-btn.dp-pressed {
+  transform: scale(0.97);
+}
+
+/* Large surfaces — a card is 10× a button's area, so 0.985 reads the same. */
+.news-card.dp-pressed,
+.academics-card.dp-pressed,
+.meet-card.dp-pressed,
+.event-row.dp-pressed,
+.gallery-img.dp-pressed img,
+.cf-item.dp-pressed {
+  transform: scale(0.985);
+}
+/* The active cover carries its own translate; composing scale onto it here
+   would drop the centring transform, so it is expressed as a nudge instead. */
+.cf-item[data-delta="0"].dp-pressed {
+  transform: translate(-50%, -50%) scale(0.98);
+}
+
+/* Small controls — need a big proportional change to be perceptible at all. */
+.coverflow-dot.dp-pressed,
+.news-carousel-dot.dp-pressed,
+.coverflow-nav.dp-pressed,
+.news-carousel-arrow.dp-pressed,
+.stats-arrow.dp-pressed,
+.lightbox-btn.dp-pressed,
+.footer-social a.dp-pressed,
+.hero-social-rail a.dp-pressed,
+[data-mobile-open].dp-pressed,
+[data-mobile-close].dp-pressed {
+  transform: scale(0.86);
+  opacity: 0.75;
+}
+
+/* Text links: scaling type looks broken. Tint instead — the same brand red the
+   hover state uses, so press and hover say the same thing. */
+a.dp-pressed:not(.btn):not(.news-card):not(.cf-item):not([class*="social"]),
+.mega-sublink.dp-pressed,
+.mobile-sublinks a.dp-pressed,
+.footer-links a.dp-pressed,
+.breadcrumb a.dp-pressed,
+.news-read.dp-pressed,
+.nav-link.dp-pressed {
+  color: var(--color-primary) !important;
+  opacity: 0.72;
+}
+
+/* Drawer rows are full-width bars: a wash reads better than a scale. */
+.mobile-accordion summary.dp-pressed {
+  background: rgba(158, 27, 50, 0.07);
+}
+
+/* ----------------------------------------------------------------------------
+   3.3 — 44px minimum touch targets (§10).
+
+   The hit area grows; the VISUAL mark does not. A transparent ::after centred
+   on each control expands the target to 44px without changing a single pixel of
+   the design. None of these elements had an ::after already — checked before
+   claiming the slot.
+   -------------------------------------------------------------------------- */
+.coverflow-dot,
+.news-carousel-dot,
+.coverflow-nav,
+.news-carousel-arrow,
+.stats-arrow,
+.footer-social a,
+.hero-social-rail a,
+.lightbox-btn {
+  position: relative;
+}
+.coverflow-nav::after,
+.news-carousel-arrow::after,
+.stats-arrow::after,
+.footer-social a::after,
+.hero-social-rail a::after,
+.lightbox-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  /* Transparent: this is a hit area, not a visual. */
+}
+
+/* Page-control dots are the extreme case — 6×6 and 7×7. Full 44×44 hit boxes
+   would overlap each other three deep at the current 8px gap, and overlapping
+   targets activate the wrong item, which is worse than a small one. So: the
+   iOS page-control shape — full 44px of height (free, nothing sits above or
+   below), a widened gap, and the width that gap now affords. 6px → 28×44 is a
+   34× increase in target area. */
+.coverflow-dots,
+.news-carousel-dots {
+  gap: 16px !important;
+}
+.coverflow-dot::after,
+.news-carousel-dot::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 44px;
+}
+
+/* Buttons and form controls that measured 38–43px: round up to 44. */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-hero-secondary,
+.aside-cta-btn,
+.aside-instagram-btn,
+.footer-subscribe input,
+.footer-subscribe button,
+.dp-welcome-btn {
+  min-height: 44px;
+}
+
+/* Dense text links — breadcrumbs, footer columns, inline meta. These sit in
+   stacked or inline runs where a 44px ::after would overlap its neighbours, so
+   the row rhythm opens up instead and the padding is real. */
+@media (max-width: 768px) {
+  .footer-links {
+    gap: 2px !important;
+  }
+  .footer-links a,
+  .breadcrumb a,
+  .news-read,
+  .newsletter-read-link,
+  .newsletter-original-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  /* The address block's phone and email are the two links a parent is most
+     likely to tap on a phone, and both measured 16–20px tall. */
+  .site-footer address a,
+  .site-footer a[href^="tel:"],
+  .site-footer a[href^="mailto:"] {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   3.4 — Controls that only existed on hover (§1: there is no hover on a phone).
+
+   .coverflow-nav was opacity:0 until :hover/:focus-within. On a touch device
+   that state never arrives, so the newsletter's prev/next arrows were invisible
+   and the only way to change issue was a swipe nobody was told about. On touch
+   they are simply visible.
+   -------------------------------------------------------------------------- */
+@media (hover: none), (pointer: coarse) {
+  .coverflow-nav {
+    opacity: 1;
+  }
+}
