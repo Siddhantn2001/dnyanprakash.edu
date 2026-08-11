@@ -108,6 +108,91 @@
 }
 
 /* ----------------------------------------------------------------------------
+   1.1b — Retire the mobile utility strip; keep the मराठी toggle in the chrome.
+   (Phase 1 follow-up, owner-directed: option (b) of three.)
+
+   75px → 46px at rest. The strip's whole content at ≤768px was:
+
+     मराठी toggle    homepage: the ONLY item. Nowhere else in the mobile chrome.
+     Parent Login    inner pages. Same URL as the drawer's Student / Faculty /
+                     Alumni Login — http://dnyanprakash.techvium.in/site/userlogin
+                     — so it is already one tap into the drawer, three times over.
+     3 social icons  inner pages, rendered 14×14px (a §10 tap-target failure).
+                     The footer carries them, which is already this project's
+                     stated position.
+     phone/Students/Parents   already hidden below 640/768px by Tailwind.
+
+   So the strip was spending 29px (28 + 1px rule) to hold one affordance with no
+   other home, plus duplicates. The toggle moves into the nav row beside the
+   hamburger (apple-design.js), Parent Login joins the drawer's Login group, and
+   the strip goes.
+
+   §16 Agency — "keep people in control: offer choices, don't force a single
+   path" — is why the toggle stays visible rather than being buried with the
+   rest. On a Marathi-medium school's English-language site the language switch
+   is a primary affordance, not a secondary one; §17's findability requirement
+   is the floor, not the ceiling.
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  :root {
+    --dp-hdr-utility: 0px;
+    --dp-hdr-full: 46px; /* nav row only — no strip, no rule */
+  }
+
+  header.site-header [data-section="utility-bar"] {
+    display: none !important;
+  }
+
+  /* The relocated toggle. apple-design.js moves the existing #lang-toggle node
+     (listeners intact) into the nav row and marks it, rather than cloning it —
+     one toggle, one wiring, no drift with scripts/lang-toggle.js. */
+  .dp-lang-in-nav {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    /* 44px tap target inside a 46px row (§10). The visual mark stays small; the
+       hit area is grown with padding, not with type size. */
+    min-height: 44px;
+    padding: 0 10px;
+    margin-right: 2px;
+    font-family: var(--font-sans-cond);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    border-radius: 3px;
+    text-decoration: none;
+  }
+  .dp-lang-in-nav svg,
+  .dp-lang-in-nav i {
+    width: 14px;
+    height: 14px;
+    flex: none;
+  }
+
+  /* Overlay mode (hero behind the nav): white, matching the nav links it now
+     sits beside. */
+  .site-header:not(.nav-solid) .dp-lang-in-nav {
+    color: #ffffff;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+  }
+  /* On glass and on solid inner-page headers: the §12 vibrancy treatment, same
+     as the nav links — full contrast, heavier weight, never flat grey. */
+  .site-header.nav-solid .dp-lang-in-nav,
+  .site-header.is-scrolled .dp-lang-in-nav {
+    color: var(--color-text-primary, #2b2724);
+    text-shadow: none;
+  }
+}
+
+/* Desktop is untouched: the strip and the toggle stay exactly where they were. */
+@media (min-width: 769px) {
+  .dp-lang-in-nav {
+    display: none !important;
+  }
+}
+
+/* ----------------------------------------------------------------------------
    1.2 — The header as a real translucent material.
 
    0.92 → 0.70 tint, 14px → 30px blur, 1.4 → 1.8 saturation. The saturation

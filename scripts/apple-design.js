@@ -71,5 +71,66 @@
 
   reflect();
 
+  /* --------------------------------------------------------------------------
+     PHASE 1 FOLLOW-UP — relocate the मराठी toggle out of the retired mobile
+     utility strip and into the nav row.
+
+     The strip is hidden below 769px (apple-design.css §1.1b). Its only content
+     with no other home was this toggle, so it MOVES rather than disappearing:
+     the existing #lang-toggle node is appended into the nav row beside the
+     hamburger, which keeps scripts/lang-toggle.js's click handler, its
+     site-root detection and its ?fallback=true behaviour intact. Cloning would
+     have produced two toggles to keep in sync; moving produces one.
+
+     apple-design.js is injected last, so lang-toggle.js has already wired the
+     node by the time this runs — listeners travel with it.
+
+     Above 769px the node is put back exactly where it came from, so desktop is
+     byte-for-byte the layout it was before.
+     -------------------------------------------------------------------------- */
+  function setupLangToggleRelocation() {
+    var toggle = document.getElementById('lang-toggle');
+    if (!toggle) return;
+
+    /* Anchor on the hamburger, NOT on a wrapper class.
+       index.html wraps its nav row in .main-nav-inner; the other 48 pages wrap
+       theirs in .container-main. Selecting .main-nav-inner therefore found
+       nothing on every inner page and the toggle stayed behind in the hidden
+       strip — invisible. [data-mobile-open] is the one element both layouts
+       have in the same place, so it is the anchor. */
+    var burger = document.querySelector('.site-header .main-nav [data-mobile-open]') ||
+                 document.querySelector('.site-header [data-mobile-open]');
+    if (!burger || !burger.parentNode) return;
+
+    // Remember the exact original slot so desktop can be restored precisely.
+    var homeParent = toggle.parentNode;
+    var homeNext = toggle.nextSibling;
+
+    var mobile = mq('(max-width: 768px)');
+    var relocated = false;
+
+    function apply() {
+      if (mobile.matches && !relocated) {
+        toggle.classList.add('dp-lang-in-nav');
+        burger.parentNode.insertBefore(toggle, burger);
+        relocated = true;
+      } else if (!mobile.matches && relocated) {
+        toggle.classList.remove('dp-lang-in-nav');
+        if (homeParent) homeParent.insertBefore(toggle, homeNext);
+        relocated = false;
+      }
+    }
+
+    if (mobile.addEventListener) mobile.addEventListener('change', apply);
+    else if (mobile.addListener) mobile.addListener(apply);
+    apply();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupLangToggleRelocation);
+  } else {
+    setupLangToggleRelocation();
+  }
+
   global.DPMotion = DPMotion;
 })(window);
