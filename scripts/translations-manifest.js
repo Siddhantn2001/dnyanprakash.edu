@@ -23,4 +23,5 @@ window.MR_TRANSLATIONS_AVAILABLE = {
   "alumni.html": true,
   "academics/student-life.html": true,
   "news/editorial.html": true,
+  "news/33-scholarship-holders.html": true,
 };

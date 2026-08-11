@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>News &amp; Updates — Dnyanprakash</title>
-  <meta name="description" content="Latest stories from Dnyanprakash Educational Project." />
+  <title>33 Dnyanprakash Students Become Scholarship Holders — Dnyanprakash News</title>
+  <meta name="description" content="Thirty-three Dnyanprakash students have become scholarship holders in the Higher Primary and Pre-Secondary Scholarship Examinations, with two Class 5 students placing thirteenth on the State Merit List." />
 
   <!-- Google Fonts: Playfair Display (display italic substitute for adelle-condensed) + Libre Franklin (body substitute for franklin-gothic-urw) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -626,7 +626,7 @@
       .section-title { font-size: 36px; letter-spacing: -0.01em; }
     }
 
-    /* Uniform card grid — red heading block on top, image below, fixed dims */
+    /* ---------- Section 8.4 Featured News — Taft-style: image fills card, headline overlaid on dark gradient ---------- */
     .news-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -635,57 +635,52 @@
     @media (max-width: 900px) { .news-grid { grid-template-columns: 1fr; gap: 24px; } }
     .news-card {
       position: relative;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      background: var(--color-primary);
-      color: #fff;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
-    }
-    .news-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-      text-decoration: none;
-    }
-    .news-card .news-heading-block {
-      padding: 20px 22px 22px;
-      background: var(--color-primary);
-      color: #fff;
-      min-height: 150px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-    @media (max-width: 900px) {
-      .news-card .news-heading-block { min-height: 0; }
-    }
-    .news-card .news-img-wrap {
-      position: relative;
+      display: block;
       aspect-ratio: 4 / 3;
       overflow: hidden;
+      color: #fff;
+      transition: transform var(--transition-fast);
+    }
+    .news-card:hover { transform: translateY(-2px); text-decoration: none; }
+    .news-card .news-img-wrap {
+      position: absolute;
+      inset: 0;
       margin: 0;
     }
+    .news-card .news-img-wrap > * { width: 100%; height: 100%; }
     .news-card .news-img-wrap > img,
-    .news-card .news-img-wrap > .slot-box,
     .news-card .news-img-wrap > picture,
-    .news-card .news-img-wrap > picture > img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    .news-card .news-img-wrap > picture > img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+    .news-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg,
+        rgba(0,0,0,0) 35%,
+        rgba(0,0,0,0.45) 70%,
+        rgba(0,0,0,0.78) 100%);
+      z-index: 1;
+      transition: background var(--transition-fast);
     }
-    .news-card:hover .news-img-wrap > img,
-    .news-card:hover .news-img-wrap > picture > img { transform: scale(1.04); }
+    .news-card:hover::after {
+      background: linear-gradient(180deg,
+        rgba(0,0,0,0.1) 0%,
+        rgba(0,0,0,0.55) 60%,
+        rgba(0,0,0,0.85) 100%);
+    }
+    .news-card .news-overlay {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 24px 24px 22px;
+      z-index: 2;
+    }
     .news-cat {
       font-family: var(--font-sans-cond);
       font-size: 11px;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.85);
       font-weight: 500;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .news-headline {
       font-family: var(--font-display);
@@ -1064,6 +1059,47 @@
       color: var(--color-text-muted);
     }
 
+    /* ---------- Editorial news article: photo banner + headline above prose ---------- */
+    .article-banner {
+      width: 100%;
+      aspect-ratio: 2.4 / 1;
+      overflow: hidden;
+      background: var(--color-bg-alt);
+    }
+    .article-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .article-banner { aspect-ratio: 16 / 10; }
+    }
+    .article-header {
+      max-width: 760px;
+      margin: 0 0 48px;
+    }
+    .article-title {
+      font-family: var(--font-display);
+      font-style: normal;
+      font-weight: 400;
+      font-size: 48px;
+      line-height: 1.08;
+      letter-spacing: var(--tracking-display-tight);
+      color: var(--color-text-primary);
+      margin: 8px 0 20px;
+    }
+    @media (max-width: 768px) {
+      .article-title { font-size: 34px; }
+    }
+    .article-deck {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
     /* ---------- Scroll-reveal animation ---------- */
     /* Default: visible (no-JS users, SEO crawlers, and screenshots see content). */
     .reveal { opacity: 1; transform: none; }
@@ -1185,32 +1221,6 @@
       line-height: 1.45;
       color: var(--color-text-primary);
     }
-    /* ==== article-template:start ==== */
-    .article-hero-media { background: var(--color-bg-alt); line-height: 0; }
-    .article-hero-media img, .article-hero-media .slot-box {
-      width: 100%; aspect-ratio: 2.4 / 1; max-height: 560px; object-fit: cover; display: block;
-    }
-    @media (max-width: 768px) {
-      .article-hero-media img, .article-hero-media .slot-box { aspect-ratio: 16 / 10; max-height: none; }
-    }
-    main > section.section-pad.article-body { padding-top: 48px; padding-bottom: 80px; }
-    @media (min-width: 1024px) {
-      main > section.section-pad.article-body { padding-top: 56px; padding-bottom: 96px; }
-    }
-    .article-heading { margin: 0 0 28px; padding-bottom: 18px; border-bottom: 1px solid var(--color-border); }
-    .article-heading .eyebrow {
-      font-family: var(--font-sans-cond); font-size: 13px; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 14px;
-    }
-    .article-heading h1 {
-      font-family: var(--font-display); font-style: normal; font-weight: 400;
-      font-size: 56px; line-height: 1.08; color: var(--color-text-primary); margin: 0;
-      letter-spacing: -0.015em;
-    }
-    @media (max-width: 768px) {
-      .article-heading { margin-bottom: 24px; padding-bottom: 20px; }
-      .article-heading h1 { font-size: 36px; }
-    }
     .lede {
       font-size: 17px;
       line-height: 1.7;
@@ -1237,7 +1247,241 @@
     main > section.section-pad.article-body:has(> .container-main > .article-heading + .lede) + section.section-pad {
       padding-top: 0;
     }
+
+    /* ==== article-template:start ==== */
+    .article-hero-media {
+      background: var(--color-bg-alt);
+      line-height: 0;
+    }
+    .article-hero-media img,
+    .article-hero-media .slot-box {
+      width: 100%;
+      aspect-ratio: 2.4 / 1;
+      max-height: 560px;
+      object-fit: cover;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .article-hero-media img,
+      .article-hero-media .slot-box { aspect-ratio: 16 / 10; max-height: none; }
+    }
+    main > section.section-pad.article-body { padding-top: 48px; padding-bottom: 80px; }
+    @media (min-width: 1024px) {
+      main > section.section-pad.article-body { padding-top: 56px; padding-bottom: 96px; }
+    }
+    .article-heading {
+      margin: 0 0 28px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .article-heading .eyebrow {
+      font-family: var(--font-sans-cond);
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: 14px;
+    }
+    .article-heading h1 {
+      font-family: var(--font-display);
+      font-style: normal;
+      font-weight: 400;
+      font-size: 56px;
+      line-height: 1.08;
+      color: var(--color-text-primary);
+      margin: 0;
+      letter-spacing: -0.015em;
+    }
+    @media (max-width: 768px) {
+      .article-heading { margin-bottom: 24px; padding-bottom: 20px; }
+      .article-heading h1 { font-size: 36px; }
+    }
+    .article-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; }
+    @media (min-width: 1024px) {
+      .article-layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 72px; align-items: start; }
+    }
+    .article-layout .prose { max-width: none; }
+    .article-aside { display: flex; flex-direction: column; gap: 28px; }
+    @media (min-width: 1024px) {
+      .article-aside { position: sticky; top: 96px; }
+    }
+    .aside-pullquote {
+      border-left: 3px solid var(--color-primary);
+      padding: 4px 0 4px 20px;
+      margin: 0;
+      font-family: var(--font-display);
+      font-style: normal;
+      font-size: 22px;
+      line-height: 1.35;
+      color: var(--color-text-primary);
+    }
+    .aside-pullquote cite {
+      display: block;
+      margin-top: 12px;
+      font-family: var(--font-sans);
+      font-style: normal;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .aside-card { background: var(--color-bg-alt); padding: 24px; }
+    .aside-card-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin: 0 0 14px;
+    }
+    .aside-links { display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
+    .aside-links a {
+      color: var(--color-text-primary);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+    .aside-links a:hover { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+    .aside-instagram {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      padding: 20px 22px;
+    }
+    .aside-instagram-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .aside-instagram-top svg {
+      width: 22px; height: 22px; color: var(--color-primary);
+    }
+    .aside-instagram-top span {
+      font-family: var(--font-sans);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      font-size: 15px;
+    }
+    .aside-instagram p {
+      font-size: 14px; line-height: 1.5;
+      color: var(--color-text-muted);
+      margin: 0 0 14px;
+    }
+    .aside-instagram-btn {
+      display: inline-block;
+      background: var(--color-primary);
+      color: #fff;
+      padding: 10px 18px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .aside-instagram-btn:hover { background: var(--color-primary-dark); color: #fff; text-decoration: none; }
+    .aside-cta { background: var(--color-primary); color: #fff; padding: 24px; }
+    .aside-cta p {
+      font-family: var(--font-display); font-style: normal; font-weight: 400;
+      font-size: 19px; line-height: 1.3; color: #fff; margin: 0 0 16px;
+    }
+    .aside-cta a.aside-cta-btn {
+      display: inline-block; background: #fff; color: var(--color-primary);
+      padding: 11px 20px; font-family: var(--font-sans); font-size: 12px;
+      font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; transition: background .2s;
+    }
+    .aside-cta a.aside-cta-btn:hover { background: var(--color-bg-alt); }
     /* ==== article-template:end ==== */
+
+    /* ==== Scholarship roll (news/33-scholarship-holders) ====
+       Two column-major lists of "Name — Score". Real CSS multi-column, not a
+       grid: multicol flows top-to-bottom then across, which is the only
+       reading order that keeps a score-ranked list legible (a grid would put
+       ranks 1 and 2 side by side). Collapses to one column under 700px.
+       Identical markup and styling in the Marathi twin.
+
+       Every selector below is prefixed .prose because the article template's
+       own .prose p / .prose h2 rules sit at (0,1,1) and would otherwise win:
+       .prose p { margin: 0 0 18px } was flattening the closing line's margin
+       to zero, and .prose h2 was rendering the group labels at 32px Playfair
+       instead of as the site's eyebrow. */
+    .prose .scholars { margin: 26px 0 0; }
+    .prose .scholars-group + .scholars-group { margin-top: 46px; }
+    .prose .scholars-title {
+      font-family: var(--font-sans-cond);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin: 0 0 12px;
+      line-height: 1.3;
+    }
+    .prose .scholars-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      columns: 2;
+      column-gap: 56px;
+      border-top: 1px solid var(--color-border);
+    }
+    .prose .scholars-list li {
+      break-inside: avoid;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+    .prose .scholars-name { min-width: 0; }
+    .prose .scholars-score {
+      flex: 0 0 auto;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-primary);
+    }
+    .prose .scholars-note { margin-top: 34px; }
+    @media (max-width: 700px) {
+      .prose .scholars-list { columns: 1; column-gap: 0; }
+      .prose .scholars-list li { font-size: 15px; padding: 10px 0; }
+    }
+    /* Devanagari has no uppercase and needs looser leading — mirrors the
+       html[lang="mr"] typography block at the top of every Marathi page. */
+    html[lang="mr"] .prose .scholars-title {
+      letter-spacing: 0.02em;
+      text-transform: none;
+      font-size: 17px;
+    }
+    html[lang="mr"] .prose .scholars-list li { line-height: 1.65; }
+
+    /* Hero placeholder box. The English news template already sizes
+       .article-hero-media .slot-box; the Marathi template only ever carried a
+       real <img>, so its rule set stops at `img` and an unsized slot-box
+       collapses to ~68px. Declaring it here keeps both twins identical. */
+    .article-hero-media .slot-box {
+      width: 100%;
+      aspect-ratio: 2.4 / 1;
+      max-height: 560px;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .article-hero-media .slot-box { aspect-ratio: 16 / 10; max-height: none; }
+    }
+
+    /* Caption under the article hero image. */
+    .article-hero-caption {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--color-text-muted);
+      margin: 14px 0 0;
+    }
+    html[lang="mr"] .article-hero-caption { line-height: 1.8; }
   </style>
   <!-- Mobile polish layer (R/GA pass 2026-04-29) -->
   <link rel="stylesheet" href="../scripts/mobile-polish.css" />
@@ -1558,320 +1802,136 @@
   </header>
 
   <main>
-    <!-- =========================================================
-         News clippings carousel — replaces the single slot 37 hero.
-         Each of the 15 placeholder slots is a scanned newspaper article.
-         Drop a real image into /images/37-X-name.jpg and replace the
-         slot-box div with <img>, same way any other slot gets filled.
-         ========================================================= -->
-    <style>
-      .news-carousel-section { background: var(--color-bg-alt); position: relative; }
-      .news-carousel { position: relative; }
-      .news-carousel-viewport { overflow: hidden; }
-      .news-carousel-track {
-        display: flex;
-        transition: transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
-        will-change: transform;
-      }
-      /* Carousel slide: letterbox background so portrait newspaper clippings
-         fit without cropping. Slot-box (dashed placeholders, if any slide
-         still has one) keeps its original fill behavior. Real <img> children
-         render at natural aspect ratio, centered, with dark bars on either
-         side for portrait scans. */
-      .news-carousel-slide {
-        flex: 0 0 100%;
-        min-width: 0;
-        background-color: #1a1612;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-        box-sizing: border-box;
-        aspect-ratio: 2.4 / 1;
-        max-height: 560px;
-        overflow: hidden;
-      }
-      .news-carousel-slide img {
-        max-width: 100%;
-        max-height: 100%;
-        width: auto;
-        height: auto;
-        object-fit: contain;
-        display: block;
-      }
-      /* Slot-box placeholders (used only for unfilled slots): inherit their
-         dashed-border treatment from the global .slot-box rules but fill the
-         letterbox area. */
-      .news-carousel-slide .slot-box {
-        width: 100%;
-        height: 100%;
-        aspect-ratio: auto;
-        max-height: none;
-      }
-      @media (max-width: 768px) {
-        .news-carousel-slide {
-          aspect-ratio: 16 / 10;
-          max-height: none;
-          padding: 16px;
-        }
-      }
-      .news-carousel-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 2;
-        color: var(--color-text-primary);
-        transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-        padding: 0;
-      }
-      .news-carousel-arrow:hover { background: #fff; color: var(--color-primary); }
-      .news-carousel-arrow:focus-visible {
-        outline: 2px solid var(--color-primary);
-        outline-offset: 2px;
-      }
-      .news-carousel-arrow.prev { left: 16px; }
-      .news-carousel-arrow.next { right: 16px; }
-      @media (max-width: 768px) {
-        .news-carousel-arrow { width: 40px; height: 40px; }
-        .news-carousel-arrow.prev { left: 8px; }
-        .news-carousel-arrow.next { right: 8px; }
-      }
-      .news-carousel-dots {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        padding: 24px 20px 32px;
-        flex-wrap: wrap;
-      }
-      .news-carousel-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #c3c6c9;
-        border: 0;
-        padding: 0;
-        cursor: pointer;
-        transition: background 0.2s ease, transform 0.2s ease;
-        flex-shrink: 0;
-      }
-      .news-carousel-dot:hover { background: var(--color-text-primary); }
-      .news-carousel-dot.is-active {
-        background: var(--color-primary);
-        transform: scale(1.25);
-        box-shadow: 0 0 0 2px rgba(158,27,50,0.3);
-      }
-      .news-carousel-dot.is-active:hover { background: var(--color-primary); }
-      @media (max-width: 768px) {
-        .news-carousel-dots { gap: 8px; padding: 18px 20px 24px; }
-        .news-carousel-dot { width: 7px; height: 7px; }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .news-carousel-track { transition: none; }
-        .news-carousel-dot { transition: none; }
-      }
-    </style>
-    <section class="news-carousel-section" aria-label="News &amp; Updates">
-      <!-- DUMMY slots 37-A through 37-O — news clippings carousel.
-           Replace each slot-box with <img src="../images/37-A-slug.jpg" alt="..." />.
-           Target: landscape newspaper clippings, legible at full carousel width
-           (approx 1920 × 800 on desktop, 16:10 aspect on mobile). -->
-      <div class="news-carousel" data-news-carousel aria-roledescription="carousel" aria-label="Recent news clippings">
-        <div class="news-carousel-viewport">
-          <div class="news-carousel-track" data-carousel-track>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="1 of 23">
-              <picture><source srcset="../images/news-clippings/clipping-01.webp" type="image/webp"><img src="../images/news-clippings/clipping-01.jpg" alt="News coverage of Dnyanprakash — clipping 1 of 23" /></picture>
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="2 of 23">
-              <img src="../images/news-clippings/clipping-02.jpg" alt="News coverage of Dnyanprakash — clipping 2 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="3 of 23">
-              <img src="../images/news-clippings/clipping-03.jpg" alt="News coverage of Dnyanprakash — clipping 3 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="4 of 23">
-              <img src="../images/news-clippings/clipping-04.jpg" alt="News coverage of Dnyanprakash — clipping 4 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="5 of 23">
-              <img src="../images/news-clippings/clipping-05.jpg" alt="News coverage of Dnyanprakash — clipping 5 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="6 of 23">
-              <img src="../images/news-clippings/clipping-06.jpg" alt="News coverage of Dnyanprakash — clipping 6 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="7 of 23">
-              <img src="../images/news-clippings/clipping-07.jpg" alt="News coverage of Dnyanprakash — clipping 7 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="8 of 23">
-              <img src="../images/news-clippings/clipping-08.jpg" alt="News coverage of Dnyanprakash — clipping 8 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="9 of 23">
-              <img src="../images/news-clippings/clipping-09.jpg" alt="News coverage of Dnyanprakash — clipping 9 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="10 of 23">
-              <img src="../images/news-clippings/clipping-10.jpg" alt="News coverage of Dnyanprakash — clipping 10 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="11 of 23">
-              <img src="../images/news-clippings/clipping-11.jpg" alt="News coverage of Dnyanprakash — clipping 11 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="12 of 23">
-              <img src="../images/news-clippings/clipping-12.jpg" alt="News coverage of Dnyanprakash — clipping 12 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="13 of 23">
-              <img src="../images/news-clippings/clipping-13.jpg" alt="News coverage of Dnyanprakash — clipping 13 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="14 of 23">
-              <img src="../images/news-clippings/clipping-14.jpg" alt="News coverage of Dnyanprakash — clipping 14 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="15 of 23">
-              <img src="../images/news-clippings/clipping-15.jpg" alt="News coverage of Dnyanprakash — clipping 15 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="16 of 23">
-              <img src="../images/news-clippings/clipping-16.jpg" alt="News coverage of Dnyanprakash — clipping 16 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="17 of 23">
-              <img src="../images/news-clippings/clipping-17.jpg" alt="News coverage of Dnyanprakash — clipping 17 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="18 of 23">
-              <img src="../images/news-clippings/clipping-18.jpg" alt="News coverage of Dnyanprakash — clipping 18 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="19 of 23">
-              <img src="../images/news-clippings/clipping-19.jpg" alt="News coverage of Dnyanprakash — clipping 19 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="20 of 23">
-              <img src="../images/news-clippings/clipping-20.jpg" alt="News coverage of Dnyanprakash — clipping 20 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="21 of 23">
-              <img src="../images/news-clippings/clipping-21.jpg" alt="News coverage of Dnyanprakash — clipping 21 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="22 of 23">
-              <img src="../images/news-clippings/clipping-22.jpg" alt="News coverage of Dnyanprakash — clipping 22 of 23" />
-            </div>
-            <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="23 of 23">
-              <img src="../images/news-clippings/clipping-23.jpg" alt="News coverage of Dnyanprakash — clipping 23 of 23" />
-            </div>
-          </div>
-        </div>
-        <button type="button" class="news-carousel-arrow prev" data-carousel-prev aria-label="Previous clipping">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button type="button" class="news-carousel-arrow next" data-carousel-next aria-label="Next clipping">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-      <div class="news-carousel-dots" data-carousel-dots aria-label="Clipping navigation">
-        <button type="button" class="news-carousel-dot is-active" data-slide-index="0" aria-label="Go to clipping 1" aria-current="true"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="1" aria-label="Go to clipping 2"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="2" aria-label="Go to clipping 3"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="3" aria-label="Go to clipping 4"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="4" aria-label="Go to clipping 5"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="5" aria-label="Go to clipping 6"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="6" aria-label="Go to clipping 7"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="7" aria-label="Go to clipping 8"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="8" aria-label="Go to clipping 9"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="9" aria-label="Go to clipping 10"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="10" aria-label="Go to clipping 11"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="11" aria-label="Go to clipping 12"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="12" aria-label="Go to clipping 13"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="13" aria-label="Go to clipping 14"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="14" aria-label="Go to clipping 15"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="15" aria-label="Go to clipping 16"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="16" aria-label="Go to clipping 17"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="17" aria-label="Go to clipping 18"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="18" aria-label="Go to clipping 19"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="19" aria-label="Go to clipping 20"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="20" aria-label="Go to clipping 21"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="21" aria-label="Go to clipping 22"></button>
-        <button type="button" class="news-carousel-dot" data-slide-index="22" aria-label="Go to clipping 23"></button>
-      </div>
+    <section class="article-hero-media" aria-label="33 Dnyanprakash Students Become Scholarship Holders">
+      <div data-img-slot="49" data-img-description="News — 33 Dnyanprakash Students Become Scholarship Holders (felicitation photo / newspaper clipping)" class="slot-box"><div class="text-center"><div class="slot-num">49</div><div class="slot-desc">News hero</div></div></div>
     </section>
-    <div class="breadcrumb"><div class="container-main"><a href="../index.html">Home</a><span class="sep">›</span><span>News</span></div></div>
-    <section class="section-pad reveal article-body" style="padding-bottom: 40px;">
+    <div class="container-main"><p class="article-hero-caption">Latur: Satish Narhare, Savita Narhare, Shivshankar Raut, Ashok Gurdale, Sampada Pande, Mohini Birajdar, Pallavi Vyavahare, Manjusha Birajdar, Sheetal Yerte, Sanjay Suryavanshi and others felicitating the students who achieved success in the scholarship examination.</p></div>
+    <div class="breadcrumb"><div class="container-main"><a href="../index.html">Home</a><span class="sep">›</span><a href="index.html">News</a><span class="sep">›</span><span>33 Dnyanprakash Students Become Scholarship Holders</span></div></div>
+    <section class="section-pad reveal article-body">
       <div class="container-main">
         <header class="article-heading">
-          <div class="eyebrow">News</div>
-          <h1>News &amp; Updates</h1>
+          <div class="eyebrow">News · [DATE &mdash; CONFIRM]</div>
+          <h1>33 Dnyanprakash Students Become Scholarship Holders</h1>
         </header>
-        <p class="lede">The latest from our students, faculty and community.</p>
+        <div class="article-layout">
+          <div class="prose">
+            <p class="lede">Latur, 11th: Dnyanprakash Shaikshanik Prakalp, a school here, has achieved resounding success in the Higher Primary and Pre-Secondary Scholarship Examinations, with 33 of its students emerging as scholarship holders. Two Class 5 students, Arnav Bastapure and Utkarsh Shelke, have secured the thirteenth rank on the State Merit List.</p>
+
+            <p>Fourteen students from Class 5 and nineteen from Class 8 have won scholarships. Regular study throughout the year, extra teaching hours, practice examinations, group work, guidance from teachers, encouragement from parents, and the students' own hard work are what have made Dnyanprakash's results stand out this year, as they do every year.</p>
+
+            <div class="scholars">
+          <section class="scholars-group">
+            <h2 class="scholars-title">From Class 5</h2>
+            <ol class="scholars-list">
+              <li><span class="scholars-name">Utkarsh Shelke</span><span class="scholars-score">274</span></li>
+              <li><span class="scholars-name">Arnav Bastapure</span><span class="scholars-score">274</span></li>
+              <li><span class="scholars-name">Amey Ambekar</span><span class="scholars-score">252</span></li>
+              <li><span class="scholars-name">Saksha Janwade</span><span class="scholars-score">244</span></li>
+              <li><span class="scholars-name">Aditya Gunale</span><span class="scholars-score">244</span></li>
+              <li><span class="scholars-name">Aniruddha Humnabade</span><span class="scholars-score">242</span></li>
+              <li><span class="scholars-name">Siddhi Malavadkar</span><span class="scholars-score">234</span></li>
+              <li><span class="scholars-name">Aditi Patil</span><span class="scholars-score">232</span></li>
+              <li><span class="scholars-name">Parth Inje</span><span class="scholars-score">232</span></li>
+              <li><span class="scholars-name">Sanskruti Sagar</span><span class="scholars-score">216</span></li>
+              <li><span class="scholars-name">Harshada Bade</span><span class="scholars-score">212</span></li>
+              <li><span class="scholars-name">Priyansh Bargale</span><span class="scholars-score">212</span></li>
+              <li><span class="scholars-name">Iqra Shaikh</span><span class="scholars-score">212</span></li>
+              <li><span class="scholars-name">Dattatray Pujari</span><span class="scholars-score">202</span></li>
+            </ol>
+          </section>
+
+          <section class="scholars-group">
+            <h2 class="scholars-title">From Class 8</h2>
+            <ol class="scholars-list">
+              <li><span class="scholars-name">Srushti Ashtekar</span><span class="scholars-score">258</span></li>
+              <li><span class="scholars-name">Urvi Birajdar</span><span class="scholars-score">250</span></li>
+              <li><span class="scholars-name">Nandini Kulkarni</span><span class="scholars-score">246</span></li>
+              <li><span class="scholars-name">Rajat Kulkarni</span><span class="scholars-score">246</span></li>
+              <li><span class="scholars-name">Anvi Kople</span><span class="scholars-score">244</span></li>
+              <li><span class="scholars-name">Aditi Shinde</span><span class="scholars-score">244</span></li>
+              <li><span class="scholars-name">Gauri Dudile</span><span class="scholars-score">240</span></li>
+              <li><span class="scholars-name">Avani Khanapure</span><span class="scholars-score">236</span></li>
+              <li><span class="scholars-name">Rohan Mamadge</span><span class="scholars-score">226</span></li>
+              <li><span class="scholars-name">Aman Sayyad</span><span class="scholars-score">224</span></li>
+              <li><span class="scholars-name">Ganesh Kshirsagar</span><span class="scholars-score">222</span></li>
+              <li><span class="scholars-name">Anurag Mane</span><span class="scholars-score">220</span></li>
+              <li><span class="scholars-name">Shripad Dhaygude</span><span class="scholars-score">220</span></li>
+              <li><span class="scholars-name">Soham Ganapure</span><span class="scholars-score">218</span></li>
+              <li><span class="scholars-name">Sasha Waware</span><span class="scholars-score">214</span></li>
+              <li><span class="scholars-name">Tanaya Deshmukh</span><span class="scholars-score">214</span></li>
+              <li><span class="scholars-name">Srushti Kharose</span><span class="scholars-score">214</span></li>
+              <li><span class="scholars-name">Parth Lomte</span><span class="scholars-score">212</span></li>
+              <li><span class="scholars-name">Arush Sapate</span><span class="scholars-score">210</span></li>
+            </ol>
+          </section>
+            </div>
+
+            <p class="scholars-note">These students earned their scholarships by securing places on the District Merit List.</p>
+          </div>
+
+          <aside class="article-aside" aria-label="Related information">
+            <blockquote class="aside-pullquote">
+              &ldquo;Two Class 5 students, Arnav Bastapure and Utkarsh Shelke, have secured the thirteenth rank on the State Merit List.&rdquo;
+              <cite>From the article</cite>
+            </blockquote>
+            <div class="aside-card">
+              <div class="aside-card-eyebrow">Related pages</div>
+              <div class="aside-links">
+                <a href="../about/mission.html">Our Mission</a>
+                <a href="../about/history.html">Our History</a>
+                <a href="../academics/index.html">Academics Overview</a>
+
+                <a href="../admission/index.html">Admissions</a>
+              </div>
+            </div>
+            <div class="aside-instagram">
+              <div class="aside-instagram-top">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                </svg>
+                <span>@dnyanprakash_latur</span>
+              </div>
+              <p>Follow us on Instagram for daily moments from Dnyanprakash.</p>
+              <a href="https://www.instagram.com/dnyanprakash_latur" target="_blank" rel="noopener" class="aside-instagram-btn">Follow on Instagram</a>
+            </div>
+            <div class="aside-cta">
+              <p>Applications for the 2026&ndash;27 academic year are closed.</p>
+              <a href="../contact.html" class="aside-cta-btn">Contact Us</a>
+            </div>
+          </aside>
+        </div>
       </div>
     </section>
-
-    <section class="section-pad reveal" style="padding-top: 0;">
+    <section class="section-pad reveal" style="background: var(--color-bg-alt);">
       <div class="container-main">
+        <div class="section-eyebrow">More from News</div>
+        <h2 class="section-title" style="font-size:32px;">Related Stories</h2>
         <div class="news-grid">
-          <a href="142-meritorious-students.html" class="news-card">
-            <div class="news-heading-block">
-              <div class="news-cat">News · February 18, 2026</div>
-              <h3 class="news-headline">Felicitation of 142 Meritorious Students in Various Competitive Exams</h3>
-            </div>
-            <div class="news-img-wrap">
-              <picture><source srcset="../images/03-felicitation-142.webp" type="image/webp"><img src="../images/03-felicitation-142.jpg" alt="Felicitation ceremony at Dnyanprakash honouring 142 meritorious students in various competitive exams" loading="lazy" /></picture>
-            </div>
-          </a>
 
-          <a href="challenging-times-leaders.html" class="news-card">
-            <div class="news-heading-block">
-              <div class="news-cat">News · February 18, 2026</div>
-              <h3 class="news-headline">Challenging Times Shape the Strongest Leaders</h3>
-            </div>
-            <div class="news-img-wrap">
-              <picture><source srcset="../images/04-babson-alumni-mentoring.webp" type="image/webp"><img src="../images/04-babson-alumni-mentoring.jpg" alt="Babson College alumni Hriday Munoth, Neha Aswani, and Siddhant Narhare with Dnyanprakash students during a mentoring session" loading="lazy" /></picture>
-            </div>
-          </a>
+          <article class="news-card">
+            <div class="news-img-wrap"><div data-img-slot="2" data-img-description="News — Dnyanprakash Ranked Best School in the District and Second Best in the Region" class="slot-box w-full h-full"><div class="text-center"><div class="slot-num">2</div><div class="slot-desc">News — Dnyanprakash Ranked Best School in the District</div></div></div></div>
+            <div class="news-cat">News · June 5, 2025</div>
+            <h3 class="news-headline"><a href="second-place-latur-division.html">Dnyanprakash Ranked Best School in the District and Second Best in the Region</a></h3>
+            <a href="second-place-latur-division.html" class="news-read">Read Story <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+          </article>
 
-          <a href="parents-grade-one-textbook.html" class="news-card">
-            <div class="news-heading-block">
-              <div class="news-cat">News · February 18, 2026</div>
-              <h3 class="news-headline">Parents Grasp the Concepts of the New First Grade Textbook!</h3>
-            </div>
-            <div class="news-img-wrap">
-              <div data-img-slot="4" data-img-description="News — Parents Grasp the Concepts of the New First Grade Textbook" class="slot-box">
-                <div class="text-center"><div class="slot-num">4</div><div class="slot-desc">News thumb</div></div>
-              </div>
-            </div>
-          </a>
+          <article class="news-card">
+            <div class="news-img-wrap"><div data-img-slot="3" data-img-description="News — Felicitation of 142 Meritorious Students in Various Competitive Exams" class="slot-box w-full h-full"><div class="text-center"><div class="slot-num">3</div><div class="slot-desc">News — Felicitation of 142 Meritorious S</div></div></div></div>
+            <div class="news-cat">News · February 18, 2026</div>
+            <h3 class="news-headline"><a href="142-meritorious-students.html">Felicitation of 142 Meritorious Students in Various Competitive Exams</a></h3>
+            <a href="142-meritorious-students.html" class="news-read">Read Story <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+          </article>
 
-          <a href="second-place-latur-division.html" class="news-card">
-            <div class="news-heading-block">
-              <div class="news-cat">News · June 5, 2025</div>
-              <h3 class="news-headline">Dnyanprakash Ranked Best School in the District and Second Best in the Region</h3>
-            </div>
-            <div class="news-img-wrap">
-              <picture><source srcset="../images/02-award-ceremony.webp" type="image/webp"><img src="../images/02-award-ceremony.jpg" alt="Dnyanprakash honoured with trophy and 15 lakh cheque at the Chief Minister's My School, Beautiful School ceremony in Mumbai" loading="lazy" /></picture>
-            </div>
-          </a>
-
-          <a href="33-scholarship-holders.html" class="news-card">
-            <div class="news-heading-block">
-              <div class="news-cat">News · [DATE &mdash; CONFIRM]</div>
-              <h3 class="news-headline">33 Dnyanprakash Students Become Scholarship Holders</h3>
-            </div>
-            <div class="news-img-wrap">
-              <div data-img-slot="49" data-img-description="News — 33 Dnyanprakash Students Become Scholarship Holders (felicitation photo / newspaper clipping)" class="slot-box">
-                <div class="text-center"><div class="slot-num">49</div><div class="slot-desc">News thumb</div></div>
-              </div>
-            </div>
-          </a>
-
-          <a href="mrunal-kulkarni-dialogue.html" class="news-card">
-            <div class="news-heading-block">
-              <div class="news-cat">News · April 28, 2025</div>
-              <h3 class="news-headline">Mrunal Kulkarni in Dialogue with Dnyanprakash Students</h3>
-            </div>
-            <div class="news-img-wrap">
-              <div data-img-slot="35" data-img-description="News — Mrunal Kulkarni in Dialogue with Dnyanprakash Students" class="slot-box">
-                <div class="text-center"><div class="slot-num">35</div><div class="slot-desc">News thumb</div></div>
-              </div>
-            </div>
-          </a>
+          <article class="news-card">
+            <div class="news-img-wrap"><div data-img-slot="34" data-img-description="News — A Conversation with Institute Head Mr. Satish Narhare" class="slot-box w-full h-full"><div class="text-center"><div class="slot-num">34</div><div class="slot-desc">News — A Conversation with Institute Hea</div></div></div></div>
+            <div class="news-cat">News · May 12, 2025</div>
+            <h3 class="news-headline"><a href="institute-head-satish-narhare.html">A Conversation with Institute Head Mr. Satish Narhare</a></h3>
+            <a href="institute-head-satish-narhare.html" class="news-read">Read Story <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+          </article>
         </div>
+        <div style="margin-top:32px;"><a href="index.html" class="news-read">All News <i data-lucide="arrow-right" class="w-4 h-4"></i></a></div>
       </div>
     </section>
   </main>
@@ -2076,7 +2136,6 @@
   <script defer src="../scripts/translations-manifest.js"></script>
   <script defer src="../scripts/lang-toggle.js"></script>
   <script defer src="../scripts/scroll-reveals.js"></script>
-  <script defer src="../scripts/news-carousel.js"></script>
   <script defer src="../scripts/mobile-polish.js"></script>
 </body>
 </html>
