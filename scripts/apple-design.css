@@ -1021,3 +1021,105 @@ a.dp-pressed:not(.btn):not(.news-card):not(.cf-item):not([class*="social"]),
     opacity: 1;
   }
 }
+
+/* ============================================================================
+   PHASE 4 — GESTURES → SPRINGS  (skill §3 Interruptibility, §4 Behavior over
+   animation, §5 Velocity handoff, §6 Momentum projection, §9 Rubber-banding)
+
+   Only the gestures that actually exist are upgraded — no new ones invented.
+
+   What was there before, in both cases: a touchend handler comparing total dx
+   against a fixed 50px threshold. The gesture itself was thrown away — no 1:1
+   tracking, no velocity, nothing to interrupt, and a fixed-duration CSS
+   transition to land on (§4: "a pre-scripted, fixed-duration animation can't
+   respond to new input").
+
+   The spring lives in scripts/apple-design.js; this file only provides the
+   transforms it drives.
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   4.1 — Coverflow.
+
+   The drag offset rides on the TRACK, so all covers move together as one
+   surface under the finger. Each cover keeps its own per-delta transform, which
+   is what preserves the existing depth treatment (scale, blur, opacity,
+   layered ground shadows) exactly as designed.
+   -------------------------------------------------------------------------- */
+.coverflow-track {
+  transform: translate3d(var(--cf-drag, 0px), 0, 0);
+}
+
+/* While the finger is down, the covers must not be running their own
+   720ms transition — the drag has to be 1:1 with the pointer (§2), and a
+   transition mid-gesture is exactly the lag §1 calls falling off a cliff. */
+.coverflow-track.is-dragging .cf-item {
+  transition: none !important;
+}
+
+/* On release the spring animates the track home over ~0.3–0.4s. The covers'
+   own delta transition is brought to the same duration so the two read as ONE
+   motion instead of the surface arriving and the depth catching up 300ms
+   later. Easing is the site's base curve, unchanged. */
+.coverflow-track .cf-item {
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 420ms cubic-bezier(0.16, 1, 0.3, 1) 40ms,
+    opacity 360ms cubic-bezier(0.4, 0, 0.2, 1) 20ms;
+}
+
+/* The whole surface is grabbable, so the cursor should say so. */
+.coverflow {
+  cursor: grab;
+}
+.coverflow-track.is-dragging {
+  cursor: grabbing;
+}
+.coverflow-track.is-dragging .cf-item {
+  cursor: grabbing;
+}
+
+/* ----------------------------------------------------------------------------
+   4.2 — Lightbox.
+
+   touch-action: pan-y hands the horizontal axis to the gesture layer while
+   leaving vertical alone, so a two-finger zoom and a vertical flick still
+   behave natively.
+   -------------------------------------------------------------------------- */
+.lightbox-stage {
+  transform: translate3d(var(--lb-drag, 0px), 0, 0);
+  touch-action: pan-y;
+}
+
+/* The Phase 1 materialize transition owns .lightbox-stage's transform on open
+   and close. During a drag the spring owns it instead, and a CSS transition on
+   top would fight the rAF loop for the same property — so the transition is
+   suppressed for the transform only while the lightbox is open and settled. */
+.lightbox.is-open .lightbox-stage {
+  transition: filter var(--mat-in);
+}
+
+/* ----------------------------------------------------------------------------
+   4.3 — Homepage gallery strip: DELIBERATELY NOT CONVERTED.
+
+   The brief listed this as the third gesture. It is a native overflow-y
+   scroller, and replacing native scrolling with a hand-rolled spring would be a
+   downgrade, not an upgrade:
+
+     - iOS already gives it correct rubber-band and momentum, tuned per OS
+       version. A JS reimplementation would be worse on the platform that
+       matters most here.
+     - §9's rubber-band at the top/bottom edge can only be shown by calling
+       preventDefault on the overscrolling touch — and that kills scroll
+       chaining, which CLAUDE.md §19 explicitly marks load-bearing: "No
+       overscroll-behavior: contain. Scroll chaining is what lets the page keep
+       moving once the window bottoms out; adding contain traps the reader in
+       the box."
+     - The same section marks two more things there load-bearing (the reveal
+       observer's root, and the overflow-x/touch-action pair that fixed this
+       site's mobile horizontal-swipe bug once already).
+
+   Native scroll already satisfies §1 (instant, continuous, 1:1) and §3
+   (interruptible) better than a reimplementation would. The correct call is to
+   leave it alone and say so.
+   -------------------------------------------------------------------------- */

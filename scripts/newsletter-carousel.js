@@ -181,17 +181,33 @@
     }
   });
 
+  /* Legacy 50px-threshold swipe. Stands down entirely when the Apple-design
+     gesture layer is present (scripts/apple-design.js), which replaces it with
+     1:1 tracking, velocity handoff and momentum projection.
+
+     This MUST bail rather than merely be redundant: both handlers fire on the
+     same touchend, so leaving it live committed every swipe TWICE — once from
+     the projection, once from the threshold. A left flick therefore advanced
+     +1 and then +1 again, landing on index 2 of 3, which with the modulo wrap
+     reads as having gone BACKWARDS against the swipe. Kept only as the
+     fallback for a page that somehow loads this file without that layer. */
+  function gestureLayerActive() {
+    return !!(window.DPMotion && window.DPMotion.coverflowGesture);
+  }
+
   let touchStartX = 0;
   let touchStartY = 0;
   let touchActive = false;
 
   root.addEventListener('touchstart', function (e) {
+    if (gestureLayerActive()) return;
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
     touchActive = true;
   }, { passive: true });
 
   root.addEventListener('touchmove', function (e) {
+    if (gestureLayerActive()) return;
     if (!touchActive) return;
     const dx = e.touches[0].clientX - touchStartX;
     const dy = e.touches[0].clientY - touchStartY;
@@ -201,6 +217,7 @@
   }, { passive: false });
 
   root.addEventListener('touchend', function (e) {
+    if (gestureLayerActive()) return;
     if (!touchActive) return;
     const dx = e.changedTouches[0].clientX - touchStartX;
     const threshold = 50;
@@ -215,4 +232,18 @@
   });
 
   render();
+
+  /* Minimal API for the Apple-design gesture layer (scripts/apple-design.js),
+     which replaces the old 50px-threshold swipe with a 1:1 drag, velocity
+     handoff and momentum projection (§2/§5/§6).
+
+     Exposed rather than reimplemented so index selection, the modulo wrap, the
+     wrap-snap transition suppression, the dot state and the PDF/meta targets
+     all stay in ONE place. The gesture layer decides WHICH issue; this file
+     still decides what that means. */
+  root.dpCarousel = {
+    setActive: setActive,
+    get index() { return activeIndex; },
+    count: totalIssues,
+  };
 })();

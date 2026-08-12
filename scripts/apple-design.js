@@ -51,6 +51,13 @@
       return moreContrast.matches;
     },
     supportsBackdrop: !!supportsBackdrop,
+    // Populated in Phase 4 — exported so the spring, the projection function
+    // and the rubber-band curve are available to any later work rather than
+    // being re-derived.
+    Spring: null,
+    project: null,
+    rubberband: null,
+    lightboxGesture: false,
   };
 
   /* Reflect the signals onto <html> so CSS can branch on browsers that do not
@@ -217,9 +224,458 @@
        scrolling — and the pointermove hysteresis above is the backstop. */
   }
 
+  /* ==========================================================================
+     PHASE 4 — A vanilla spring (§4 Behavior over animation).
+
+     Apple deliberately replaced the physics triplet (mass/stiffness/damping)
+     with two designer-facing parameters, and this uses the same two:
+
+       response  seconds to reach the target. NOT a duration — a spring has no
+                 fixed duration; its settle time emerges from the parameters.
+       damping   damping ratio. 1.0 = critically damped, no overshoot.
+                 < 1.0 overshoots and oscillates. Lower = bouncier.
+
+     Integrated numerically (semi-implicit Euler) rather than solved in closed
+     form, because that is what makes the two properties the skill cares most
+     about fall out for free:
+
+       §3 INTERRUPTIBLE — re-targeting mid-flight is just assigning .target;
+          position and velocity carry straight through, so there is no jump and
+          no velocity discontinuity ("brick wall") on a reversal.
+       §5 VELOCITY HANDOFF — the gesture's release velocity is assigned
+          directly as the spring's initial velocity, so there is no seam
+          between dragging and animating.
+
+     dt is clamped and sub-stepped: a backgrounded tab returns one enormous
+     frame, and an unclamped explicit integrator diverges on it.
+     ========================================================================== */
+  function Spring(opts) {
+    opts = opts || {};
+    this.value = opts.from || 0;
+    this.target = opts.from || 0;
+    this.velocity = 0;
+    this.response = opts.response || 0.4;
+    this.damping = opts.damping == null ? 1 : opts.damping;
+    this.onUpdate = opts.onUpdate || function () {};
+    this.onRest = opts.onRest || function () {};
+    this._raf = 0;
+    this._last = 0;
+    this._running = false;
+  }
+
+  Spring.prototype._tick = function (now) {
+    var dt = Math.min((now - this._last) / 1000, 1 / 30); // clamp: tab-switch guard
+    this._last = now;
+
+    var omega = (2 * Math.PI) / this.response;
+    var k = omega * omega;
+    var c = 2 * this.damping * omega;
+
+    // Sub-step for stability at high stiffness / low frame rate.
+    var steps = Math.max(1, Math.ceil(dt / (1 / 240)));
+    var h = dt / steps;
+    for (var i = 0; i < steps; i++) {
+      var a = -k * (this.value - this.target) - c * this.velocity;
+      this.velocity += a * h;
+      this.value += this.velocity * h;
+    }
+
+    this.onUpdate(this.value);
+
+    // Rest test in both position and velocity — a spring that has reached the
+    // target at speed has not settled.
+    if (Math.abs(this.value - this.target) < 0.05 && Math.abs(this.velocity) < 0.5) {
+      this.value = this.target;
+      this.velocity = 0;
+      this.onUpdate(this.value);
+      this._running = false;
+      this.onRest();
+      return;
+    }
+    this._raf = global.requestAnimationFrame(this._tick.bind(this));
+  };
+
+  Spring.prototype.start = function () {
+    if (this._running) return;
+    this._running = true;
+    this._last = global.performance ? performance.now() : Date.now();
+    this._raf = global.requestAnimationFrame(this._tick.bind(this));
+  };
+
+  /* Re-target mid-flight. Velocity is NOT reset — that is the whole point
+     (§3: "when a gesture reverses, blend velocity, don't hard-cut it"). */
+  Spring.prototype.to = function (target, velocity, opts) {
+    this.target = target;
+    if (velocity != null) this.velocity = velocity;
+    if (opts) {
+      if (opts.response != null) this.response = opts.response;
+      if (opts.damping != null) this.damping = opts.damping;
+    }
+    if (DPMotion.reducedMotion) {   // §14: no spring, no overshoot
+      this.stop();
+      this.value = target;
+      this.velocity = 0;
+      this.onUpdate(this.value);
+      this.onRest();
+      return;
+    }
+    this.start();
+  };
+
+  /* Stop where it is. The CURRENT value survives, which is what a new gesture
+     needs to take over from (§3: "always animate from the presentation value,
+     never the target value"). */
+  Spring.prototype.stop = function () {
+    if (this._raf) global.cancelAnimationFrame(this._raf);
+    this._raf = 0;
+    this._running = false;
+    this.velocity = 0;
+  };
+
+  Spring.prototype.set = function (v) {
+    this.value = v;
+    this.onUpdate(v);
+  };
+
+  /* §6 Momentum projection — where a flick is GOING, not where it was released.
+     Apple's exact function from the Designing Fluid Interfaces sample code.
+     Note this is the exponential-decay form; the physics-textbook v²/(2·decel)
+     is NOT what Apple ships. */
+  function project(initialVelocity, decelerationRate) {
+    var d = decelerationRate == null ? 0.998 : decelerationRate;
+    return ((initialVelocity / 1000) * d) / (1 - d);
+  }
+
+  /* §9 Rubber-banding — progressive resistance, never a hard stop. */
+  function rubberband(overshoot, dimension, constant) {
+    var c = constant == null ? 0.55 : constant;
+    return (overshoot * dimension * c) / (dimension + c * Math.abs(overshoot));
+  }
+
+  /* A short position/time history — §2 asks for velocity at release, and the
+     single last pointermove is far too noisy to give it. */
+  function VelocityTracker() {
+    this.samples = [];
+  }
+  VelocityTracker.prototype.add = function (x, t) {
+    this.samples.push({ x: x, t: t });
+    if (this.samples.length > 6) this.samples.shift();
+  };
+  VelocityTracker.prototype.velocity = function () {
+    var s = this.samples;
+    if (s.length < 2) return 0;
+    var last = s[s.length - 1];
+    // Walk back to the newest sample at least 30ms old — long enough to be
+    // stable, short enough to still be "the velocity at release".
+    var ref = s[0];
+    for (var i = s.length - 2; i >= 0; i--) {
+      ref = s[i];
+      if (last.t - s[i].t >= 30) break;
+    }
+    var dt = (last.t - ref.t) / 1000;
+    if (dt <= 0) return 0;
+    return (last.x - ref.x) / dt; // px/s
+  };
+  VelocityTracker.prototype.reset = function () {
+    this.samples.length = 0;
+  };
+
+  var FLICK = 300; // px/s above which the gesture counts as a throw (§4)
+
+  /* A drag that ends on a clickable element still synthesises a click. Both
+     gesture surfaces here sit on top of click handlers that would then override
+     the gesture entirely:
+
+       .cf-item  is an <a href="…pdf" target="_blank"> AND carries a
+                 tap-to-select handler calling setActive(itsOwnIndex) — so a
+                 swipe committed to issue N was immediately overwritten by the
+                 cover that happened to be under the finger, or opened a PDF.
+       lightbox  closes on any click landing on the backdrop or the stage — so
+                 swiping to the next photo CLOSED the viewer.
+
+     Measured before the fix: a flick that correctly called setActive(4) (→ 1
+     after the wrap) ended on index 2, because the synthetic click landed after
+     it. So: after any gesture that actually moved, swallow exactly one click in
+     the capture phase. The timeout clears the trap if no click follows (a
+     release outside any clickable child). */
+  function swallowNextClick(el) {
+    function swallow(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      cleanup();
+    }
+    function cleanup() {
+      el.removeEventListener('click', swallow, true);
+      clearTimeout(timer);
+    }
+    var timer = setTimeout(cleanup, 400);
+    el.addEventListener('click', swallow, true);
+  }
+
+  /* --------------------------------------------------------------------------
+     4.1 — Newsletter coverflow: 1:1 drag, velocity handoff, momentum projection.
+
+     Before: touchend compared total dx against a fixed 50px threshold and
+     called setActive. The whole gesture was discarded — no tracking, no
+     velocity, no interruption, and a 720ms fixed-duration CSS transition to
+     land (§4: "a pre-scripted, fixed-duration animation can't respond to new
+     input").
+     -------------------------------------------------------------------------- */
+  function setupCoverflowGesture() {
+    var root = document.querySelector('.coverflow');
+    if (!root || !root.dpCarousel) return;
+    var track = root.querySelector('[data-track]');
+    if (!track) return;
+
+    var api = root.dpCarousel;
+    // Tells newsletter-carousel.js to stand its legacy threshold swipe down.
+    DPMotion.coverflowGesture = true;
+
+    var drag = new Spring({
+      response: 0.4,
+      damping: 1,
+      onUpdate: function (v) {
+        track.style.setProperty('--cf-drag', v.toFixed(2) + 'px');
+      },
+    });
+
+    /* Distance between adjacent cover centres: the CSS places delta ±1 at
+       translateX(±85%) of the item's own width.
+
+       offsetWidth, NOT getBoundingClientRect().width — the covers carry
+       per-delta scale transforms (1.0 active, 0.84 adjacent, 0.68 distant) and
+       a client rect includes them. Measuring the first item in DOM order
+       therefore returned a different step depending on which issue happened to
+       be active: 218px when it was centred, 151px when it had scaled down.
+       offsetWidth is the untransformed layout width. */
+    function step() {
+      var item = track.querySelector('.cf-item');
+      var w = item ? item.offsetWidth : root.offsetWidth * 0.78;
+      return w * 0.85;
+    }
+
+    var tracker = new VelocityTracker();
+    var active = false;
+    var startX = 0;
+    var startY = 0;
+    var base = 0;
+    var axisLocked = null; // null | 'x' | 'y'
+
+    root.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      active = true;
+      axisLocked = null;
+      // §3: take over from the PRESENTATION value, not the target.
+      drag.stop();
+      base = drag.value;
+      startX = e.clientX;
+      startY = e.clientY;
+      tracker.reset();
+      tracker.add(e.clientX, e.timeStamp);
+      track.classList.add('is-dragging');
+    });
+
+    root.addEventListener('pointermove', function (e) {
+      if (!active) return;
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+
+      /* §10: detect the plausible gestures in parallel and commit once intent
+         is clear. Below 10px nothing is decided; past it, a mostly-vertical
+         move belongs to the page scroll and we bow out entirely. */
+      if (axisLocked === null) {
+        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+        axisLocked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+        if (axisLocked === 'y') {
+          active = false;
+          track.classList.remove('is-dragging');
+          return;
+        }
+        root.setPointerCapture && root.setPointerCapture(e.pointerId);
+      }
+
+      tracker.add(e.clientX, e.timeStamp);
+
+      /* §9 rubber-band: 1:1 within one cover of travel, progressive resistance
+         past it. The carousel wraps, so there is no first/last edge to resist —
+         what this resists is dragging further than one commit can consume,
+         which is what keeps a long swipe from feeling unbounded. */
+      var s = step();
+      var raw = base + dx;
+      var out = Math.abs(raw) - s;
+      var val = raw;
+      if (out > 0) {
+        val = Math.sign(raw) * (s + rubberband(out, s));
+      }
+      drag.set(val);
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+
+    function release(e) {
+      if (!active) return;
+      active = false;
+      track.classList.remove('is-dragging');
+      if (axisLocked !== 'x') return;
+
+      // The gesture moved, so the click it is about to synthesise is not a tap.
+      swallowNextClick(root);
+
+      var v = tracker.velocity();
+      var s = step();
+
+      /* §6: land on the cover the flick is HEADED for, not the nearest one to
+         the release point. A small fast flick therefore throws a full cover;
+         a long slow drag that stops short springs back. */
+      var projected = drag.value + project(v);
+
+      /* Cap the throw at half the collection. This carousel wraps, so past
+         count/2 steps the shorter route is the OTHER direction and the throw
+         lands somewhere the gesture never pointed. With 3 issues a hard flick
+         projects ~768px ≈ 3.5 covers; uncapped (or capped at a flat ±2) that
+         resolved to index +2, which with the wrap is index −1 — the carousel
+         visibly went BACKWARDS against the swipe. Measured: flick left,
+         0 → 2. Half-collection is the largest cap for which direction stays
+         unambiguous. */
+      var maxSteps = Math.max(1, Math.floor((api.count - 1) / 2));
+      var steps = Math.max(-maxSteps, Math.min(maxSteps, -Math.round(projected / s)));
+
+      // Small permanent diagnostic — the release maths is the part of this
+      // phase most likely to need retuning, and it is invisible from the DOM.
+      DPMotion.lastGesture = {
+        surface: 'coverflow', dx: Math.round(drag.value), v: Math.round(v),
+        projected: Math.round(projected), step: Math.round(s), steps: steps,
+        from: api.index,
+      };
+
+      if (steps !== 0) {
+        api.setActive(api.index + steps);
+        /* Absorb the index change into the drag offset in the same frame, so
+           the newly-active cover keeps rendering exactly where the finger left
+           it and springs home from there — §3's presentation value again. */
+        drag.set(drag.value + steps * s);
+      }
+
+      /* §4: bounce ONLY because a flick preceded this. A cover released from a
+         slow drag settles critically damped; one that was thrown overshoots
+         very slightly, which is what makes the throw feel physical. */
+      var flicked = Math.abs(v) > FLICK;
+      drag.to(0, v, {
+        response: flicked ? 0.3 : 0.4,
+        damping: flicked ? 0.8 : 1,
+      });
+    }
+
+    root.addEventListener('pointerup', release);
+    root.addEventListener('pointercancel', release);
+  }
+
+  /* --------------------------------------------------------------------------
+     4.2 — Lightbox: the same treatment.
+
+     Before: touchend compared dx against 50px and swapped the image with NO
+     animation at all — the photo simply changed.
+     -------------------------------------------------------------------------- */
+  function setupLightboxGesture() {
+    var lightbox = document.getElementById('lightbox');
+    if (!lightbox || !lightbox.dpLightbox) return;
+    var stage = lightbox.querySelector('.lightbox-stage');
+    if (!stage) return;
+
+    var api = lightbox.dpLightbox;
+    DPMotion.lightboxGesture = true; // tells lightbox.js to stand its fallback down
+
+    var drag = new Spring({
+      response: 0.4,
+      damping: 1,
+      onUpdate: function (v) {
+        stage.style.setProperty('--lb-drag', v.toFixed(2) + 'px');
+      },
+    });
+
+    var tracker = new VelocityTracker();
+    var active = false;
+    var startX = 0;
+    var startY = 0;
+    var axisLocked = null;
+
+    function width() {
+      return lightbox.getBoundingClientRect().width || 375;
+    }
+
+    stage.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      // Let the close/prev/next chrome handle its own taps.
+      if (e.target.closest('.lightbox-btn')) return;
+      active = true;
+      axisLocked = null;
+      drag.stop();
+      startX = e.clientX - drag.value;
+      startY = e.clientY;
+      tracker.reset();
+      tracker.add(e.clientX, e.timeStamp);
+    });
+
+    stage.addEventListener('pointermove', function (e) {
+      if (!active) return;
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+      if (axisLocked === null) {
+        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+        axisLocked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+        if (axisLocked === 'y') { active = false; return; }
+        stage.setPointerCapture && stage.setPointerCapture(e.pointerId);
+      }
+      tracker.add(e.clientX, e.timeStamp);
+      drag.set(dx);
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+
+    function release() {
+      if (!active) return;
+      active = false;
+      if (axisLocked !== 'x') return;
+
+      // Without this, the click synthesised at the end of a swipe lands on the
+      // stage and lightbox.js closes the viewer mid-gesture.
+      swallowNextClick(lightbox);
+
+      var v = tracker.velocity();
+      var w = width();
+      var projected = drag.value + project(v);
+
+      // Commit at a third of the viewport of PROJECTED travel — so a short
+      // fast flick commits and a long slow drag that stalls does not.
+      var dir = 0;
+      if (projected <= -w * 0.32) dir = 1;       // swiped left  → next
+      else if (projected >= w * 0.32) dir = -1;  // swiped right → prev
+
+      if (dir !== 0) {
+        if (dir === 1) api.next(); else api.prev();
+        // Same presentation-value trick: the incoming photo starts where the
+        // outgoing one was and springs into place.
+        drag.set(drag.value + dir * w);
+      }
+
+      var flicked = Math.abs(v) > FLICK;
+      drag.to(0, v, {
+        response: flicked ? 0.3 : 0.4,
+        damping: flicked ? 0.8 : 1,
+      });
+    }
+
+    stage.addEventListener('pointerup', release);
+    stage.addEventListener('pointercancel', release);
+  }
+
+  DPMotion.Spring = Spring;
+  DPMotion.project = project;
+  DPMotion.rubberband = rubberband;
+
   function init() {
     setupLangToggleRelocation();
     setupPressFeedback();
+    setupCoverflowGesture();
+    setupLightboxGesture();
   }
 
   if (document.readyState === 'loading') {

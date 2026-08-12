@@ -117,8 +117,17 @@
     else if (e.key === 'ArrowRight') next();
   });
 
+  /* Swipe is handled by the Apple-design gesture layer (scripts/apple-design.js):
+     1:1 tracking, velocity handoff and momentum projection instead of the old
+     fixed 50px threshold on touchend, which discarded the whole gesture and
+     could not be interrupted (§2/§3/§5/§6).
+
+     The threshold swipe that used to live here is kept ONLY as a fallback for
+     when that layer is absent — a page that somehow loads lightbox.js without
+     apple-design.js must still be swipeable. */
   var touchX = null;
   lightbox.addEventListener('touchstart', function (e) {
+    if (window.DPMotion && window.DPMotion.lightboxGesture) return;
     if (e.touches.length === 1) touchX = e.touches[0].clientX;
   }, { passive: true });
   lightbox.addEventListener('touchend', function (e) {
@@ -127,4 +136,15 @@
     if (Math.abs(dx) > 50) { if (dx > 0) prev(); else next(); }
     touchX = null;
   });
+
+  /* Minimal API for the gesture layer — same reasoning as the newsletter
+     carousel: navigation semantics (the modulo wrap, caption, counter, focus)
+     stay here; the gesture layer only decides which way and when. */
+  lightbox.dpLightbox = {
+    prev: prev,
+    next: next,
+    close: close,
+    get index() { return current; },
+    get count() { return list.length; },
+  };
 })();
