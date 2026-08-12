@@ -1134,15 +1134,16 @@ a.dp-pressed:not(.btn):not(.news-card):not(.cf-item):not([class*="social"]),
    use inverse cubic-bézier control points for the two directions").
 
    The site's base curve is cubic-bezier(0.22, 1, 0.36, 1) (unchanged, per the
-   brand system). Its exact mirror is obtained by reflecting the control points
-   through the diagonal — (x,y) → (1−y, 1−x):
+   brand system). Its exact mirror reflects the control points through the
+   diagonal and reverses their order — for cubic-bezier(x1, y1, x2, y2) the
+   mirror is cubic-bezier(1−x2, 1−y2, 1−x1, 1−y1):
 
-       out:  cubic-bezier(0.22, 1,    0.36, 1)
-       in:   cubic-bezier(1−1, 1−0.36, 1−1, 1−0.22) = cubic-bezier(0, 0.64, 0, 0.78)
+       out:  cubic-bezier(0.22, 1, 0.36, 1)
+       in:   cubic-bezier(1−0.36, 1−1, 1−0.22, 1−1) = cubic-bezier(0.64, 0, 0.78, 0)
 
-   Written below in the conventional ease-in order. A surface that eased out on
-   the way in now eases in on the way out along the identical curve, so the
-   return traces the outbound path instead of using a different one.
+   A surface that eased out on the way in now eases in on the way out along the
+   identical curve, so the return traces the outbound path rather than using a
+   different one.
    -------------------------------------------------------------------------- */
 :root {
   --ease-brand-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -1531,4 +1532,117 @@ html.dp-more-contrast .event-time,
 html.dp-more-contrast .breadcrumb,
 html.dp-more-contrast .stat-label {
   color: var(--color-text-primary, #2b2724) !important;
+}
+
+/* ============================================================================
+   PHASE 7 — FOUNDATIONS AUDIT  (skill §16 Principles of great design)
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   7.1 — CRAFT: one duration scale.
+
+   §16: "Nothing is random — every spacing, timing, and alignment value is a
+   deliberate choice you can defend."
+
+   Audited across index.html and the CSS layer: 28 distinct duration values in
+   use. Many predate this pass and are owner-approved, so they are left alone.
+   What was NOT defensible was this pass's own spread — three different exit
+   durations (280 / 300 / 320ms) for the same class of event, and two different
+   enters (380 / 420 / 460ms) chosen ad hoc per surface.
+
+   Consolidated to four steps, each tied to what it is for. Exits are shorter
+   than enters throughout: a surface arriving is information, a surface leaving
+   is an acknowledgement, and making the visitor wait for the second is the
+   commonest way an interface feels sluggish.
+   -------------------------------------------------------------------------- */
+:root {
+  --dur-press: 90ms;    /* §1 pointer-down feedback — must read as instant */
+  --dur-quick: 180ms;   /* press release, small state cues */
+  --dur-exit: 280ms;    /* every reversible surface leaving */
+  --dur-enter: 380ms;   /* a surface arriving under a gesture (FLIP) */
+  --dur-material: 460ms;/* the largest surfaces materialising (§12) */
+
+  /* Re-pointed at the scale. Both were already these values; naming them keeps
+     them from drifting apart again. */
+  --mat-in: var(--dur-material) var(--ease-brand-out, cubic-bezier(0.22, 1, 0.36, 1));
+  --mat-out: var(--dur-exit) var(--ease-brand-in, cubic-bezier(0.64, 0, 0.78, 0));
+}
+
+/* Exits unified at --dur-exit (were 280 / 300 / 320). */
+.lightbox-stage.dp-flip-run.dp-flip-out {
+  transition: transform var(--dur-exit) var(--ease-brand-in) !important;
+}
+/* The backdrop fade is held back so the photo is still visible while it travels.
+   The mirrored ease-in is back-loaded by design, so a fade that runs on the same
+   clock finishes before the collapse is halfway. Delayed start + a shorter fade
+   keeps the dismissal quick while letting the retraction actually be seen. */
+.lightbox {
+  transition: opacity var(--dur-quick) var(--ease-brand-in) 140ms;
+}
+.lightbox-stage.dp-flip-run {
+  transition:
+    transform var(--dur-enter) var(--ease-brand-out),
+    opacity var(--dur-enter) var(--ease-brand-out),
+    filter var(--mat-in) !important;
+}
+/* The covers' own per-delta transition is matched to the spring's 0.4s response
+   so the surface and its depth treatment read as one motion (was 420ms). */
+.coverflow-track .cf-item {
+  transition:
+    transform var(--dur-enter) var(--ease-brand-out),
+    filter var(--dur-enter) cubic-bezier(0.16, 1, 0.3, 1) 40ms,
+    opacity var(--dur-exit) cubic-bezier(0.4, 0, 0.2, 1) 20ms;
+}
+/* Scroll edge effect: a small cue, so the quick step (was an ad-hoc 240ms). */
+@media (max-width: 768px) {
+  .site-header .main-nav::after {
+    transition: opacity var(--dur-quick) var(--ease-brand-out);
+  }
+}
+/* Press feedback, expressed through the scale. */
+.dp-pressable {
+  transition:
+    transform var(--dur-quick) var(--ease-brand-out),
+    opacity var(--dur-quick) var(--ease-brand-out);
+}
+.dp-pressed {
+  transition: transform var(--dur-press) ease-out, opacity var(--dur-press) ease-out;
+}
+
+/* ----------------------------------------------------------------------------
+   7.2 — FEEDBACK: the footer subscribe form (§16 "confirm meaningful actions").
+
+   The form is a deliberate stub: input and button both carry `disabled`, and
+   the explanation lives in a `title` attribute — "Subscription form coming
+   soon". A title tooltip requires HOVER, and §1's whole point is that a phone
+   has none. So on mobile a visitor saw a greyed-out Subscribe button and was
+   told nothing at all about why.
+
+   The fix surfaces the string that was already there, rather than inventing
+   copy: scripts/inject-subscribe-note.js renders the existing title text as a
+   visible caption. Styles here.
+   -------------------------------------------------------------------------- */
+.footer-subscribe-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted, #818386);
+  font-style: italic;
+}
+
+/* ----------------------------------------------------------------------------
+   7.3 — CRAFT: the relocated language toggle needs a focus ring.
+
+   It gained a 44px hit area in Phase 1b but kept the generic :focus-visible
+   treatment, which draws a rounded box around the whole padded area and sits
+   half off the top of a 46px nav row. Scoped ring instead.
+   -------------------------------------------------------------------------- */
+.dp-lang-in-nav:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(158, 27, 50, 0.9);
+  border-radius: 3px;
+}
+.site-header:not(.nav-solid) .dp-lang-in-nav:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95);
 }

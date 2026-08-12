@@ -768,7 +768,13 @@
       var to = transformFromTile(sourceTile);
       stage.classList.add('dp-flip-run', 'dp-flip-out');
       stage.style.transform = to || 'scale(0.92)';
-      stage.style.opacity = '0.4';
+      /* Deliberately NOT fading the stage on the way out. The exit runs the
+         mirrored ease-IN curve (§7), which is back-loaded — most of the travel
+         happens in the last third. Fading the photo at the same time as the
+         backdrop meant the viewer was already invisible before it had moved
+         much: sampled, the collapse only reached ~25% of the way to the
+         thumbnail while still on screen. The backdrop fade alone carries the
+         dismissal; the photo stays opaque and visibly returns to its tile. */
 
       /* Clean up on transitionend, NOT on a guessed timer. A fixed 340ms
          against a 300ms transition looks safe and is not: the collapse was
@@ -794,9 +800,15 @@
         stage.classList.remove('dp-flip-run', 'dp-flip-out');
         stage.style.transform = '';
         stage.style.opacity = '';
-        requestAnimationFrame(function () {
-          stage.classList.remove('dp-flip');
-        });
+        /* Force a style flush WHILE transition:none is applied, then restore.
+           Deferring the class removal to requestAnimationFrame is not enough:
+           the callback can run before any style recalculation, so both changes
+           coalesce into a single recalc in which dp-flip is already gone, the
+           transition is live again, and the element animates from the
+           thumbnail back out to Phase 1's resting scale(0.94) — a 58px
+           rebound. Reading offsetWidth commits the suppressed state first. */
+        void stage.offsetWidth;
+        stage.classList.remove('dp-flip');
       }
       function onEnd(e) {
         if (e.target === stage && e.propertyName === 'transform') cleanup();
