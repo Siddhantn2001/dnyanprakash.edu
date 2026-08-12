@@ -1123,3 +1123,140 @@ a.dp-pressed:not(.btn):not(.news-card):not(.cf-item):not([class*="social"]),
    (interruptible) better than a reimplementation would. The correct call is to
    leave it alone and say so.
    -------------------------------------------------------------------------- */
+
+/* ============================================================================
+   PHASE 5 — SPATIAL CONSISTENCY  (skill §7 Symmetric paths & anchored origins,
+   §8 Hint in the direction of the gesture)
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   5.0 — Mirrored easing (§7: "mirror the easing on reversible transitions —
+   use inverse cubic-bézier control points for the two directions").
+
+   The site's base curve is cubic-bezier(0.22, 1, 0.36, 1) (unchanged, per the
+   brand system). Its exact mirror is obtained by reflecting the control points
+   through the diagonal — (x,y) → (1−y, 1−x):
+
+       out:  cubic-bezier(0.22, 1,    0.36, 1)
+       in:   cubic-bezier(1−1, 1−0.36, 1−1, 1−0.22) = cubic-bezier(0, 0.64, 0, 0.78)
+
+   Written below in the conventional ease-in order. A surface that eased out on
+   the way in now eases in on the way out along the identical curve, so the
+   return traces the outbound path instead of using a different one.
+   -------------------------------------------------------------------------- */
+:root {
+  --ease-brand-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-brand-in: cubic-bezier(0.64, 0, 0.78, 0);
+}
+
+/* ----------------------------------------------------------------------------
+   5.1 — Lightbox: opens from the tapped tile, collapses back into it.
+
+   The FLIP transform is computed in apple-design.js. These classes only control
+   which transition is active for each leg, so the entry and exit are the same
+   path run in opposite directions with mirrored easing.
+   -------------------------------------------------------------------------- */
+.lightbox-stage.dp-flip {
+  transition: none !important;   /* the collapsed first frame must not animate */
+}
+.lightbox-stage.dp-flip-run {
+  transition:
+    transform 380ms var(--ease-brand-out),
+    opacity 320ms var(--ease-brand-out),
+    filter var(--mat-in) !important;
+}
+.lightbox-stage.dp-flip-run.dp-flip-out {
+  transition:
+    transform 300ms var(--ease-brand-in),
+    opacity 280ms var(--ease-brand-in) !important;
+}
+/* The viewer's own fade must not outrun the collapse, or the last third of the
+   retraction plays against an already-invisible surface. 300ms matches the
+   transform above so the two finish together. */
+.lightbox {
+  transition: opacity 300ms var(--ease-brand-in);
+}
+.lightbox.is-open {
+  transition: opacity var(--mat-in);
+}
+
+/* ----------------------------------------------------------------------------
+   5.2 — Mega-panel grows from its nav item.
+
+   --mega-origin-x is set per item on hover/focus by apple-design.js. Without it
+   the panel spans the viewport and grows from the centre of the screen, so all
+   six nav items produce an identical opening and the spatial relationship
+   between the item and its contents is lost (§7).
+
+   The scale is deliberately shallow — 0.985 on the Y axis only. The panel is
+   ~400px tall and full-bleed; anything more reads as a zoom rather than as the
+   panel unfolding from its trigger.
+   -------------------------------------------------------------------------- */
+@media (min-width: 769px) {
+  .mega-panel {
+    transform-origin: var(--mega-origin-x, 50%) 0;
+    transform: translateY(-6px) scaleY(0.985);
+    transition:
+      opacity var(--transition-fast),
+      visibility var(--transition-fast),
+      transform 260ms var(--ease-brand-in);
+  }
+  .nav-item:hover .mega-panel,
+  .nav-item:focus-within .mega-panel {
+    transform: translateY(0) scaleY(1);
+    transition:
+      opacity var(--transition-fast),
+      visibility var(--transition-fast),
+      transform 300ms var(--ease-brand-out);
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   5.3 — Mobile drawer: same path in and out (§7).
+
+   It already entered and exited to the right, which is correct. What it lacked
+   was mirrored easing — both legs ran the same ease-out curve, so the dismissal
+   accelerated where the entry decelerated. Now the exit runs the mirror.
+   -------------------------------------------------------------------------- */
+.mobile-panel {
+  transition:
+    transform var(--mat-out),
+    -webkit-backdrop-filter var(--mat-out);
+  transition-timing-function: var(--ease-brand-in);
+}
+.mobile-drawer.is-open .mobile-panel {
+  transition:
+    transform var(--mat-in),
+    -webkit-backdrop-filter var(--mat-in);
+  transition-timing-function: var(--ease-brand-out);
+}
+
+/* ----------------------------------------------------------------------------
+   5.4 — §8 Hint in the direction of the gesture.
+
+   "Humans predict a final state from a trajectory. Intermediate motion should
+   telegraph where things are going — make the in-between frames point at the
+   outcome, not just interpolate blindly to it."
+
+   --cf-progress (0→1) is written by the drag handler. The cover on the side you
+   are pulling toward brightens and sharpens in proportion to the pull, so a
+   half-committed drag already shows what releasing will do. Blur, saturation
+   and opacity all interpolate from the resting adjacent values (3px / 0.75 /
+   0.62) toward the active ones (0 / 1 / 1).
+   -------------------------------------------------------------------------- */
+.coverflow-track.is-drag-left .cf-item[data-delta="1"],
+.coverflow-track.is-drag-right .cf-item[data-delta="-1"] {
+  opacity: calc(0.62 + 0.38 * var(--cf-progress, 0));
+  filter:
+    blur(calc(3px * (1 - var(--cf-progress, 0))))
+    saturate(calc(0.75 + 0.25 * var(--cf-progress, 0)))
+    brightness(calc(0.97 + 0.03 * var(--cf-progress, 0)));
+}
+/* The cover being pushed AWAY recedes by the same proportion — the pair reads
+   as one exchange rather than one item lighting up on its own. */
+.coverflow-track.is-drag-left .cf-item[data-delta="0"],
+.coverflow-track.is-drag-right .cf-item[data-delta="0"] {
+  opacity: calc(1 - 0.25 * var(--cf-progress, 0));
+}
+/* During the drag these must track the finger with no transition of their own
+   (§1/§2) — the .is-dragging rule in §4.1 already suppresses it. */

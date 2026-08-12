@@ -508,13 +508,26 @@
         val = Math.sign(raw) * (s + rubberband(out, s));
       }
       drag.set(val);
+
+      /* §8 HINT IN THE DIRECTION OF THE GESTURE. "Humans predict a final state
+         from a trajectory — intermediate motion should telegraph where things
+         are going." Control Center's modules "grow up and out toward your
+         finger"; here the cover you are pulling toward brightens and sharpens
+         in proportion to how far you have pulled, so the outcome is legible
+         before you let go rather than only after. */
+      var progress = Math.min(1, Math.abs(val) / s);
+      track.style.setProperty('--cf-progress', progress.toFixed(3));
+      track.classList.toggle('is-drag-left', val < 0);
+      track.classList.toggle('is-drag-right', val > 0);
+
       if (e.cancelable) e.preventDefault();
     }, { passive: false });
 
     function release(e) {
       if (!active) return;
       active = false;
-      track.classList.remove('is-dragging');
+      track.classList.remove('is-dragging', 'is-drag-left', 'is-drag-right');
+      track.style.setProperty('--cf-progress', '0');
       if (axisLocked !== 'x') return;
 
       // The gesture moved, so the click it is about to synthesise is not a tap.
@@ -671,11 +684,164 @@
   DPMotion.project = project;
   DPMotion.rubberband = rubberband;
 
+  /* ==========================================================================
+     PHASE 5 — Spatial consistency (§7 Symmetric paths / anchored origins,
+     §8 Hint in the direction of the gesture).
+     ========================================================================== */
+
+  /* --------------------------------------------------------------------------
+     5.1 — The lightbox opens FROM the tile that was tapped, and collapses back
+     into it.
+
+     §7: "If something disappears one way, we expect it to emerge from where it
+     came" and "anchor interactions to their source — a menu, popover or sheet
+     should originate from the element that triggered it."
+
+     A FLIP: measure the thumbnail (first), measure the opened viewer (last),
+     apply the inverse transform so the viewer starts sitting exactly on the
+     thumbnail, then release it to identity. On close the same transform is
+     re-applied, so the exit retraces the entry — the symmetric path §7 asks for
+     rather than a generic fade to centre.
+
+     Driven off a class MutationObserver rather than by patching lightbox.js's
+     open/close: those are closure-scoped and reached from four different places
+     (button, backdrop, Escape, and the group click handler), so watching the
+     one piece of state they all agree on is both simpler and harder to break.
+     -------------------------------------------------------------------------- */
+  function setupLightboxOrigin() {
+    var lightbox = document.getElementById('lightbox');
+    if (!lightbox) return;
+    var stage = lightbox.querySelector('.lightbox-stage');
+    var img = lightbox.querySelector('.lightbox-img');
+    if (!stage || !img) return;
+
+    var sourceTile = null;
+
+    // Capture phase, so the tile is recorded before lightbox.js opens on it.
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest && e.target.closest('.gallery-img img');
+      if (t) sourceTile = t;
+    }, true);
+
+    function transformFromTile(tile) {
+      if (!tile) return null;
+      var f = tile.getBoundingClientRect();
+      var l = img.getBoundingClientRect();
+      if (!l.width || !l.height || !f.width) return null;
+      // Single scale factor — the thumbnail and the viewer show the SAME photo,
+      // so their aspect ratios agree and scaling both axes independently would
+      // only introduce a distortion the eye reads as a wobble.
+      var s = f.width / l.width;
+      var dx = f.left + f.width / 2 - (l.left + l.width / 2);
+      var dy = f.top + f.height / 2 - (l.top + l.height / 2);
+      return 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(' + s.toFixed(4) + ')';
+    }
+
+    function flipOpen() {
+      if (DPMotion.reducedMotion) return;            // §14 — no zoom, just the fade
+      var from = transformFromTile(sourceTile);
+      if (!from) return;
+      stage.classList.add('dp-flip');                // suppresses the CSS transition
+      stage.style.transform = from;
+      stage.style.opacity = '0.4';
+      // Two frames: paint the collapsed state, then release to identity.
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          stage.classList.remove('dp-flip');
+          stage.classList.add('dp-flip-run');
+          stage.style.transform = '';
+          stage.style.opacity = '';
+        });
+      });
+    }
+
+    function flipClose() {
+      if (DPMotion.reducedMotion) return;
+      var to = transformFromTile(sourceTile);
+      stage.classList.add('dp-flip-run', 'dp-flip-out');
+      stage.style.transform = to || 'scale(0.92)';
+      stage.style.opacity = '0.4';
+
+      /* Clean up on transitionend, NOT on a guessed timer. A fixed 340ms
+         against a 300ms transition looks safe and is not: the collapse was
+         still settling when the reset fired, so the viewer shrank to the
+         thumbnail and then visibly REBOUNDED back to 203px before
+         disappearing. Measured: w 232 -> 161 by +378ms, then back to 203 by
+         +526ms. The timeout survives only as a fallback for the case where
+         transitionend never fires (interrupted transition, reduced-motion
+         flipped mid-flight). */
+      var done = false;
+      function cleanup() {
+        if (done) return;
+        done = true;
+        stage.removeEventListener('transitionend', onEnd);
+        clearTimeout(timer);
+        /* Reset with the transition suppressed. Clearing the inline transform
+           while a transition is live hands the element back to Phase 1's
+           resting `transform: scale(0.94)`, which it then ANIMATES to — the
+           viewer collapsed onto the thumbnail and then swelled back out to
+           218px. (Invisible in practice, since the fade completes at 300ms,
+           but only by luck.) dp-flip is transition:none, so this snaps. */
+        stage.classList.add('dp-flip');
+        stage.classList.remove('dp-flip-run', 'dp-flip-out');
+        stage.style.transform = '';
+        stage.style.opacity = '';
+        requestAnimationFrame(function () {
+          stage.classList.remove('dp-flip');
+        });
+      }
+      function onEnd(e) {
+        if (e.target === stage && e.propertyName === 'transform') cleanup();
+      }
+      stage.addEventListener('transitionend', onEnd);
+      var timer = setTimeout(cleanup, 600);
+    }
+
+    var wasOpen = lightbox.classList.contains('is-open');
+    new MutationObserver(function () {
+      var isOpen = lightbox.classList.contains('is-open');
+      if (isOpen === wasOpen) return;
+      wasOpen = isOpen;
+      if (isOpen) flipOpen();
+      else flipClose();
+    }).observe(lightbox, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  /* --------------------------------------------------------------------------
+     5.2 — Desktop mega-panels originate from their nav item.
+
+     §7: "Anchor interactions to their source — set transform-origin to the
+     trigger, so the spatial relationship between button and content is
+     obvious." The panel spans the full viewport width, so without this it grows
+     from the centre of the screen regardless of which of the six items opened
+     it, and all six openings look identical.
+     -------------------------------------------------------------------------- */
+  function setupMegaPanelOrigin() {
+    var nav = document.querySelector('.site-header .main-nav');
+    if (!nav) return;
+    var items = nav.querySelectorAll('.nav-item');
+    Array.prototype.forEach.call(items, function (item) {
+      var link = item.querySelector('.nav-link');
+      var panel = item.querySelector('.mega-panel');
+      if (!link || !panel) return;
+      function setOrigin() {
+        var nr = nav.getBoundingClientRect();
+        var lr = link.getBoundingClientRect();
+        var x = lr.left + lr.width / 2 - nr.left;
+        panel.style.setProperty('--mega-origin-x', x.toFixed(1) + 'px');
+      }
+      item.addEventListener('mouseenter', setOrigin);
+      item.addEventListener('focusin', setOrigin);
+    });
+  }
+
   function init() {
     setupLangToggleRelocation();
     setupPressFeedback();
     setupCoverflowGesture();
     setupLightboxGesture();
+    setupLightboxOrigin();
+    setupMegaPanelOrigin();
   }
 
   if (document.readyState === 'loading') {

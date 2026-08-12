@@ -78,7 +78,13 @@
     lightbox.classList.remove('is-open');
     lightbox.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('lightbox-open');
-    lbImg.src = '';
+    /* src is cleared AFTER the exit transition, not during it. The Apple-design
+       layer collapses the viewer back into the thumbnail it opened from (§7),
+       and blanking the image synchronously made that animation play against an
+       empty box. 340ms covers the longest exit timing in apple-design.css. */
+    setTimeout(function () {
+      if (!lightbox.classList.contains('is-open')) lbImg.src = '';
+    }, 340);
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   function prev() { current--; render(); }
