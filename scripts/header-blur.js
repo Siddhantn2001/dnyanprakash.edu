@@ -32,7 +32,6 @@
   let lastBlur = -1;
 
   header.style.transition = 'filter 0.1s ease-out';
-  header.style.willChange = 'filter';
 
   function update() {
     ticking = false;
@@ -43,6 +42,13 @@
     if (blur === lastBlur) return;
     lastBlur = blur;
     header.style.filter = blur === 0 ? '' : `blur(${blur}px)`;
+    /* will-change is raised only while the blur is actually in play (§11:
+       "hint with will-change where motion is imminent" — and not where it
+       isn't). This used to be set once at load and left up for the life of the
+       page, pinning a full-viewport compositor layer for a hero image even
+       after the visitor had scrolled past it and while it sat perfectly sharp
+       at the top. Now it comes down at both ends of the range. */
+    header.style.willChange = blur > 0 && blur < MAX_BLUR ? 'filter' : 'auto';
   }
 
   function onScroll() {

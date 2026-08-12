@@ -1239,24 +1239,296 @@ a.dp-pressed:not(.btn):not(.news-card):not(.cf-item):not([class*="social"]),
    outcome, not just interpolate blindly to it."
 
    --cf-progress (0→1) is written by the drag handler. The cover on the side you
-   are pulling toward brightens and sharpens in proportion to the pull, so a
-   half-committed drag already shows what releasing will do. Blur, saturation
-   and opacity all interpolate from the resting adjacent values (3px / 0.75 /
-   0.62) toward the active ones (0 / 1 / 1).
+   are pulling toward grows and brightens in proportion to the pull, so a
+   half-committed drag already shows what releasing will do.
+
+   The hint interpolates OPACITY and SCALE only — both compositor-friendly
+   (§11). An earlier cut also interpolated blur() and saturate() per frame; it
+   measured 2 dropped frames with a 67ms worst case on a 4x-throttled CPU, and
+   zero with the filter interpolation removed. Scale is also the closer reading
+   of §8 anyway: Control Center's modules "grow up and out toward your finger",
+   which is a size change, not a sharpness change. Blur still resolves on
+   commit, via the existing per-delta transition.
    -------------------------------------------------------------------------- */
-.coverflow-track.is-drag-left .cf-item[data-delta="1"],
+.coverflow-track.is-drag-left .cf-item[data-delta="1"] {
+  opacity: calc(0.62 + 0.38 * var(--cf-progress, 0));
+  transform:
+    translate(-50%, -50%)
+    translateX(85%)
+    scale(calc(0.84 + 0.16 * var(--cf-progress, 0)));
+}
 .coverflow-track.is-drag-right .cf-item[data-delta="-1"] {
   opacity: calc(0.62 + 0.38 * var(--cf-progress, 0));
-  filter:
-    blur(calc(3px * (1 - var(--cf-progress, 0))))
-    saturate(calc(0.75 + 0.25 * var(--cf-progress, 0)))
-    brightness(calc(0.97 + 0.03 * var(--cf-progress, 0)));
+  transform:
+    translate(-50%, -50%)
+    translateX(-85%)
+    scale(calc(0.84 + 0.16 * var(--cf-progress, 0)));
 }
 /* The cover being pushed AWAY recedes by the same proportion — the pair reads
    as one exchange rather than one item lighting up on its own. */
 .coverflow-track.is-drag-left .cf-item[data-delta="0"],
 .coverflow-track.is-drag-right .cf-item[data-delta="0"] {
   opacity: calc(1 - 0.25 * var(--cf-progress, 0));
+  transform: translate(-50%, -50%) scale(calc(1 - 0.04 * var(--cf-progress, 0)));
 }
 /* During the drag these must track the finger with no transition of their own
    (§1/§2) — the .is-dragging rule in §4.1 already suppresses it. */
+
+/* ============================================================================
+   PHASE 6 — FRAME QUALITY & ACCESSIBILITY  (skill §11, §14)
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   6.1 — `transition: all` (§11, and §16 "nothing is random").
+
+   Four rules across the codebase transition `all`. That animates every
+   animatable property the element happens to have — including layout-affecting
+   ones the author never intended — and forces the engine to check them all on
+   every state change. §11 asks for compositor-friendly properties only, named
+   explicitly.
+
+   Overridden here rather than edited in place because two of the four live in
+   each page's inline <style> (48 copies) and one in landing-elevation.css.
+   -------------------------------------------------------------------------- */
+.academics-card,
+.stats-arrow,
+.footer-subscribe input,
+.footer-subscribe button {
+  transition:
+    transform var(--transition-fast, 0.22s cubic-bezier(0.22, 1, 0.36, 1)),
+    opacity var(--transition-fast, 0.22s cubic-bezier(0.22, 1, 0.36, 1)),
+    box-shadow var(--transition-fast, 0.22s cubic-bezier(0.22, 1, 0.36, 1)),
+    background-color var(--transition-fast, 0.22s cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color var(--transition-fast, 0.22s cubic-bezier(0.22, 1, 0.36, 1)),
+    color var(--transition-fast, 0.22s cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* ----------------------------------------------------------------------------
+   6.2 — will-change lifecycle (§11: "hint with will-change where motion is
+   imminent" — and, by implication, not where it isn't).
+
+   A permanent will-change keeps a compositor layer alive for the life of the
+   page, which costs memory on exactly the devices that can least afford it. The
+   hints below are applied by class while a gesture is live and dropped when it
+   settles (apple-design.js), rather than being declared statically.
+   -------------------------------------------------------------------------- */
+.coverflow-track.is-dragging,
+.coverflow-track.is-settling {
+  will-change: transform;
+}
+.coverflow-track.is-dragging .cf-item[data-delta="1"],
+.coverflow-track.is-dragging .cf-item[data-delta="-1"],
+.coverflow-track.is-dragging .cf-item[data-delta="0"] {
+  will-change: transform, opacity;
+}
+.lightbox-stage.dp-flip-run {
+  will-change: transform, opacity;
+}
+
+/* ----------------------------------------------------------------------------
+   6.3 — §14 prefers-reduced-motion.
+
+   "Reduced motion doesn't mean NO feedback — it means a gentler, non-vestibular
+   equivalent. Replace slides/springs/parallax with short opacity cross-fades.
+   Drop elastic/overshoot. Keep opacity/color changes that aid comprehension."
+
+   So the press feedback from Phase 3 is deliberately KEPT (it is the thing that
+   tells a visitor their tap registered), but expressed as opacity rather than
+   scale. The spring is already bypassed in JS — Spring.to() jumps straight to
+   the target when this preference is set — and the lightbox FLIP is skipped.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  /* Materials arrive and leave as plain cross-fades: no scale, no blur travel. */
+  .mobile-panel,
+  .mobile-drawer.is-open .mobile-panel,
+  .lightbox .lightbox-stage,
+  .lightbox.is-open .lightbox-stage,
+  .dp-welcome-card,
+  .dp-welcome-overlay.is-visible .dp-welcome-card {
+    transform: none !important;
+    filter: none !important;
+    transition: opacity 200ms ease !important;
+  }
+  /* The drawer still needs to arrive from somewhere it can leave to, so it
+     keeps its translate — that is orientation, not decoration — but with no
+     scale component and no spring. */
+  .mobile-panel {
+    transform: translateX(100%) !important;
+  }
+  .mobile-drawer.is-open .mobile-panel {
+    transform: translateX(0) !important;
+  }
+
+  /* Press feedback becomes opacity-only (§14 keeps feedback, drops movement). */
+  .dp-pressed {
+    transform: none !important;
+    opacity: 0.65 !important;
+    transition: opacity 90ms ease !important;
+  }
+
+  /* Mega-panel: cross-fade, no growth from origin. */
+  .mega-panel,
+  .nav-item:hover .mega-panel,
+  .nav-item:focus-within .mega-panel {
+    transform: none !important;
+    transition: opacity 180ms ease, visibility 180ms ease !important;
+  }
+
+  /* §8's directional hint is a size change — drop it, keep the brightness cue. */
+  .coverflow-track.is-drag-left .cf-item[data-delta="1"],
+  .coverflow-track.is-drag-right .cf-item[data-delta="-1"],
+  .coverflow-track.is-drag-left .cf-item[data-delta="0"],
+  .coverflow-track.is-drag-right .cf-item[data-delta="0"] {
+    transform: none;
+  }
+
+  /* §14 names these specifically: no full-viewport moving backgrounds, no slow
+     looping oscillation (the hero's Ken Burns zoom is one cycle per 20s+), and
+     no scroll-driven blur travel. */
+  .hero .hero-media img,
+  .hero-media img {
+    animation: none !important;
+  }
+  .scroll-progress {
+    transition: none !important;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   6.4 — §14 prefers-reduced-transparency.
+
+   "Make translucent surfaces frostier/solid: raise background opacity, drop the
+   blur." Every Phase 1 material is covered. The .dp-reduced-transparency class
+   mirror is set by apple-design.js so this also works in engines that do not
+   implement the media query yet (Firefox has neither this nor prefers-contrast
+   at time of writing).
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-transparency: reduce) {
+  .site-header.is-scrolled .main-nav,
+  .site-header.is-scrolled [data-section="utility-bar"],
+  .mobile-panel,
+  .mega-panel,
+  .lightbox-btn,
+  .lightbox,
+  .mobile-backdrop,
+  .dp-welcome-overlay {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .site-header.is-scrolled .main-nav,
+  .site-header.is-scrolled [data-section="utility-bar"],
+  .mobile-panel,
+  .mega-panel {
+    background: #ffffff !important;
+  }
+  .lightbox,
+  .mobile-backdrop,
+  .dp-welcome-overlay {
+    background: rgba(26, 22, 18, 0.94) !important;
+  }
+  .lightbox-btn {
+    background: rgba(255, 255, 255, 0.24) !important;
+  }
+  /* The scroll edge effect is a tapering blur — with transparency reduced there
+     is nothing for it to do, and a bare gradient over content reads as a smudge. */
+  .site-header .main-nav::after {
+    display: none !important;
+  }
+}
+html.dp-reduced-transparency .site-header.is-scrolled .main-nav,
+html.dp-reduced-transparency .site-header.is-scrolled [data-section="utility-bar"],
+html.dp-reduced-transparency .mobile-panel,
+html.dp-reduced-transparency .mega-panel {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  background: #ffffff !important;
+}
+html.dp-reduced-transparency .site-header .main-nav::after {
+  display: none !important;
+}
+
+/* ----------------------------------------------------------------------------
+   6.5 — §14 prefers-contrast: more.
+   "Near-solid backgrounds with a defined, contrasting border."
+   -------------------------------------------------------------------------- */
+@media (prefers-contrast: more) {
+  .site-header.is-scrolled .main-nav,
+  .site-header.is-scrolled [data-section="utility-bar"] {
+    background: #ffffff !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    border-bottom: 2px solid var(--color-text-primary, #2b2724) !important;
+  }
+  .mobile-panel,
+  .mega-panel {
+    background: #ffffff !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    border: 2px solid var(--color-text-primary, #2b2724);
+  }
+  .lightbox-btn {
+    background: rgba(0, 0, 0, 0.75) !important;
+    border: 2px solid #ffffff !important;
+  }
+  /* Vibrancy's job is legibility on glass; with no glass, go to full contrast. */
+  .site-header.is-scrolled [data-section="utility-bar"] a,
+  .site-header.is-scrolled [data-section="utility-bar"] button,
+  .site-header.is-scrolled [data-section="utility-bar"] span,
+  .site-header.is-scrolled .nav-link {
+    color: var(--color-text-primary, #2b2724) !important;
+  }
+  .site-header .main-nav::after {
+    display: none !important;
+  }
+  /* Muted greys used for secondary copy fail contrast at this setting. */
+  .news-cat,
+  .event-time,
+  .breadcrumb,
+  .stat-label {
+    color: var(--color-text-primary, #2b2724) !important;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   6.6 — Class mirrors for the two preferences engines still disagree on.
+
+   apple-design.js reflects all three §14 signals onto <html>. reduced-motion
+   needs no mirror (every engine implements the query), but
+   prefers-reduced-transparency and prefers-contrast are not universal, and
+   Chrome cannot even emulate the transparency one for testing.
+
+   Shipping a mirror for ONE of the two was the actual bug here: the JS set
+   .dp-more-contrast and no rule consumed it, so the contrast branch silently
+   had no fallback path at all. Both are now covered.
+   -------------------------------------------------------------------------- */
+html.dp-more-contrast .site-header.is-scrolled .main-nav,
+html.dp-more-contrast .site-header.is-scrolled [data-section="utility-bar"] {
+  background: #ffffff !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-bottom: 2px solid var(--color-text-primary, #2b2724) !important;
+}
+html.dp-more-contrast .mobile-panel,
+html.dp-more-contrast .mega-panel {
+  background: #ffffff !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border: 2px solid var(--color-text-primary, #2b2724);
+}
+html.dp-more-contrast .lightbox-btn {
+  background: rgba(0, 0, 0, 0.75) !important;
+  border: 2px solid #ffffff !important;
+}
+html.dp-more-contrast .site-header .main-nav::after {
+  display: none !important;
+}
+html.dp-more-contrast .site-header.is-scrolled [data-section="utility-bar"] a,
+html.dp-more-contrast .site-header.is-scrolled [data-section="utility-bar"] button,
+html.dp-more-contrast .site-header.is-scrolled [data-section="utility-bar"] span,
+html.dp-more-contrast .site-header.is-scrolled .nav-link,
+html.dp-more-contrast .news-cat,
+html.dp-more-contrast .event-time,
+html.dp-more-contrast .breadcrumb,
+html.dp-more-contrast .stat-label {
+  color: var(--color-text-primary, #2b2724) !important;
+}

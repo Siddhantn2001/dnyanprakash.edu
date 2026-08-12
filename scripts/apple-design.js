@@ -571,6 +571,14 @@
       /* §4: bounce ONLY because a flick preceded this. A cover released from a
          slow drag settles critically damped; one that was thrown overshoots
          very slightly, which is what makes the throw feel physical. */
+      /* §11 will-change lifecycle: the hint stays up while the spring settles,
+         then comes down. A permanent hint keeps a compositor layer alive for
+         the life of the page, on exactly the devices least able to spare it. */
+      track.classList.add('is-settling');
+      drag.onRest = function () {
+        track.classList.remove('is-settling');
+      };
+
       var flicked = Math.abs(v) > FLICK;
       drag.to(0, v, {
         response: flicked ? 0.3 : 0.4,
