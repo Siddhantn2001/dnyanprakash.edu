@@ -1646,3 +1646,199 @@ html.dp-more-contrast .stat-label {
 .site-header:not(.nav-solid) .dp-lang-in-nav:focus-visible {
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95);
 }
+
+/* ============================================================================
+   PHASE 8 — LIGHTBOX CHROME  (regression fix + mobile control layout)
+
+   REGRESSION, introduced by this pass in Phase 3
+   ----------------------------------------------
+   §3.3 added `.lightbox-btn` to the group that gets `position: relative`, so a
+   transparent 44px ::after would have a positioning context. gallery.css:55
+   already declared `position: absolute` — equal specificity (0,1,0), and this
+   file loads later, so `relative` won.
+
+   That turned all three buttons into IN-FLOW FLEX ITEMS of .lightbox
+   (display:flex; justify-content:center), laid out in a row BEFORE the photo,
+   with their top/right/left values acting as relative offsets instead of
+   positioning them. Measured at 375px:
+
+       prev   top:50% left:8px   → shifted down 382px  → rect 64,744  32x44
+       next   top:50% right:8px  → shifted down 382px  → rect 80,744  32x44
+                                                          ^ 16px of overlap
+       close  top:12px right:12px → rect 12,396 (mid-height, no corner)
+       photo  232px wide inside a 327px box — buttons were eating flex space
+
+   The buttons were also 32x44, not 44x44: as flex items they shrank. Broken at
+   desktop too (prev/next 4px apart at 1440px).
+
+   absolute is itself a positioning context, so the ::after hit area works
+   perfectly well without forcing relative — the Phase 3 rule was simply wrong
+   for this one element.
+   ============================================================================ */
+
+.lightbox-btn {
+  /* Restores gallery.css's intent, and beats the Phase 3 group rule above. */
+  position: absolute;
+}
+
+/* ----------------------------------------------------------------------------
+   8.1 — Control material (§12).
+
+   The chips were rgba(255,255,255,0.08) with a 0.18 border — present, but far
+   too faint to find.
+
+   The material has to answer what the controls actually sit ON, and in this
+   layout that is NOT the photograph: close is above it, the arrows are below
+   it, and on desktop they flank it. Every control sits on the lightbox scrim,
+   which is a constant rgba(10, 8, 8, 0.94) — effectively black, on every photo.
+
+   So a LIGHT chip is the high-contrast choice here, not a dark one. (A first
+   pass used dark glass, reasoning about "legibility over light and dark
+   photos" — which was solving a problem this layout does not have, and
+   produced near-black chips on a near-black ground.)
+
+   The dark drop shadow and the white glyph's own text-shadow are the insurance
+   for the one case where a control could meet bright content — a very wide
+   photo on a short viewport — so the chip degrades rather than disappears.
+   -------------------------------------------------------------------------- */
+.lightbox-btn {
+  background: rgba(255, 255, 255, 0.17) !important;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: #fff;
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  backdrop-filter: blur(14px) saturate(130%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 2px 16px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.30) !important;
+  border-color: rgba(255, 255, 255, 0.8);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lightbox-btn { background: rgba(255, 255, 255, 0.24) !important; }
+}
+
+/* ----------------------------------------------------------------------------
+   8.2 — Mobile control layout.
+
+   At 375px the photo fills nearly the full width (327px of a 375px viewport),
+   so edge-anchored side arrows would sit ON the photograph. They go to a
+   bottom-centre cluster instead, which:
+
+     - cannot overlap by construction: each is offset a fixed distance from the
+       centre line, so the gap between them is a constant, not a consequence of
+       whatever width the viewport happens to be;
+     - leaves the photograph unobstructed;
+     - sits in the thumb's natural arc, unlike the top corners;
+     - groups navigation with the position readout it changes (§16: "place a
+       control near what it affects and arrange controls to mirror what they
+       change").
+
+   Close stays in the top-right — the one control that must NOT be near the
+   thumb path, or it gets hit while swiping.
+
+   One spacing scale, 4px-based, every value derived from it (§16):
+       --lb-ctrl   44px  the touch target floor (§10)
+       --lb-gap    20px  clear space between the two arrows
+       --lb-inset  16px  every edge inset — top, bottom, left, right
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  :root {
+    --lb-ctrl: 44px;
+    --lb-inset: 16px;
+    --lb-gap: 20px;
+  }
+
+  /* Reserve room top and bottom so the photo never sits under the chrome.
+     top    = inset + control  (clears the close button)
+     bottom = inset*2 + control (clears the arrow row and its own inset) */
+  .lightbox {
+    padding:
+      calc(var(--lb-inset) + var(--lb-ctrl)) var(--lb-inset)
+      calc(var(--lb-inset) * 2 + var(--lb-ctrl)) var(--lb-inset);
+  }
+
+  .lightbox-btn {
+    width: var(--lb-ctrl);
+    height: var(--lb-ctrl);
+    font-size: 22px;
+    flex: none;            /* never shrink — this is what made them 32px wide */
+  }
+
+  .lightbox-close {
+    top: var(--lb-inset);
+    right: var(--lb-inset);
+    bottom: auto;
+    left: auto;
+    transform: none;
+  }
+
+  /* Both arrows anchor to the horizontal centre and step out by exactly half
+     the gap plus half a control, so their centres are (gap + control) apart —
+     64px — leaving a 20px clear channel between two 44px targets. No width
+     the viewport can take makes them meet. */
+  .lightbox-prev,
+  .lightbox-next {
+    top: auto;
+    bottom: var(--lb-inset);
+    left: 50%;
+    right: auto;
+  }
+  .lightbox-prev {
+    transform: translateX(calc(-50% - (var(--lb-gap) + var(--lb-ctrl)) / 2));
+  }
+  .lightbox-next {
+    transform: translateX(calc(-50% + (var(--lb-gap) + var(--lb-ctrl)) / 2));
+  }
+  /* The hover nudges are desktop affordances and would fight the centring. */
+  .lightbox-prev:hover { transform: translateX(calc(-50% - (var(--lb-gap) + var(--lb-ctrl)) / 2)); }
+  .lightbox-next:hover { transform: translateX(calc(-50% + (var(--lb-gap) + var(--lb-ctrl)) / 2)); }
+  .lightbox-prev.dp-pressed { transform: translateX(calc(-50% - (var(--lb-gap) + var(--lb-ctrl)) / 2)) scale(0.86); }
+  .lightbox-next.dp-pressed { transform: translateX(calc(-50% + (var(--lb-gap) + var(--lb-ctrl)) / 2)) scale(0.86); }
+  .lightbox-close.dp-pressed { transform: scale(0.86); }
+
+  /* ------------------------------------------------------------------------
+     8.3 — Caption and counter: hierarchy and rhythm.
+
+     The stage used one uniform 14px gap for photo → caption → counter, which
+     reads as three equally-related things. They are not: the caption belongs
+     to the photo, and the counter is a quieter footnote to both. Spacing now
+     says so — 18px after the photo, 6px between caption and counter — and the
+     type widens the gap the spacing opens.
+     ------------------------------------------------------------------------ */
+  .lightbox-stage {
+    gap: 0;
+  }
+  .lightbox-img {
+    margin-bottom: 18px;
+    /* 78vh was set for a viewer with no reserved chrome. With 60px of top
+       padding and 76px of bottom padding now held for the controls, a tall
+       portrait at 78vh plus its caption and counter overflows the content box
+       and pushes the photo down toward the arrow row. 64vh is the largest
+       value that keeps the whole stack inside the box with room for a
+       three-line caption:  64vh(520) + 18 + caption + 6 + counter < 676. */
+    max-height: 64vh;
+  }
+  .lightbox-caption {
+    font-size: 15px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: 6px;
+    padding: 0 4px;
+  }
+  .lightbox-counter {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* 320px: the inset tightens one step down the same scale; nothing else moves.
+   64px between arrow centres still leaves a 20px channel on a 320px screen. */
+@media (max-width: 360px) {
+  :root {
+    --lb-inset: 12px;
+  }
+}

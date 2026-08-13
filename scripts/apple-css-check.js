@@ -52,6 +52,16 @@ const EXPECTED = [
   ['.coverflow-track.is-settling', 'P6 will-change lifecycle'],
   ['html.dp-reduced-transparency .mobile-panel', 'P6 reduced-transparency mirror'],
   ['html.dp-more-contrast .mobile-panel', 'P6 contrast mirror'],
+  // Phase 7 — foundations
+  ['.footer-subscribe-note', 'P7 subscribe caption'],
+  ['.dp-lang-in-nav:focus-visible', 'P7 toggle focus ring'],
+  // Phase 8 — lightbox chrome. The regression this guards against was exactly
+  // a `position` declaration losing a cascade fight, so assert the mobile
+  // layout rules survive parsing too.
+  ['.lightbox-btn', 'P8 button positioning + material'],
+  ['.lightbox-prev', 'P8 arrow cluster (prev)'],
+  ['.lightbox-next', 'P8 arrow cluster (next)'],
+  ['.lightbox-close', 'P8 close, top-right'],
 ];
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
