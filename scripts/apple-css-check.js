@@ -62,6 +62,12 @@ const EXPECTED = [
   ['.lightbox-prev', 'P8 arrow cluster (prev)'],
   ['.lightbox-next', 'P8 arrow cluster (next)'],
   ['.lightbox-close', 'P8 close, top-right'],
+  // Phase 9 — typographic hero
+  ['.hero-wordmark', 'P9 Devanagari display type'],
+  ['.hero-rule', 'P9 shirorekha extended'],
+  ['.hero-tagline', 'P9 subordinate tagline'],
+  ['.hero[data-hero="ground"] .hero-overlay', 'P9 option: ground'],
+  ['.hero[data-hero="detail"] .hero-media img', 'P9 option: detail'],
 ];
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',

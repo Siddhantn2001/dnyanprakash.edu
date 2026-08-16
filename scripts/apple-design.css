@@ -1842,3 +1842,310 @@ html.dp-more-contrast .stat-label {
     --lb-inset: 12px;
   }
 }
+
+/* ============================================================================
+   PHASE 9 — THE HERO AS A TYPOGRAPHIC COMPOSITION  (homepage only)
+
+   This is deliberately NOT a refinement. Phases 1–8 changed how the site
+   behaves; a before/after screenshot of them is nearly identical, which is
+   exactly the feedback that prompted this. This changes what the first frame
+   IS.
+
+   THE IDEA
+   ज्ञानप्रकाश — the school's own name — becomes the hero's primary visual at
+   display scale, with its shirorekha (the horizontal head-stroke Devanagari
+   runs across the top of a word, which Latin script has no equivalent of)
+   extended to both frame edges as a structural rule. "Know & Inspire" drops to
+   a subordinate line beneath it.
+
+   MEASURED CONSTANTS — every number below came from rendering the face to a
+   canvas and reading the pixels, not from guessing:
+
+       ज्ञानप्रकाश advance      3.61em   (8 glyphs, Noto Serif Devanagari 600)
+       ink height              0.715em  ← the line-height floor
+       ink above baseline      0.635em
+       shirorekha              0.555em above the baseline
+                                        = 0.080em below the ink top
+
+   So to fill a frame of width W the type wants W / 3.61. At 375px with 20px
+   gutters that is 92px, i.e. ~24vw — above the 12–20vw the brief suggested,
+   because that range was estimated against Latin advance widths and this face
+   is much wider per glyph. 22vw is the value used: it puts the word at ~79% of
+   the frame, and the rule carries the remaining distance to both edges.
+
+   THE LOGO IS UNTOUCHED. This is webfont type set live, at a different size,
+   weight and colour from the raster lockup in the nav (CLAUDE.md §6 Rule 0
+   forbids altering or recreating that asset — this does neither).
+   ============================================================================ */
+
+@media (min-width: 0px) {
+  .hero .hero-text-block {
+    max-width: none;   /* was max-w-3xl — the composition is full-width now */
+  }
+
+  /* --- The headline stack ------------------------------------------------ */
+  .hero-headline {
+    position: relative;
+    display: block;
+    margin: 0 0 clamp(1.25rem, 2.6vw, 2.25rem);
+    font-weight: 400;
+    /* h1 is a flow container for three very different things; each child sets
+       its own type entirely. */
+    font-size: inherit;
+    line-height: 1;
+  }
+
+  .hero-wordmark {
+    display: block;
+    font-family: "Noto Serif Devanagari", "Playfair Display", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(4.5rem, 22vw, 19rem);
+    /* 0.715em is the measured ink height; 0.94 leaves clearance above and
+       below for the matras and the ्र conjunct without opening a gap the
+       single line does not need. NEVER inherit the Latin display leading
+       here — at this size it clips the head-stroke. */
+    line-height: 0.94;
+    letter-spacing: 0;   /* §15: Devanagari tracking never goes negative */
+    color: #fff;
+    margin: 0;
+    /* The glyphs sit on photography in "detail" mode; this keeps them
+       legible without putting a slab behind them. */
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.42), 0 1px 4px rgba(0, 0, 0, 0.28);
+    /* Optical: the first glyph's left sidebearing makes the word look inset
+       against a hard-aligned rule. Pull it back onto the grid. */
+    margin-left: -0.02em;
+  }
+
+  /* --- The shirorekha, continued to the frame ---------------------------- */
+  .hero-rule {
+    position: absolute;
+    /* NOT 100vw. On desktop 100vw includes the scrollbar, so a centred
+       full-viewport rule overflowed the document by 64px at 1440 — real
+       horizontal overflow that scripts/check-overflow.js would never have
+       caught, because that gate only tests 320–430px where no scrollbar
+       exists. Extending 50% past each end of the headline and letting the
+       hero clip it reaches the frame edges at every width with no viewport
+       units at all. */
+    left: -50%;
+    right: -50%;
+    width: auto;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.34);
+    pointer-events: none;
+    /* Sits ON the head-stroke, at a constant derived from the face's own
+       metrics rather than guessed or eyeballed:
+
+           ascent   0.9332em     descent  0.6258em    (canvas fontBoundingBox)
+           line-height 0.940em
+           baseline within the box = (0.940 − (0.9332+0.6258))/2 + 0.9332
+                                   = 0.6237em
+           shirorekha, measured    = 0.555em above the baseline
+           → rule top              = 0.6237 − 0.555 = 0.0687em
+
+       Two earlier attempts are worth recording so nobody re-derives them:
+       0.1925em came from ink extents and sat 36px low at 1440 (line-height
+       0.94 is SHORTER than the ascent, so the ink overflows the box and its
+       position cannot be read off the box height); 0.068em came from
+       rasterising the word, which agreed at desktop but appeared 5–7px out at
+       mobile — that turned out to be the DETECTOR, not the render: below 768px
+       the tagline's top edge enters the sampling window and can outscore the
+       stroke. The metrics are identical at every width, so one constant is
+       correct everywhere. Verified by eye at 320/375/768/1440. */
+    top: calc(0.0687 * clamp(4.5rem, 22vw, 19rem));
+  }
+
+  /* --- Subordinate lines -------------------------------------------------- */
+  .hero-tagline {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.375rem, 3vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.94);
+    margin-top: clamp(0.5rem, 1.2vw, 1rem);
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
+  }
+
+  .hero .hero-sub {
+    font-size: clamp(0.875rem, 1.15vw, 1.0625rem);
+    line-height: 1.55;
+    max-width: 34rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   9.1 — OPTION "ground" (default): the photograph is a tinted monochrome
+   ground and the type owns the frame.
+
+   Chosen as the default for a measured reason. images/01-hero.jpg is
+   1536×1024; a 1440px viewport at 2× needs ~2880px, so it is already being
+   upscaled 1.9× and is visibly soft. Tile-by-tile texture analysis puts the
+   only high-detail region at y 512–853 (energy 60–83 against 5–14 for the
+   sky) — cropping to just that band leaves 1536×341 real pixels, which at
+   full-bleed is the SAME 1.9× upscale, and any tighter crop is worse.
+
+   A photograph that cannot be sharp should not be asked to be the subject.
+   Desaturated to a near-monochrome burgundy ground, its softness stops being
+   a defect and becomes texture — and the decision about the photo is
+   decisive, which was the point: it is a ground, not a half-hearted picture.
+   -------------------------------------------------------------------------- */
+.hero[data-hero="ground"] .hero-media img {
+  filter: grayscale(1) contrast(1.08) brightness(0.42);
+  object-position: 50% 62%;
+}
+.hero[data-hero="ground"] .hero-blur {
+  display: none;   /* nothing to soften — the whole ground is already flat */
+}
+.hero[data-hero="ground"] .hero-overlay {
+  /* Burgundy, not black: the brand colour carries the frame, and §16's
+     "spend your boldness in one place" says this is the place. */
+  /* The top band is deliberately darker than the burgundy below it. The nav
+     logo is a red-and-green raster mark, and red-on-burgundy is the one place
+     this ground costs contrast — dropping the first 22% toward near-black buys
+     the logo a readable backdrop without touching the asset (CLAUDE.md §6). */
+  background:
+    linear-gradient(180deg,
+      rgba(28, 6, 11, 0.80) 0%,
+      rgba(80, 12, 22, 0.66) 18%,
+      rgba(107, 15, 26, 0.74) 52%,
+      rgba(45, 7, 13, 0.94) 100%),
+    radial-gradient(120% 90% at 50% 100%, rgba(158, 27, 50, 0.50) 0%, rgba(158, 27, 50, 0) 70%);
+}
+
+/* ----------------------------------------------------------------------------
+   9.2 — OPTION "detail": the photograph is full-bleed and cropped past the
+   sky onto the facade band, with the type over it.
+
+   No extra scale() is applied — the image is already upscaled 1.9×, and
+   zooming further to "crop harder" would only make it softer. The crop is
+   achieved with object-position alone, moving the window down onto the brick
+   and concrete grid and off the 45% of dead sky the audit found.
+   -------------------------------------------------------------------------- */
+.hero[data-hero="detail"] .hero-media img {
+  object-position: 50% 88%;
+  filter: saturate(0.85) contrast(1.05) brightness(0.82);
+}
+.hero[data-hero="detail"] .hero-blur {
+  display: none;
+}
+.hero[data-hero="detail"] .hero-overlay {
+  background:
+    linear-gradient(180deg, rgba(20, 10, 12, 0.32) 0%, rgba(20, 10, 12, 0.55) 45%, rgba(38, 8, 14, 0.88) 100%),
+    linear-gradient(90deg, rgba(107, 15, 26, 0.42) 0%, rgba(107, 15, 26, 0) 62%);
+}
+
+/* ----------------------------------------------------------------------------
+   9.3 — Composition. The type is bottom-anchored so the word sits where the
+   eye lands, and the frame above it is deliberately quiet.
+   -------------------------------------------------------------------------- */
+.hero {
+  /* Clips the rule's overhang. `clip` rather than `hidden` so vertical
+     overflow (the blurred ground's bleed) still shows and no scroll container
+     is created — the same pattern mobile-polish.css uses on .newsletter-section. */
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.hero .hero-content {
+  align-items: flex-end;
+}
+
+@media (max-width: 768px) {
+  /* MOBILE IS THE PRIORITY. The audit found the top 35% of this fold was empty
+     sky before anything happened. The type now starts within the first third,
+     and the ground is a flat tint rather than a featureless wall of windows. */
+  .hero {
+    min-height: 84svh;
+  }
+  /* Centred, not bottom-anchored. Bottom-anchoring a ~300px block in a 715px
+     frame leaves ~400px of empty ground stacked above it — which is the same
+     "nothing happens in the top third" the audit flagged about the old sky,
+     just in burgundy. Centring splits the breathing room and puts the word in
+     the upper-middle where the eye lands. */
+  .hero .hero-content {
+    align-items: center;
+    padding-top: calc(var(--dp-hdr-full, 46px) + 3vh);
+    padding-bottom: 5vh;
+  }
+  .hero-rule {
+    background: rgba(255, 255, 255, 0.28);
+  }
+  /* The rail sat on top of the last glyph at every mobile width measured
+     (414/375/320) — it reads as the word being cut off. The footer carries the
+     same three icons, which is already this project's stated position for the
+     mobile hero rail. */
+  .hero-social-rail {
+    display: none;
+  }
+  .hero .hero-sub {
+    max-width: 24rem;
+  }
+  /* One primary action, full width; the tour stays as a quiet second line —
+     this is the Move 1 hierarchy the mobile polish pass established, kept. */
+  .hero-cta {
+    width: 100%;
+  }
+}
+
+@media (min-width: 769px) {
+  .hero .hero-content {
+    padding-bottom: clamp(3rem, 7vh, 6rem);
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   9.4 — Accessibility branches (§14), consistent with Phase 6.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-transparency: reduce) {
+  .hero[data-hero="ground"] .hero-overlay,
+  .hero[data-hero="detail"] .hero-overlay {
+    background: rgba(56, 8, 14, 0.94);
+  }
+}
+/* Specificity note: the base is `.hero[data-hero="ground"] .hero-overlay`
+   (0,3,0). A mirror written as `html.dp-… .hero-overlay` is only (0,2,1) and
+   LOSES — measured, the overlay kept its gradient with the class applied. The
+   [data-hero] attribute has to be carried into the mirror to outrank it. */
+html.dp-reduced-transparency .hero[data-hero] .hero-overlay {
+  background: rgba(56, 8, 14, 0.94);
+}
+html.dp-more-contrast .hero[data-hero] .hero-overlay {
+  background: rgba(30, 6, 10, 0.96);
+}
+html.dp-more-contrast .hero-rule {
+  background: #fff;
+  height: 2px;
+}
+html.dp-more-contrast .hero-wordmark,
+html.dp-more-contrast .hero-tagline {
+  text-shadow: none;
+}
+html.dp-more-contrast .hero .hero-sub {
+  color: #fff;
+}
+@media (prefers-contrast: more) {
+  .hero[data-hero] .hero-overlay {
+    background: rgba(30, 6, 10, 0.96) !important;
+  }
+  .hero-rule {
+    background: #fff;
+    height: 2px;
+  }
+  .hero-wordmark,
+  .hero-tagline {
+    text-shadow: none;
+  }
+  .hero .hero-sub {
+    color: #fff;
+  }
+}
