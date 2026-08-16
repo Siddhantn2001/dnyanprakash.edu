@@ -2286,13 +2286,7 @@
     <!-- =========================================================
          Section 8.3 — Hero (bottom-left, full-bleed, gradient on bottom 60%)
          ========================================================= -->
-    <!-- data-hero picks the photograph's ROLE. Two options, one attribute:
-           "ground" — the photo is a burgundy-tinted monochrome ground and the
-                      type owns the frame outright.
-           "detail" — the photo is full-bleed and cropped past the sky onto the
-                      facade band, with the type over it.
-         Swap the value to switch. Nothing else changes. -->
-    <section class="hero" data-hero="ground" aria-label="Welcome">
+    <section class="hero" aria-label="Welcome">
       <div class="hero-media">
         <img
           src="images/01-hero.jpg"
@@ -2333,27 +2327,10 @@
 
       <div class="hero-content">
         <div class="container-main w-full">
-          <div class="hero-text-block">
-            <!-- The school's name IS the hero's primary visual. This is webfont
-                 type (Noto Serif Devanagari 600), NOT the raster logo lockup —
-                 the two must stay visually distinct, per CLAUDE.md §6 Rule 0.
-                 The logo is untouched in the nav.
-
-                 The <hr> is the shirorekha extended to the frame edges. It is
-                 positioned from a measured constant: in this face the head-
-                 stroke sits 0.555em above the baseline, 0.08em below the ink
-                 top. See apple-design.css §9.
-
-                 h1 now carries the name AND the tagline, which is what the
-                 page is actually titled; screen readers get both with the
-                 language switch made explicit. -->
-            <h1 class="hero-headline">
-              <span class="hero-rule" aria-hidden="true"></span>
-              <span class="hero-wordmark" lang="mr">ज्ञानप्रकाश</span>
-              <span class="hero-tagline">Know &amp; Inspire</span>
-            </h1>
+          <div class="max-w-3xl hero-text-block">
+            <h1 class="hero-title">Know &amp; Inspire</h1>
             <p class="hero-sub">A center for joyful, research-informed learning in Latur since 1999.</p>
-            <div class="hero-cta">
+            <div class="flex flex-wrap gap-4">
               <a
                 href="admission/index.html"
                 class="btn btn-hero-primary"
