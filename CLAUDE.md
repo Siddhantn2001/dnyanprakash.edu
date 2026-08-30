@@ -73,6 +73,7 @@ Social links:
   Facebook:  https://www.facebook.com/share/1CQwtkb8ix/?mibextid=wwXIfr
   Instagram: https://www.instagram.com/dnyanprakash_latur
   YouTube:   https://www.youtube.com/@dnyanprakashlatur2335
+  LinkedIn:  https://www.linkedin.com/company/dnyanprakash-balvikas-kendra/   (added 2026-08-30)
 
 Divisions (UPDATED 2026-04-21 — now FOUR, not three):
   1. Balbhavan              — age 3–6 (Pre-primary)
