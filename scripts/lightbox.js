@@ -7,10 +7,11 @@
 
    Usage: mark any container that holds photos with data-lightbox-group.
    Every `.gallery-img img` inside it becomes clickable, and prev/next walk
-   that group only — so the gallery page's tabs each browse their own set,
-   exactly as before.
+   that group only. /gallery.html now has ONE group around every photo, so the
+   counter reads "n / 153" and navigation runs the whole set; the homepage
+   strip is a separate group.
 
-     <div class="gallery-panel" data-lightbox-group> ... </div>
+     <div class="gallery-all" data-lightbox-group> ... </div>
 
    The overlay markup is injected on first use, so no page needs to carry it.
    Styles live in scripts/gallery.css.

@@ -82,13 +82,11 @@ body.lightbox-open { overflow: hidden; }
 }
 
 /* ═══════════════════ 2. Tile ═══════════════════ */
-/* Scoped to the homepage strip on purpose. /gallery.html's Activities panel is
-   now rendered from the same list, but it sits alongside four hand-built tabs
-   with square, flat, un-animated tiles — giving only that one tab rounded
-   corners, shadows and hover zoom would make it the odd tab out. The gallery
-   page therefore keeps exactly the look it had. To upgrade that page, widen
-   these selectors to `.gallery-panel .gallery-img` and restyle all five tabs
-   together, not just this one. */
+/* Scoped to the homepage strip on purpose. /gallery.html's category tabs are
+   gone — it is now one grid of every photo, mixing 49 page-local tiles with the
+   rest rendered from the shared list — and that grid keeps the square, flat,
+   un-animated tile look it always had. To upgrade it, widen these selectors to
+   `.gallery-all .gallery-img`, which restyles the whole grid at once. */
 .gallery-strip-frame .gallery-img {
   position: relative;
   border-radius: 8px;

@@ -637,7 +637,7 @@ The sidebar pattern is for **editorial article pages** only. Other page types ar
 
 ## 19. Adding gallery photos
 
-**One list, two places.** `scripts/gallery-photos.js` is the single source of truth for school photos. The homepage gallery strip and the Activities panel of `/gallery.html` are both rendered from it by `scripts/gallery-render.js`, so a photo added to the list appears at the top of BOTH automatically and pushes older ones down.
+**One list, two places.** `scripts/gallery-photos.js` is the single source of truth for school photos. The homepage gallery strip and the single grid on `/gallery.html` are both rendered from it by `scripts/gallery-render.js`, so a photo added to the list appears at the top of BOTH automatically and pushes older ones down.
 
 When Sid says *"add these photos to the gallery"*:
 
@@ -671,7 +671,18 @@ Three things here are load-bearing — changing them breaks the feature:
 
 Layout is real CSS `columns` (3 desktop / 2 down to 320px), gap 14/12px. Both edges of the window are masked — a small top fade so rows don't hard-cut under the heading, and a bottom fade that doubles as the scroll affordance. Keep the fade a whisper: an earlier version faded from 52% and washed out half the strip.
 
-**Gallery page styling note:** the Activities panel is rendered from the list but deliberately keeps the flat, square tile look of the four hand-built tabs beside it. If that page is ever upgraded to the strip's rounded/shadowed tiles, restyle all five tabs together — see the comment at the top of section 2 in `scripts/gallery.css`.
+**Gallery page structure (UPDATED 2026-08-31 — tabs removed).** `/gallery.html` used to have five category tabs (Campus, Events, Academics, Sports, Activities), each its own panel and its own lightbox group. It is now ONE ungrouped grid, `.gallery-all`, holding every photo:
+
+- **49 page-local tiles first** — `images/NN-gallery.jpg` and `images/gallery-extra-NN.jpg`, hardcoded in `gallery.html`. These are NOT in `scripts/gallery-photos.js` and never were, so they do not appear in the homepage strip.
+- **then everything from the shared list**, rendered into `<div data-gallery-render="grid" style="display: contents;">`. `display: contents` is load-bearing: it makes those tiles grid items of `.gallery-all` itself instead of a 3-column grid nested inside one cell.
+
+Two rules keep this working. The render target must stay **last**, because `scripts/lightbox.js` sorts by `data-lb-index` only when the *first* image in the group carries it — static tiles first means plain DOM order, which is reading order in a grid. And the section holding the grid must **not** have the `reveal` class: at ~15,000px tall it can never meet the 5% threshold in `scroll-reveals.js`, so it would sit translated 64px right and put a horizontal scrollbar on the page.
+
+Photo total after the merge: **153** (49 page-local + 104 from the list). Adding a photo to the list still grows the grid automatically.
+
+**Styling note:** the grid keeps the flat, square, un-animated tile look it always had. To upgrade it to the strip's rounded/shadowed tiles, widen the selectors at the top of section 2 in `scripts/gallery.css` to `.gallery-all .gallery-img`.
+
+**Stale generator:** `scripts/scaffold-pages.js` still emits the old five-tab markup. It is dev-only and never run, but regenerating `gallery.html` from it would resurrect the tabs.
 
 ---
 

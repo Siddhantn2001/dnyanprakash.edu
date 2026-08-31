@@ -1594,24 +1594,36 @@
       </div>
     </section>
 
-    <section class="section-pad reveal">
+    <!-- No `reveal` class here on purpose. scroll-reveals.js slides a .reveal
+     section in from the side and only clears the transform once 5% of it is
+     on screen. With all 153 photos in one grid this section is ~15,000px
+     tall, so 5% never fits in the viewport at load: it stayed translated
+     64px to the right and put a horizontal scrollbar on the page until the
+     visitor scrolled. A slide-in on a grid this size is wrong regardless. -->
+    <section class="section-pad">
       <div class="container-main">
-        <div class="gallery-tabs" role="tablist" style="display:flex; gap: 8px; border-bottom:1px solid var(--color-border); margin-bottom: 28px; overflow-x:auto;">
-          <button type="button" class="gallery-tab is-active" data-tab="campus" style="padding: 12px 18px; background:transparent; border:0; border-bottom: 3px solid transparent; font-family: var(--font-sans-cond); font-size: 14px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; color: var(--color-text-muted);">Campus</button>
-          <button type="button" class="gallery-tab" data-tab="events" style="padding: 12px 18px; background:transparent; border:0; border-bottom: 3px solid transparent; font-family: var(--font-sans-cond); font-size: 14px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; color: var(--color-text-muted);">Events</button>
-          <button type="button" class="gallery-tab" data-tab="academics" style="padding: 12px 18px; background:transparent; border:0; border-bottom: 3px solid transparent; font-family: var(--font-sans-cond); font-size: 14px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; color: var(--color-text-muted);">Academics</button>
-          <button type="button" class="gallery-tab" data-tab="sports" style="padding: 12px 18px; background:transparent; border:0; border-bottom: 3px solid transparent; font-family: var(--font-sans-cond); font-size: 14px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; color: var(--color-text-muted);">Sports</button>
-          <button type="button" class="gallery-tab" data-tab="activities" style="padding: 12px 18px; background:transparent; border:0; border-bottom: 3px solid transparent; font-family: var(--font-sans-cond); font-size: 14px; font-weight:500; text-transform:uppercase; letter-spacing:0.06em; cursor:pointer; color: var(--color-text-muted);">Activities</button>
-        </div>
-              <div class="gallery-panel" data-lightbox-group data-panel="campus" >
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <!-- ONE ungrouped grid. Holds every photo that used to sit behind the
+             Campus / Events / Academics / Sports / Activities tabs, in that
+             order — the tabs, their panels and the filtering script are gone.
+
+             The 49 tiles below are page-local files (images/NN-gallery.jpg and
+             images/gallery-extra-NN.jpg); they are NOT in the shared photo list
+             and never were. Everything after them is rendered from
+             window.DP_GALLERY_PHOTOS by scripts/gallery-render.js.
+
+             Both live inside this one data-lightbox-group, which is what makes
+             the viewer count "n / 153" and walk the whole set without stopping
+             at the old category boundaries.
+
+             To add photos, edit scripts/gallery-photos.js — never add tiles here.
+             See "Adding gallery photos" in CLAUDE.md. -->
+        <div class="gallery-all" data-lightbox-group>
           <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/41-gallery.webp" type="image/webp"><img src="images/41-gallery.jpg" alt="Gallery Campus — Main building exterior" loading="lazy" class="w-full h-full object-cover" /></picture></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><picture><source srcset="images/42-gallery.webp" type="image/webp"><img src="images/42-gallery.jpg" alt="Gallery Campus — Library interior" loading="lazy" class="w-full h-full object-cover" /></picture></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/43-gallery.jpg" alt="Gallery Campus — Science lab" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/44-gallery.jpg" alt="Gallery Campus — Sports ground" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/45-gallery.jpg" alt="Gallery Campus — Reception area" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/46-gallery.jpg" alt="Gallery Campus — Courtyard" loading="lazy" class="w-full h-full object-cover" /></div>
-        
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-01.jpg" alt="Gallery Campus" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-02.jpg" alt="Gallery Campus" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-03.jpg" alt="Gallery Campus" loading="lazy" class="w-full h-full object-cover" /></div>
@@ -1619,88 +1631,62 @@
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-05.jpg" alt="Gallery Campus" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-06.jpg" alt="Gallery Campus" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-07.jpg" alt="Gallery Campus" loading="lazy" class="w-full h-full object-cover" /></div>
-        </div>
-      </div>
-      <div class="gallery-panel" data-lightbox-group data-panel="events" hidden>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/47-gallery.jpg" alt="Gallery Events — Annual day stage" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/48-gallery.jpg" alt="Gallery Events — Sports day relay" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/49-gallery.jpg" alt="Gallery Events — Cultural programme" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/50-gallery.jpg" alt="Gallery Events — Science exhibition" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/51-gallery.jpg" alt="Gallery Events — Parents meeting" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/52-gallery.jpg" alt="Gallery Events — Guest lecture" loading="lazy" class="w-full h-full object-cover" /></div>
-        
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-08.jpg" alt="Gallery Events" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-09.jpg" alt="Gallery Events" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-10.jpg" alt="Gallery Events" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-11.jpg" alt="Gallery Events" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-12.jpg" alt="Gallery Events" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-13.jpg" alt="Gallery Events" loading="lazy" class="w-full h-full object-cover" /></div>
-        </div>
-      </div>
-      <div class="gallery-panel" data-lightbox-group data-panel="academics" hidden>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/53-gallery.jpg" alt="Gallery Academics — Balbhavan classroom" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/54-gallery.jpg" alt="Gallery Academics — Primary reading circle" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/55-gallery.jpg" alt="Gallery Academics — Math class in progress" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/56-gallery.jpg" alt="Gallery Academics — Art and craft session" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/57-gallery.jpg" alt="Gallery Academics — Computer lab work" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/58-gallery.jpg" alt="Gallery Academics — Group project" loading="lazy" class="w-full h-full object-cover" /></div>
-        
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-14.jpg" alt="Gallery Academics" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-15.jpg" alt="Gallery Academics" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-16.jpg" alt="Gallery Academics" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-17.jpg" alt="Gallery Academics" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-18.jpg" alt="Gallery Academics" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-19.jpg" alt="Gallery Academics" loading="lazy" class="w-full h-full object-cover" /></div>
-        </div>
-      </div>
-      <div class="gallery-panel" data-lightbox-group data-panel="sports" hidden>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/59-gallery.jpg" alt="Gallery Sports — Kabaddi team" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/60-gallery.jpg" alt="Gallery Sports — Athletics training" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/61-gallery.jpg" alt="Gallery Sports — Volleyball match" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/62-gallery.jpg" alt="Gallery Sports — Chess club" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/63-gallery.jpg" alt="Gallery Sports — PE session" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/64-gallery.jpg" alt="Gallery Sports — Sports day finish line" loading="lazy" class="w-full h-full object-cover" /></div>
-        
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-20.jpg" alt="Gallery Sports" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-21.jpg" alt="Gallery Sports" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-22.jpg" alt="Gallery Sports" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-23.jpg" alt="Gallery Sports" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-24.jpg" alt="Gallery Sports" loading="lazy" class="w-full h-full object-cover" /></div>
           <div class="gallery-img" style="aspect-ratio:4/3;"><img src="images/gallery-extra-25.jpg" alt="Gallery Sports" loading="lazy" class="w-full h-full object-cover" /></div>
+          <!-- Rendered tiles. display:contents so they become grid items of
+               .gallery-all itself rather than a 3-column grid nested inside one
+               of its cells — that is what keeps the whole thing one continuous
+               grid. The renderer clears its target, so no static tile may live
+               in here.
+
+               It must also stay LAST: scripts/lightbox.js only sorts by
+               data-lb-index when the FIRST image in the group carries it, and
+               these are the only tiles that do. Static tiles first => plain DOM
+               order, which is exactly reading order in a grid. -->
+          <div data-gallery-render="grid" style="display: contents;"></div>
         </div>
-      </div>
-      <div class="gallery-panel" data-panel="activities" hidden>
-        <!-- Tiles are built from window.DP_GALLERY_PHOTOS by scripts/gallery-render.js.
-             To add photos, edit scripts/gallery-photos.js — never add tiles here.
-             See "Adding gallery photos" in CLAUDE.md. -->
-        <div data-gallery-render="grid" data-lightbox-group
-             style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;"></div>
-        </div>
-      </div>
       </div>
     </section>
     <style>
-      .gallery-tab.is-active { color: var(--color-primary) !important; border-bottom-color: var(--color-primary) !important; }
+      .gallery-all { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
       @media (max-width: 640px) {
-        .gallery-panel > div { grid-template-columns: repeat(2, 1fr) !important; }
+        .gallery-all { grid-template-columns: repeat(2, 1fr); }
       }
     </style>
-    <script>
-      (function(){
-        const tabs = document.querySelectorAll('.gallery-tab');
-        const panels = document.querySelectorAll('.gallery-panel');
-        tabs.forEach(function(t){
-          t.addEventListener('click', function(){
-            const id = t.getAttribute('data-tab');
-            tabs.forEach(function(x){ x.classList.toggle('is-active', x === t); });
-            panels.forEach(function(p){ p.hidden = p.getAttribute('data-panel') !== id; });
-          });
-        });
-      })();
-    </script>
   
   <!-- Image lightbox — click a gallery tile to open, ← → to navigate, Esc to close -->
   <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" aria-hidden="true">
