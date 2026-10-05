@@ -202,7 +202,7 @@ Write these as CSS custom properties inside a `<style>` block in `<head>` so the
 --color-primary-dark:  #6B0F1A    /* hover + footer background */
 --color-accent:        #010155    /* link hover navy */
 --color-text-primary:  #292f36
---color-text-muted:    #818386
+--color-text-muted:    #6B6D70    /* was #818386 until 2026-10-05 — that failed WCAG AA at 3.80:1 on white; this is 5.19:1 */
 --color-border:        #bfc2c5
 --color-bg:            #ffffff
 --color-bg-alt:        #f1f2f2
