@@ -163,9 +163,13 @@
     a:hover { text-decoration: underline; }
 
     /* Editorial body-copy links: animated underline that slides in from the left */
-    .mission-body a,
-    p.lede a,
-    .prose p a {
+    /* Editorial links only. The :not(.btn) guard matters: these selectors are
+       (0,1,2) and would otherwise outrank .btn-primary (0,1,0), repainting a
+       button's label in the link colour. A burgundy .btn-primary label on the
+       burgundy button background is invisible (contrast 1:1). */
+    .mission-body a:not(.btn),
+    p.lede a:not(.btn),
+    .prose p a:not(.btn) {
       color: var(--color-primary);
       background-image: linear-gradient(currentColor, currentColor);
       background-repeat: no-repeat;
@@ -174,9 +178,9 @@
       text-decoration: none;
       transition: background-size 0.3s ease, color 0.3s ease;
     }
-    .mission-body a:hover,
-    p.lede a:hover,
-    .prose p a:hover {
+    .mission-body a:not(.btn):hover,
+    p.lede a:not(.btn):hover,
+    .prose p a:not(.btn):hover {
       background-size: 100% 1px;
       color: var(--color-primary-dark);
       text-decoration: none;
