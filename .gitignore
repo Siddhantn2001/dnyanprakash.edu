@@ -30,3 +30,7 @@ scripts/shot-*.js
 scripts/verify-*.js
 scripts/fix-lede-styling*.js
 scripts/inject-header-blur.js
+
+# Unprocessed photo originals staged next to their outputs. The pipeline reads
+# them, the site never serves them — keep them out of the repo.
+images/**/_src-*
