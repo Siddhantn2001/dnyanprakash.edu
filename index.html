@@ -708,6 +708,142 @@
       .hero-social-rail svg { width: 13px; height: 13px; }
     }
 
+
+    /* ---------- Story stack: pinned text beside a scrolling image column ----------
+       The reference pattern (Brighton College). The TEXT column is sticky and
+       pins; the IMAGE column is an ordinary vertical stack that scrolls past.
+       No scroll listener, no fade, no auto-advance — the section is simply tall
+       enough that five images pass while the text stays put.
+
+       Sticky safety: every ancestor of .story-sticky must keep overflow-y
+       visible, and none may carry a transform. html uses overflow-x: CLIP (not
+       hidden — hidden computes overflow-y to auto and would silently kill the
+       pin). The .reveal lives INSIDE .story-sticky, never above it, because its
+       translateY would otherwise become a containing block and break the pin. */
+    .story-grid { align-items: stretch !important; }
+    .story-text { min-width: 0; }
+    .story-sticky {
+      position: sticky;
+      /* clears the 80px nav plus breathing room */
+      top: 112px;
+    }
+    /* clip, never hidden: hidden computes overflow-y to auto and would create a
+       scroll container. Safe here regardless — .story-media is the IMAGE column,
+       never an ancestor of .story-sticky, so it cannot affect the pin. This
+       contains the carousel's off-screen slides at tablet widths. */
+    .story-media { min-width: 0; overflow-x: clip; }
+
+    /* REVEALS — decided deliberately, not inherited.
+       The image stack carries NO reveal at all: five photos must not fly in
+       one by one, and a transform on the image column would add nothing but
+       noise beside a pinned column.
+       The text keeps its fade, but forced to the VERTICAL variant. The
+       position-aware system adds .reveal-left/.reveal-right, which translate
+       64px horizontally; below 1024px this column is full-width, so that 64px
+       pushed the document 44px wider than the viewport. translateY has no
+       such cost and reads the same. */
+    .story-sticky .reveal.reveal-fx,
+    .story-sticky .reveal.reveal-fx.reveal-left,
+    .story-sticky .reveal.reveal-fx.reveal-right {
+      transform: translateY(24px);
+    }
+    .story-sticky .reveal.reveal-fx.is-visible { transform: none; }
+
+    .story-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+    /* Contained, not full-bleed: each slide keeps its own aspect ratio (set
+       inline from the file's true w/h) and is capped by height, so the width
+       falls out of the ratio and the whitespace either side varies down the
+       column. That variation is the point. */
+    .story-slide {
+      margin: 0;
+      /* Height reserved before the image loads: width is definite (derived from
+         the slide's own ratio, capped by the column) and the height falls out of
+         aspect-ratio. --ar is set inline per slide from the file's true w/h. */
+      --ar: 1;
+      width: min(100%, calc(520px * var(--ar)));
+      aspect-ratio: var(--ar);
+      max-height: 520px;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .story-slide picture { display: block; width: 100%; height: 100%; }
+    .story-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    /* The carousel is the mobile layout only. */
+    .story-carousel { display: none; }
+
+    /* ---------- Carousel chrome (shared with news/index.html) ----------
+       Arrows are solid and always visible — never opacity-gated on hover,
+       which would make them invisible on touch. */
+    .news-carousel { position: relative; }
+    .news-carousel-viewport { overflow: hidden; }
+    .news-carousel-track {
+      display: flex;
+      transition: transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      will-change: transform;
+    }
+    .news-carousel-slide {
+      flex: 0 0 100%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .story-carousel .news-carousel-slide { background-color: var(--color-bg-alt); }
+    .story-carousel .story-slide { max-height: 58vh; border-radius: 0; box-shadow: none; }
+    .news-carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 2; padding: 0;
+      font-size: 22px; line-height: 1;
+      color: var(--color-text-primary);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .news-carousel-arrow:hover { background: #fff; color: var(--color-primary); }
+    .news-carousel-arrow:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+    .news-carousel-arrow.prev { left: 12px; }
+    .news-carousel-arrow.next { right: 12px; }
+    .news-carousel-dots {
+      display: flex; justify-content: center; gap: 10px;
+      padding: 18px 20px 4px; flex-wrap: wrap;
+    }
+    .news-carousel-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #c3c6c9; border: 0; padding: 0; cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease; flex-shrink: 0;
+    }
+    .news-carousel-dot:hover { background: var(--color-text-primary); }
+    .news-carousel-dot.is-active {
+      background: var(--color-primary);
+      transform: scale(1.25);
+      box-shadow: 0 0 0 2px rgba(158,27,50,0.3);
+    }
+
+    /* Below 1024px .mission-stats-grid is already a single column, so there is
+       no second column for the text to pin beside. That is the breakpoint. */
+    @media (max-width: 1024px) {
+      .story-sticky { position: static; }
+      .story-stack { display: none; }
+      .story-carousel { display: block; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .news-carousel-track { transition: none; }
+      .news-carousel-dot { transition: none; }
+    }
+
     /* ---------- Reusable placeholder slot box ---------- */
     .slot-box {
       background: #e5e5e5;
@@ -2438,18 +2574,27 @@
          ========================================================= -->
     <section class="section-pad" aria-label="An Experiment in Education">
       <div class="container-main">
-        <div class="mission-stats-grid" style="align-items: center;">
+        <div class="mission-stats-grid story-grid">
           <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
-          <div class="reveal">
-            <div class="section-eyebrow">The Project</div>
+          <div class="story-text">
+            <div class="story-sticky">
+              <div class="reveal">
+                <div class="section-eyebrow">The Project</div>
             <h2 class="section-title">Dnyanprakash — An Experiment in Education</h2>
             <p class="mission-body">What Dnyanprakash has built in Latur was not built easily. It was built despite limited physical infrastructure, without government funding, and against the grain of how most schools in this region have always operated. That it has earned the deep trust of parents, educators, and children over twenty-six years is not a coincidence, it is the result of a conscious, sustained commitment to doing education differently.</p>
             <a href="about/an-experiment-in-education.html" class="btn btn-outline">Read More</a>
+              </div>
+            </div>
           </div>
           <!-- RIGHT: image slot -->
-          <div class="reveal" style="aspect-ratio: 4 / 5; overflow: hidden;">
-            <picture><source srcset="images/08-experiment-in-education.webp" type="image/webp"><img src="images/08-experiment-in-education.jpg" alt="An Experiment in Education — a moment from the Dnyanprakash community" class="w-full h-full object-cover" /></picture>
-          </div>
+          <!-- IMAGE COLUMN — five numbered slots, declared in scripts/story-stacks.js
+               under the "experiment" key. Slot 1 is this section's original photo;
+               slots 2-5 are numbered placeholders at images/story/experiment-0N.jpg.
+               To fill one: drop the file, run the pipeline, update that one
+               line in story-stacks.js. Never add markup here.
+               Deliberately NOT .reveal — five images must not fly in
+               separately, and a transform here would break the sticky pin. -->
+          <div class="story-media" data-story-stack="experiment" data-story-label="An Experiment in Education"></div>
         </div>
       </div>
     </section>
@@ -2460,17 +2605,26 @@
          ========================================================= -->
     <section class="section-pad" style="background: var(--color-bg-alt);" aria-label="About Us">
       <div class="container-main">
-        <div class="mission-stats-grid" style="align-items: center;">
+        <div class="mission-stats-grid story-grid">
           <!-- LEFT: image -->
-          <div class="reveal" style="aspect-ratio: 4 / 5; overflow: hidden;">
-            <img src="images/05-about.jpg" alt="Dnyanprakash — a school moment from the campus" class="w-full h-full object-cover" loading="lazy" />
-          </div>
+          <!-- IMAGE COLUMN — five numbered slots, declared in scripts/story-stacks.js
+               under the "vision" key. Slot 1 is this section's original photo;
+               slots 2-5 are numbered placeholders at images/story/vision-0N.jpg.
+               To fill one: drop the file, run the pipeline, update that one
+               line in story-stacks.js. Never add markup here.
+               Deliberately NOT .reveal — five images must not fly in
+               separately, and a transform here would break the sticky pin. -->
+          <div class="story-media" data-story-stack="vision" data-story-label="A Vision of Joyful Learning"></div>
           <!-- RIGHT: eyebrow + headline + one paragraph + Read More -->
-          <div class="reveal">
-            <div class="section-eyebrow">About Us</div>
+          <div class="story-text">
+            <div class="story-sticky">
+              <div class="reveal">
+                <div class="section-eyebrow">About Us</div>
             <h2 class="section-title">A Vision of Joyful Learning</h2>
             <p class="mission-body">Experiencing the importance of effective learning through the mother tongue, the head of the institution, Mr. Satish Narhare, began teaching mathematics in 1989 through Narhare Classes. During this time, he realized the significance of making learning enjoyable and stress-free for children. With a vision to make education engaging, meaningful, and self-motivated — where children naturally want to learn, ask questions, seek answers, and express their thoughts freely — Savita and Satish Narhare founded Dnyanprakash in 1999, starting with their own child.</p>
             <a href="about/index.html" class="btn btn-outline">Read More</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2565,18 +2719,27 @@
          ========================================================= -->
     <section class="section-pad" aria-label="Learning through action and experience">
       <div class="container-main">
-        <div class="mission-stats-grid" style="align-items: center;">
+        <div class="mission-stats-grid story-grid">
           <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
-          <div class="reveal">
-            <div class="section-eyebrow">Our Approach</div>
+          <div class="story-text">
+            <div class="story-sticky">
+              <div class="reveal">
+                <div class="section-eyebrow">Our Approach</div>
             <h2 class="section-title">Learning through action and experience</h2>
             <p class="mission-body">From the very beginning of Dnyanprakash, children's learning was linked with action and experience. Various materials are used according to the subject for that. Various reading and writing experiments were also conducted. Children get to know letters and words in kindergarten itself. After that, the children read and write sentences, and then they create stories from pictures, complete incomplete stories, write stories from points, experience writing, case writing, dialogue writing, letter writing, etc.</p>
             <a href="about/learning-through-action.html" class="btn btn-outline">Read More</a>
+              </div>
+            </div>
           </div>
           <!-- RIGHT: image -->
-          <div class="reveal" style="aspect-ratio: 4 / 5; overflow: hidden;">
-            <img src="images/06-learning-through-action.jpg" alt="Learning through action — students engaged in a hands-on classroom activity" class="w-full h-full object-cover" />
-          </div>
+          <!-- IMAGE COLUMN — five numbered slots, declared in scripts/story-stacks.js
+               under the "action" key. Slot 1 is this section's original photo;
+               slots 2-5 are numbered placeholders at images/story/action-0N.jpg.
+               To fill one: drop the file, run the pipeline, update that one
+               line in story-stacks.js. Never add markup here.
+               Deliberately NOT .reveal — five images must not fly in
+               separately, and a transform here would break the sticky pin. -->
+          <div class="story-media" data-story-stack="action" data-story-label="Learning through Action"></div>
         </div>
       </div>
     </section>
@@ -3208,6 +3371,12 @@
   <script defer src="scripts/header-blur.js"></script>
   <script defer src="scripts/translations-manifest.js"></script>
   <script defer src="scripts/lang-toggle.js"></script>
+  <!-- Carousel engine — shared with news/index.html; it is what the story
+       stacks degrade to below 1024px. Must come before story-stack.js so
+       window.DPCarousel exists when the stacks build their carousels. -->
+  <script defer src="scripts/news-carousel.js"></script>
+  <script defer src="scripts/story-stacks.js"></script>
+  <script defer src="scripts/story-stack.js"></script>
   <script defer src="scripts/scroll-reveals.js"></script>
   <script defer src="scripts/mobile-polish.js"></script>
   <script defer src="scripts/newsletter-carousel.js"></script>

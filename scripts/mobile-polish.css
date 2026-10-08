@@ -75,6 +75,26 @@
   transform: translate3d(0, 0, 0);
 }
 
+/* The horizontal reveal choreography — text and image sliding in to meet at
+   the centre — only makes sense while those two things sit side by side. The
+   grids that pair them (.mission-stats-grid and friends) collapse to a single
+   column at 1024px, but this correction used to start at 768px. In the 769-1024
+   band the layout was already single-column while the reveals were still
+   translating 64px sideways, which pushed the document wider than the viewport:
+   64px of real horizontal scroll on every tablet, and more once another
+   full-width column was added. Raised to 1024px so the choreography and the
+   layout change at the same breakpoint. Below it, a vertical rise — same fade,
+   no horizontal cost. */
+@media (max-width: 1024px) {
+  .reveal-left,
+  .reveal-right,
+  .reveal.reveal-fx.reveal-left,
+  .reveal.reveal-fx.reveal-right { transform: translate3d(0, 32px, 0); }
+  .reveal.is-visible,
+  .reveal.reveal-fx.reveal-left.is-visible,
+  .reveal.reveal-fx.reveal-right.is-visible { transform: translate3d(0, 0, 0); }
+}
+
 @media (max-width: 768px) {
   .reveal {
     transition:
