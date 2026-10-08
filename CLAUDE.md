@@ -690,8 +690,8 @@ Photo total after the merge: **153** (49 page-local + 104 from the list). Adding
 
 ### 1. Site is live on the custom domain
 
-- **Production URL**: https://dnyanprakash.org (HTTPS via GitHub Pages).
-- `CNAME` file at the repo root contains exactly `dnyanprakash.org\n` (17 bytes). It was added/deleted twice during DNS configuration; current state is committed and live.
+- **Production URL**: https://dnyanprakash.edu.in (HTTPS via GitHub Pages). *(Corrected 2026-10-08: this line said `dnyanprakash.org`, which now returns 404. The live domain, and the one in `CNAME`, is `dnyanprakash.edu.in`.)*
+- `CNAME` file at the repo root contains exactly `dnyanprakash.edu.in\n`. It was added/deleted twice during DNS configuration; current state is committed and live.
 - Deploy URL fallback (still works): `https://siddhantn2001.github.io/dnyanprakash.edu/` — the GitHub Pages URL after the repo was renamed from `dnyanprakash-website` to `dnyanprakash.edu`. Old `dnyanprakash-website` URL returns 404; do not use it.
 
 ### 2. Current state of the site
@@ -779,7 +779,7 @@ To add more clippings: copy file to `images/news-clippings/clipping-NN.jpg` (nex
 - **Working tree is currently clean**. All commits are pushed to `origin/main` on the renamed `dnyanprakash.edu` repo.
 - **Heavy images**: a few hero photos are PNG screenshots in the 5–8 MB range — slot 25 (FAQ, 6.6 MB), slot 19 at-a-glance (7.6 MB), slot 17 Narhare Learning Home (3.3 MB), slot 14 Vidyaniketan (5.4 MB), slot 13 Balvikas Kendra (6.5 MB), slot 47 Principal's Note (3.6 MB). These should be compressed via TinyPNG (target ~500 KB each) when there's time. Site loads fine on broadband but mobile users on slow networks will feel it.
 - **Repo URL note**: `git push` always emits a "This repository moved" warning because the old remote URL `dnyanprakash-website.git` redirects to the new `dnyanprakash.edu.git`. Harmless, but at some point run `git remote set-url origin https://github.com/Siddhantn2001/dnyanprakash.edu.git` to silence it.
-- **CNAME has been deleted twice** by GitHub Pages settings UI changes during this phase. If Pages settings get reconfigured again, the file may be deleted again and need re-adding. Always verify `cat CNAME` shows `dnyanprakash.org` after any Pages settings work.
+- **CNAME has been deleted twice** by GitHub Pages settings UI changes during this phase. If Pages settings get reconfigured again, the file may be deleted again and need re-adding. Always verify `cat CNAME` shows `dnyanprakash.edu.in` after any Pages settings work.
 - **No service worker, no offline support, no analytics**. Stack remains pure HTML + Tailwind CDN + vanilla JS per §3.
 - **`scripts/scaffold-pages.js` exists but is dev-only** — never run by the owner, never run during this phase. Updated for nav-rename consistency but the actual page content was edited directly on each HTML file.
 
