@@ -709,73 +709,53 @@
     }
 
 
-    /* ---------- Story stack: pinned text beside a scrolling image column ----------
-       The reference pattern (Brighton College). The TEXT column is sticky and
-       pins; the IMAGE column is an ordinary vertical stack that scrolls past.
-       No scroll listener, no fade, no auto-advance — the section is simply tall
-       enough that five images pass while the text stays put.
+    /* ---------- Story frame: one window, a filmstrip behind it ----------
+       .story-scroll is tall and does nothing but provide scroll distance.
+       .story-pin sticks, carrying BOTH the text and the frame, so neither
+       moves. .story-frame is a fixed-size window that clips. .story-track is
+       the five images in one column; scripts/story-stack.js translates it
+       upward as the page scrolls through .story-scroll.
 
-       Sticky safety: every ancestor of .story-sticky must keep overflow-y
-       visible, and none may carry a transform. html uses overflow-x: CLIP (not
-       hidden — hidden computes overflow-y to auto and would silently kill the
-       pin). The .reveal lives INSIDE .story-sticky, never above it, because its
-       translateY would otherwise become a containing block and break the pin. */
-    .story-grid { align-items: stretch !important; }
+       Only one frame is ever on screen. Section height is therefore
+       independent of how many images there are — see SCROLL_TRAVEL below.
+
+       Sticky safety: no ancestor of .story-pin may clip overflow-y or carry a
+       transform. html uses overflow-x: CLIP (hidden would compute overflow-y
+       to auto and kill the pin), and the .reveal lives INSIDE the pinned
+       element, never above it. */
+
+    /* Scroll distance per section. 1500px maps the track's full travel onto
+       ~375px of scroll per image — roughly three or four wheel notches each,
+       unhurried without the page paying for it. The old stacked version cost
+       ~2700px per section because height scaled with the images themselves. */
+    .story-scroll { height: calc(520px + 1500px); position: relative; }
+    .story-pin    { position: sticky; top: 112px; }
+
+    .story-grid { align-items: center !important; }
     .story-text { min-width: 0; }
-    .story-sticky {
-      position: sticky;
-      /* clears the 80px nav plus breathing room */
-      top: 112px;
-    }
-    /* clip, never hidden: hidden computes overflow-y to auto and would create a
-       scroll container. Safe here regardless — .story-media is the IMAGE column,
-       never an ancestor of .story-sticky, so it cannot affect the pin. This
-       contains the carousel's off-screen slides at tablet widths. */
-    .story-media { min-width: 0; overflow-x: clip; }
+    .story-media { min-width: 0; }
 
-    /* REVEALS — decided deliberately, not inherited.
-       The image stack carries NO reveal at all: five photos must not fly in
-       one by one, and a transform on the image column would add nothing but
-       noise beside a pinned column.
-       The text keeps its fade, but forced to the VERTICAL variant. The
-       position-aware system adds .reveal-left/.reveal-right, which translate
-       64px horizontally; below 1024px this column is full-width, so that 64px
-       pushed the document 44px wider than the viewport. translateY has no
-       such cost and reads the same. */
-    .story-sticky .reveal.reveal-fx,
-    .story-sticky .reveal.reveal-fx.reveal-left,
-    .story-sticky .reveal.reveal-fx.reveal-right {
-      transform: translateY(24px);
-    }
-    .story-sticky .reveal.reveal-fx.is-visible { transform: none; }
-
-    .story-stack {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 40px;
-    }
-    /* Contained, not full-bleed: each slide keeps its own aspect ratio (set
-       inline from the file's true w/h) and is capped by height, so the width
-       falls out of the ratio and the whitespace either side varies down the
-       column. That variation is the point. */
-    .story-slide {
-      margin: 0;
-      /* Height reserved before the image loads: width is definite (derived from
-         the slide's own ratio, capped by the column) and the height falls out of
-         aspect-ratio. --ar is set inline per slide from the file's true w/h. */
-      --ar: 1;
-      width: min(100%, calc(520px * var(--ar)));
-      aspect-ratio: var(--ar);
-      max-height: 520px;
+    .story-frame {
+      position: relative;
+      width: 100%;
+      height: 520px;              /* the window — fixed, never grows */
+      overflow: hidden;           /* hidden is safe: not an ancestor of the pin */
       border-radius: 4px;
-      overflow: hidden;
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      background: var(--color-bg-alt);
     }
-    .story-slide picture { display: block; width: 100%; height: 100%; }
-    .story-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .story-track { will-change: auto; }
+    .story-track .story-slide {
+      margin: 0;
+      height: 520px;              /* each slide exactly fills the window */
+      overflow: hidden;
+    }
+    .story-track .story-slide picture { display: block; width: 100%; height: 100%; }
+    .story-track .story-slide img.is-cover {
+      display: block; width: 100%; height: 100%; object-fit: cover;
+    }
 
-    /* The carousel is the mobile layout only. */
+    /* The carousel is the mobile and reduced-motion layout only. */
     .story-carousel { display: none; }
 
     /* ---------- Carousel chrome (shared with news/index.html) ----------
@@ -794,9 +774,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      background-color: var(--color-bg-alt);
     }
-    .story-carousel .news-carousel-slide { background-color: var(--color-bg-alt); }
-    .story-carousel .story-slide { max-height: 58vh; border-radius: 0; box-shadow: none; }
+    .story-carousel .story-slide { margin: 0; max-height: 58vh; }
+    .story-carousel .story-slide img { display: block; max-width: 100%; max-height: 58vh; width: auto; height: auto; }
     .news-carousel-arrow {
       position: absolute;
       top: 50%;
@@ -832,14 +813,34 @@
       box-shadow: 0 0 0 2px rgba(158,27,50,0.3);
     }
 
+    /* REVEALS — decided, not inherited. The frame carries none: a transform on
+       the image column would be noise beside a pinned one, and the filmstrip
+       is the motion. The text keeps its fade, forced to the VERTICAL variant
+       because the position-aware system translates 64px sideways, which on a
+       full-width column pushes the document wider than the viewport. */
+    .story-pin .reveal.reveal-fx,
+    .story-pin .reveal.reveal-fx.reveal-left,
+    .story-pin .reveal.reveal-fx.reveal-right { transform: translateY(24px); }
+    .story-pin .reveal.reveal-fx.is-visible { transform: none; }
+
     /* Below 1024px .mission-stats-grid is already a single column, so there is
-       no second column for the text to pin beside. That is the breakpoint. */
+       no second column to pin beside: collapse the scroll container and hand
+       over to the carousel. */
     @media (max-width: 1024px) {
-      .story-sticky { position: static; }
-      .story-stack { display: none; }
+      .story-scroll { height: auto; }
+      .story-pin { position: static; }
+      .story-frame { display: none; }
       .story-carousel { display: block; }
     }
+
+    /* No scroll-linked translation under reduced motion. The JS driver bails
+       out entirely; the carousel takes over on desktop too, so all five images
+       stay reachable with no motion at all (its own transition is 0s here). */
     @media (prefers-reduced-motion: reduce) {
+      .story-scroll { height: auto; }
+      .story-pin { position: static; }
+      .story-frame { display: none; }
+      .story-carousel { display: block; }
       .news-carousel-track { transition: none; }
       .news-carousel-dot { transition: none; }
     }
@@ -2573,11 +2574,15 @@
          Article LEFT, picture box RIGHT (matches §8.6b layout).
          ========================================================= -->
     <section class="section-pad" aria-label="An Experiment in Education">
+      <!-- .story-scroll only provides scroll distance; .story-pin carries the
+           text AND the single image frame, so neither moves while the
+           filmstrip travels behind the window. -->
+      <div class="story-scroll" data-story-scroll>
+        <div class="story-pin">
       <div class="container-main">
         <div class="mission-stats-grid story-grid">
           <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
           <div class="story-text">
-            <div class="story-sticky">
               <div class="reveal">
                 <div class="section-eyebrow">The Project</div>
             <h2 class="section-title">Dnyanprakash — An Experiment in Education</h2>
@@ -2585,7 +2590,6 @@
             <a href="about/an-experiment-in-education.html" class="btn btn-outline">Read More</a>
               </div>
             </div>
-          </div>
           <!-- RIGHT: image slot -->
           <!-- IMAGE COLUMN — five numbered slots, declared in scripts/story-stacks.js
                under the "experiment" key. Slot 1 is this section's original photo;
@@ -2597,6 +2601,8 @@
           <div class="story-media" data-story-stack="experiment" data-story-label="An Experiment in Education"></div>
         </div>
       </div>
+        </div>
+      </div>
     </section>
 
     <!-- =========================================================
@@ -2604,6 +2610,11 @@
          Image LEFT, first About paragraph + Read More on the RIGHT.
          ========================================================= -->
     <section class="section-pad" style="background: var(--color-bg-alt);" aria-label="About Us">
+      <!-- .story-scroll only provides scroll distance; .story-pin carries the
+           text AND the single image frame, so neither moves while the
+           filmstrip travels behind the window. -->
+      <div class="story-scroll" data-story-scroll>
+        <div class="story-pin">
       <div class="container-main">
         <div class="mission-stats-grid story-grid">
           <!-- LEFT: image -->
@@ -2617,7 +2628,6 @@
           <div class="story-media" data-story-stack="vision" data-story-label="A Vision of Joyful Learning"></div>
           <!-- RIGHT: eyebrow + headline + one paragraph + Read More -->
           <div class="story-text">
-            <div class="story-sticky">
               <div class="reveal">
                 <div class="section-eyebrow">About Us</div>
             <h2 class="section-title">A Vision of Joyful Learning</h2>
@@ -2625,7 +2635,8 @@
             <a href="about/index.html" class="btn btn-outline">Read More</a>
               </div>
             </div>
-          </div>
+        </div>
+      </div>
         </div>
       </div>
     </section>
@@ -2718,11 +2729,15 @@
          Article LEFT, picture box RIGHT (mirror of §8.5 layout).
          ========================================================= -->
     <section class="section-pad" aria-label="Learning through action and experience">
+      <!-- .story-scroll only provides scroll distance; .story-pin carries the
+           text AND the single image frame, so neither moves while the
+           filmstrip travels behind the window. -->
+      <div class="story-scroll" data-story-scroll>
+        <div class="story-pin">
       <div class="container-main">
         <div class="mission-stats-grid story-grid">
           <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
           <div class="story-text">
-            <div class="story-sticky">
               <div class="reveal">
                 <div class="section-eyebrow">Our Approach</div>
             <h2 class="section-title">Learning through action and experience</h2>
@@ -2730,7 +2745,6 @@
             <a href="about/learning-through-action.html" class="btn btn-outline">Read More</a>
               </div>
             </div>
-          </div>
           <!-- RIGHT: image -->
           <!-- IMAGE COLUMN — five numbered slots, declared in scripts/story-stacks.js
                under the "action" key. Slot 1 is this section's original photo;
@@ -2740,6 +2754,8 @@
                Deliberately NOT .reveal — five images must not fly in
                separately, and a transform here would break the sticky pin. -->
           <div class="story-media" data-story-stack="action" data-story-label="Learning through Action"></div>
+        </div>
+      </div>
         </div>
       </div>
     </section>

@@ -1,57 +1,62 @@
 /* =========================================================================
-   STORY STACK — builds the image column for the homepage sticky-text
-   sections from window.DP_STORY_STACKS.
+   STORY FRAME — one fixed window per section, five images travelling
+   upward behind it. Built from window.DP_STORY_STACKS.
 
-   TWO LAYOUTS, ONE LIST.
+   THE MECHANISM (desktop, >= 1024px)
 
-   Desktop (>= 900px): a plain vertical stack. No JS drives it. The section
-   is simply tall enough that the five images scroll past while the text
-   column, which is position: sticky, stays pinned. There is no scroll
-   listener, no fade and no auto-advance — the pin is pure CSS.
+     section
+       .story-scroll     tall; its height IS the scroll distance
+         .story-pin      position: sticky — text and frame pinned together
+           .story-text   does not move
+           .story-frame  fixed size, clips
+             .story-track   five slides in one column, translated by JS
 
-   Mobile (< 900px): a side-by-side sticky column does not exist at phone
-   width, so the same five images become the site's existing swipeable
-   carousel (scripts/news-carousel.js) — arrows visible without hover, dots
-   tracking position, swipe. Same images, same order.
+   Only ONE frame is ever visible. The five images are a continuous track
+   behind it, like a filmstrip passing a window. Scroll position through
+   .story-scroll maps to the track's translateY; the text never moves.
 
-   The breakpoint is 900px because that is where .mission-stats-grid stops
-   being two columns; below it the grid is already stacked, so a sticky
-   text column would have nothing to sit beside.
+   WHY JS AND NOT animation-timeline
+   Scroll-driven CSS animations would express this in a few lines, but
+   Safari only shipped them recently and this audience is largely on older
+   phones and iPads. So: a scroll listener, rAF-throttled, writing a single
+   transform. will-change is raised when a section is near the viewport and
+   dropped again when it leaves, so the compositor is not holding layers for
+   three tracks the whole page long.
 
-   Both layouts are built once, at load. Which one is visible is decided by
-   CSS, so a resize across the breakpoint needs no re-render and the
-   carousel keeps its state.
+   HEIGHT
+   Because the frame is a fixed size, section height no longer depends on
+   how many images there are or how tall they are — it is purely the scroll
+   distance we choose to map the travel onto (SCROLL_TRAVEL). Adding a sixth
+   image makes the filmstrip move faster; it does not make the page longer.
 
-   Slot 1 loads eagerly; every other slide is lazy. These three sections add
-   12 images to a homepage that is already long, so the rest must not block.
+   MOBILE (< 1024px) and prefers-reduced-motion
+   Both fall back to the carousel (scripts/news-carousel.js). Below 1024px
+   the grid is already one column, so there is nothing to pin beside. Under
+   reduced-motion there must be no scroll-linked translation at all, and the
+   carousel keeps all five reachable without any — its own transition is
+   disabled in that mode, so paging is instant.
    ========================================================================= */
 (function () {
   'use strict';
 
   var DIR = 'images/story/';
+  var BP = 1024;                 // matches where .mission-stats-grid collapses
   var mounts = document.querySelectorAll('[data-story-stack]');
   if (!mounts.length) return;
 
   var data = window.DP_STORY_STACKS;
   if (!data) {
-    console.warn('[story-stack] window.DP_STORY_STACKS missing — is scripts/story-stacks.js loaded first?');
+    console.warn('[story-frame] window.DP_STORY_STACKS missing — is scripts/story-stacks.js loaded first?');
     return;
   }
 
-  /* One <picture>. ratio drives the box so the column's rhythm comes from
-     the real files, not a uniform crop. */
-  function picture(photo, index, contained) {
+  var reduceMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function picture(photo, index, cover) {
     var stem = DIR + photo.base;
     var fig = document.createElement('figure');
     fig.className = 'story-slide';
-    if (contained && photo.w && photo.h) {
-      /* --ar drives BOTH the width and the aspect-ratio in CSS. Width must be
-         definite, not auto: with width:auto the box reserves no space until the
-         image decodes, so every lazy slide below the fold had zero height and
-         the section collapsed — which left the sticky column nothing to travel
-         against. A definite width makes the height reserve immediately. */
-      fig.style.setProperty('--ar', (photo.w / photo.h).toFixed(4));
-    }
 
     var pic = document.createElement('picture');
     var src = document.createElement('source');
@@ -64,22 +69,26 @@
     img.srcset = stem + '.jpg 1x, ' + stem + '@2x.jpg 2x';
     img.alt = photo.alt || '';
     img.decoding = 'async';
-    if (index > 0) img.loading = 'lazy';   // only the first slide is eager
+    if (index > 0) img.loading = 'lazy';     // only slot 1 is eager
     if (photo.w && photo.h) { img.width = photo.w; img.height = photo.h; }
+    if (cover) img.className = 'is-cover';
     pic.appendChild(img);
 
     fig.appendChild(pic);
     return fig;
   }
 
-  function buildStack(list) {
-    var wrap = document.createElement('div');
-    wrap.className = 'story-stack';
-    list.forEach(function (p, i) { wrap.appendChild(picture(p, i, true)); });
-    return wrap;
+  function buildFrame(list) {
+    var frame = document.createElement('div');
+    frame.className = 'story-frame';
+    var track = document.createElement('div');
+    track.className = 'story-track';
+    list.forEach(function (p, i) { track.appendChild(picture(p, i, true)); });
+    frame.appendChild(track);
+    return frame;
   }
 
-  function buildCarousel(list, key, label) {
+  function buildCarousel(list, label) {
     var car = document.createElement('div');
     car.className = 'news-carousel story-carousel';
     car.setAttribute('data-news-carousel', '');
@@ -92,7 +101,6 @@
     var track = document.createElement('div');
     track.className = 'news-carousel-track';
     track.setAttribute('data-carousel-track', '');
-
     list.forEach(function (p, i) {
       var slide = document.createElement('div');
       slide.className = 'news-carousel-slide';
@@ -102,7 +110,6 @@
       slide.appendChild(picture(p, i, false));
       track.appendChild(slide);
     });
-
     vp.appendChild(track);
     car.appendChild(vp);
 
@@ -127,24 +134,85 @@
       d.setAttribute('aria-label', 'Go to image ' + (i + 1));
       dots.appendChild(d);
     });
-    /* Dots live INSIDE this carousel, unlike news/index.html where they are a
-       sibling. The shared script looks inside first, so both work. */
     car.appendChild(dots);
     return car;
   }
 
+  /* ---------------- build ---------------- */
+  var tracks = [];                              // {scroll, frame, track}
   Array.prototype.forEach.call(mounts, function (mount) {
     var key = mount.getAttribute('data-story-stack');
     var list = data[key];
-    if (!list || !list.length) {
-      console.warn('[story-stack] no slots for "' + key + '"');
-      return;
-    }
+    if (!list || !list.length) { console.warn('[story-frame] no slots for "' + key + '"'); return; }
     var label = mount.getAttribute('data-story-label') || key;
+
     mount.textContent = '';
-    mount.appendChild(buildStack(list));
-    var car = buildCarousel(list, key, label);
+    var frame = buildFrame(list);
+    mount.appendChild(frame);
+    var car = buildCarousel(list, label);
     mount.appendChild(car);
     if (window.DPCarousel) window.DPCarousel.init(car);
+
+    var scroll = mount.closest('[data-story-scroll]');
+    if (scroll) tracks.push({ scroll: scroll, frame: frame,
+                              track: frame.querySelector('.story-track') });
   });
+
+  if (!tracks.length || reduceMotion) return;   // carousel handles both cases
+
+  /* ---------------- scroll driver ---------------- */
+  var ticking = false;
+
+  function update() {
+    ticking = false;
+    var vh = window.innerHeight;
+    if (window.innerWidth < BP) return;          // carousel is in charge
+
+    for (var i = 0; i < tracks.length; i++) {
+      var t = tracks[i];
+      var r = t.scroll.getBoundingClientRect();
+
+      // Outside the neighbourhood: drop the layer and skip.
+      if (r.bottom < -vh || r.top > vh * 2) {
+        if (t.lifted) { t.track.style.willChange = 'auto'; t.lifted = false; }
+        continue;
+      }
+      if (!t.lifted) { t.track.style.willChange = 'transform'; t.lifted = true; }
+
+      /* Progress 0 -> 1 across exactly the window where the pin is engaged:
+         from the moment the scroll container's top reaches the pin offset to
+         the moment its bottom does. Clamped, so the track is parked at either
+         end outside that window and nothing bleeds into the next section. */
+      var travel = t.scroll.offsetHeight - t.frame.offsetHeight - t.pinTop;
+      if (travel <= 0) continue;
+      var p = (t.pinTop - r.top) / travel;
+      p = p < 0 ? 0 : (p > 1 ? 1 : p);
+
+      var max = t.track.scrollHeight - t.frame.clientHeight;
+      var y = -(p * max);
+      if (y !== t.last) {
+        t.track.style.transform = 'translate3d(0,' + y.toFixed(2) + 'px,0)';
+        t.last = y;
+      }
+    }
+  }
+
+  function onScroll() {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }
+
+  function measure() {
+    for (var i = 0; i < tracks.length; i++) {
+      var cs = getComputedStyle(tracks[i].frame.closest('.story-pin'));
+      tracks[i].pinTop = parseFloat(cs.top) || 0;
+      tracks[i].last = null;
+    }
+    update();
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', measure);
+  if (document.readyState === 'complete') measure();
+  else window.addEventListener('load', measure);
+  measure();
 })();
