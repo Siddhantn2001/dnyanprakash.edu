@@ -1,46 +1,40 @@
 /* =========================================================================
-   STORY FRAME — one fixed window per section, five images travelling
-   upward behind it. Built from window.DP_STORY_STACKS.
+   STORY FRAME — one fixed window per section with the photographs
+   travelling upward behind it. Built from window.DP_STORY_STACKS.
 
-   THE MECHANISM (desktop, >= 1024px)
+   ONE MECHANISM AT EVERY WIDTH, 320 up. There is no carousel and no
+   breakpoint switch: the same pinned frame and the same scroll-linked track
+   run on a phone and on a desktop. Only the arrangement differs — side by
+   side when there is room, stacked when there is not.
 
      section
        .story-scroll     tall; its height IS the scroll distance
-         .story-pin      position: sticky — text and frame pinned together
-           .story-text   does not move
-           .story-frame  fixed size, clips
-             .story-track   five slides in one column, translated by JS
+         .story-pin      position: sticky — nothing inside it moves
+           .story-text     .story-head  eyebrow + headline
+                           .story-body  paragraph + Read More
+           .story-media    .story-frame  fixed window, clips
+                             .story-track  the photographs, translated here
 
-   Only ONE frame is ever visible. The five images are a continuous track
-   behind it, like a filmstrip passing a window. Scroll position through
-   .story-scroll maps to the track's translateY; the text never moves.
+   WHY THE BODY COPY LEAVES THE PIN ON NARROW SCREENS
+   A pinned area only works if it fits the viewport. Measured, the text
+   column runs 636-802px on phones — at 320x640 the paragraph alone is
+   taller than the screen — so pinning all of it plus a frame is not
+   geometrically possible. Below the side-by-side width the paragraph and
+   its link are therefore moved out of the pin, to just after the scroll
+   container, and the heading stays pinned above the frame. The reader gets
+   headline, then the filmstrip, then the prose.
 
    WHY JS AND NOT animation-timeline
-   Scroll-driven CSS animations would express this in a few lines, but
-   Safari only shipped them recently and this audience is largely on older
-   phones and iPads. So: a scroll listener, rAF-throttled, writing a single
-   transform. will-change is raised when a section is near the viewport and
-   dropped again when it leaves, so the compositor is not holding layers for
-   three tracks the whole page long.
-
-   HEIGHT
-   Because the frame is a fixed size, section height no longer depends on
-   how many images there are or how tall they are — it is purely the scroll
-   distance we choose to map the travel onto (SCROLL_TRAVEL). Adding a sixth
-   image makes the filmstrip move faster; it does not make the page longer.
-
-   MOBILE (< 1024px) and prefers-reduced-motion
-   Both fall back to the carousel (scripts/news-carousel.js). Below 1024px
-   the grid is already one column, so there is nothing to pin beside. Under
-   reduced-motion there must be no scroll-linked translation at all, and the
-   carousel keeps all five reachable without any — its own transition is
-   disabled in that mode, so paging is instant.
+   Scroll-driven CSS animations would say this in a few lines, but Safari
+   shipped them too recently for an audience largely on older phones and
+   iPads. So: one passive scroll listener, rAF-throttled, writing a single
+   transform. will-change is raised only while a section is near the fold.
    ========================================================================= */
 (function () {
   'use strict';
 
   var DIR = 'images/story/';
-  var BP = 1024;                 // matches where .mission-stats-grid collapses
+  var STACK_AT = 1024;         // at or below this the layout stacks and the body moves out
   var mounts = document.querySelectorAll('[data-story-stack]');
   if (!mounts.length) return;
 
@@ -53,7 +47,7 @@
   var reduceMotion = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function picture(photo, index, cover) {
+  function picture(photo, index) {
     var stem = DIR + photo.base;
     var fig = document.createElement('figure');
     fig.className = 'story-slide';
@@ -69,14 +63,10 @@
     img.srcset = stem + '.jpg 1x, ' + stem + '@2x.jpg 2x';
     img.alt = photo.alt || '';
     img.decoding = 'async';
-    if (index > 0) img.loading = 'lazy';     // only slot 1 is eager
+    if (index > 0) img.loading = 'lazy';          // only slot 1 is eager
     if (photo.w && photo.h) { img.width = photo.w; img.height = photo.h; }
-    if (cover) img.className = 'is-cover';
-    /* Optional focal point. Cover crops around the centre by default, which
-       is wrong when the subject sits at one edge — a tall photo of children
-       under trees keeps the canopy and loses the children. `pos` in the list
-       moves the crop; it applies to the desktop frame and the mobile carousel
-       alike, since both use cover. */
+    /* Optional focal point: cover crops around the centre, which is wrong
+       when the subject sits at one edge. */
     if (photo.pos) img.style.objectPosition = photo.pos;
     pic.appendChild(img);
 
@@ -84,118 +74,70 @@
     return fig;
   }
 
-  function buildFrame(list) {
-    var frame = document.createElement('div');
-    frame.className = 'story-frame';
-    var track = document.createElement('div');
-    track.className = 'story-track';
-    list.forEach(function (p, i) { track.appendChild(picture(p, i, true)); });
-    frame.appendChild(track);
-    return frame;
-  }
-
-  function buildCarousel(list, label) {
-    var car = document.createElement('div');
-    car.className = 'news-carousel story-carousel';
-    car.setAttribute('data-news-carousel', '');
-    car.setAttribute('data-carousel-autoplay', 'false');
-    car.setAttribute('aria-roledescription', 'carousel');
-    car.setAttribute('aria-label', label);
-
-    var vp = document.createElement('div');
-    vp.className = 'news-carousel-viewport';
-    var track = document.createElement('div');
-    track.className = 'news-carousel-track';
-    track.setAttribute('data-carousel-track', '');
-    list.forEach(function (p, i) {
-      var slide = document.createElement('div');
-      slide.className = 'news-carousel-slide';
-      slide.setAttribute('role', 'group');
-      slide.setAttribute('aria-roledescription', 'slide');
-      slide.setAttribute('aria-label', (i + 1) + ' of ' + list.length);
-      slide.appendChild(picture(p, i, false));
-      track.appendChild(slide);
-    });
-    vp.appendChild(track);
-    car.appendChild(vp);
-
-    ['prev', 'next'].forEach(function (dir) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'news-carousel-arrow ' + dir;
-      b.setAttribute('data-carousel-' + dir, '');
-      b.setAttribute('aria-label', dir === 'prev' ? 'Previous image' : 'Next image');
-      b.innerHTML = dir === 'prev' ? '&#8249;' : '&#8250;';
-      car.appendChild(b);
-    });
-
-    var dots = document.createElement('div');
-    dots.className = 'news-carousel-dots';
-    dots.setAttribute('data-carousel-dots', '');
-    list.forEach(function (p, i) {
-      var d = document.createElement('button');
-      d.type = 'button';
-      d.className = 'news-carousel-dot' + (i === 0 ? ' is-active' : '');
-      d.setAttribute('data-slide-index', i);
-      d.setAttribute('aria-label', 'Go to image ' + (i + 1));
-      dots.appendChild(d);
-    });
-    car.appendChild(dots);
-    return car;
-  }
-
-  /* ---------------- build ---------------- */
-  var tracks = [];                              // {scroll, frame, track}
+  var tracks = [];
   Array.prototype.forEach.call(mounts, function (mount) {
     var key = mount.getAttribute('data-story-stack');
     var list = data[key];
     if (!list || !list.length) { console.warn('[story-frame] no slots for "' + key + '"'); return; }
-    var label = mount.getAttribute('data-story-label') || key;
+
+    var frame = document.createElement('div');
+    frame.className = 'story-frame';
+    var track = document.createElement('div');
+    track.className = 'story-track';
+    list.forEach(function (p, i) { track.appendChild(picture(p, i)); });
+    frame.appendChild(track);
 
     mount.textContent = '';
-    var frame = buildFrame(list);
     mount.appendChild(frame);
-    var car = buildCarousel(list, label);
-    mount.appendChild(car);
-    if (window.DPCarousel) window.DPCarousel.init(car);
 
     var scroll = mount.closest('[data-story-scroll]');
-    if (scroll) {
-      /* Pace is per-image, not per-section: the CSS multiplies this by the
-         scroll-per-image figure, so a section with six photos simply gets one
-         more image's worth of scroll instead of moving 25% faster. */
-      scroll.style.setProperty('--slides', list.length);
-      tracks.push({ scroll: scroll, frame: frame,
-                    track: frame.querySelector('.story-track') });
-    }
+    if (!scroll) return;
+    /* Pace is per image, not per section: a section with six photographs gets
+       one more image's worth of scroll rather than racing through them. */
+    scroll.style.setProperty('--slides', list.length);
+
+    /* Where the paragraph goes when the layout stacks. */
+    var body = scroll.querySelector('.story-body');
+    var tail = document.createElement('div');
+    tail.className = 'container-main story-tail';
+    scroll.parentNode.insertBefore(tail, scroll.nextSibling);
+
+    tracks.push({ scroll: scroll, frame: frame, track: track, body: body, tail: tail,
+                  home: body ? body.parentNode : null });
   });
 
-  if (!tracks.length || reduceMotion) return;   // carousel handles both cases
+  if (!tracks.length) return;
 
-  /* ---------------- scroll driver ---------------- */
+  /* ---------- layout: body copy in or out of the pin ---------- */
+  var stacked = null;
+  function layout() {
+    var now = window.innerWidth <= STACK_AT;   // inclusive: the CSS uses max-width: 1024px
+    if (now === stacked) return;
+    stacked = now;
+    tracks.forEach(function (t) {
+      if (!t.body) return;
+      if (now) t.tail.appendChild(t.body);
+      else t.home.appendChild(t.body);
+    });
+  }
+
+  /* ---------- scroll driver ---------- */
   var ticking = false;
 
   function update() {
     ticking = false;
     var vh = window.innerHeight;
-    if (window.innerWidth < BP) return;          // carousel is in charge
-
     for (var i = 0; i < tracks.length; i++) {
       var t = tracks[i];
       var r = t.scroll.getBoundingClientRect();
 
-      // Outside the neighbourhood: drop the layer and skip.
       if (r.bottom < -vh || r.top > vh * 2) {
         if (t.lifted) { t.track.style.willChange = 'auto'; t.lifted = false; }
         continue;
       }
       if (!t.lifted) { t.track.style.willChange = 'transform'; t.lifted = true; }
 
-      /* Progress 0 -> 1 across exactly the window where the pin is engaged:
-         from the moment the scroll container's top reaches the pin offset to
-         the moment its bottom does. Clamped, so the track is parked at either
-         end outside that window and nothing bleeds into the next section. */
-      var travel = t.scroll.offsetHeight - t.frame.offsetHeight - t.pinTop;
+      var travel = t.scroll.offsetHeight - t.pinH - t.pinTop;
       if (travel <= 0) continue;
       var p = (t.pinTop - r.top) / travel;
       p = p < 0 ? 0 : (p > 1 ? 1 : p);
@@ -214,17 +156,41 @@
   }
 
   function measure() {
+    layout();
     for (var i = 0; i < tracks.length; i++) {
-      var cs = getComputedStyle(tracks[i].frame.closest('.story-pin'));
-      tracks[i].pinTop = parseFloat(cs.top) || 0;
+      var pin = tracks[i].frame.closest('.story-pin');
+      tracks[i].pinTop = parseFloat(getComputedStyle(pin).top) || 0;
+      tracks[i].pinH = pin.offsetHeight;        // the pin, not just the frame
       tracks[i].last = null;
+      /* The stacked frame sizes to whatever the heading leaves. Publish the
+         real heading height so the CSS min() has a true number instead of a
+         guess — headlines wrap to two or three lines depending on width. */
+      var head = pin.querySelector('.story-head');
+      if (head) pin.style.setProperty('--story-head', head.offsetHeight + 'px');
+
+      /* Scroll distance in terms of the frame itself, so the pace is the same
+         proportionally everywhere: roughly nine tenths of a frame of scroll
+         per photograph. A hardcoded figure would be right on a desktop and
+         absurd on a phone, where the frame is less than two thirds the size. */
+      var fh = tracks[i].frame.offsetHeight;
+      var n = tracks[i].track.children.length;
+      if (fh > 0 && n > 1) {
+        tracks[i].scroll.style.height = Math.round(fh + (n - 1) * fh * 0.91) + 'px';
+        tracks[i].pinH = pin.offsetHeight;
+      }
     }
-    update();
+    if (!reduceMotion) update();
   }
+
+  /* Reduced motion: lay the sections out, park every track at the first
+     photograph, and never attach a scroll listener. No scroll-linked
+     translation of any kind. */
+  if (reduceMotion) { measure(); return; }
 
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', measure);
-  if (document.readyState === 'complete') measure();
-  else window.addEventListener('load', measure);
+  window.addEventListener('orientationchange', measure);
+  /* Images settling changes the pin's height, so re-measure once loaded. */
+  window.addEventListener('load', measure);
   measure();
 })();

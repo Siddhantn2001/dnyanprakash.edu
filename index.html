@@ -710,35 +710,30 @@
 
 
     /* ---------- Story frame: one window, a filmstrip behind it ----------
+       ONE MECHANISM AT EVERY WIDTH, 320 up. No carousel, no breakpoint
+       switch: the same pinned frame and the same scroll-linked track run on
+       a phone and on a desktop. Only the arrangement changes.
+
        .story-scroll is tall and does nothing but provide scroll distance.
-       .story-pin sticks, carrying BOTH the text and the frame, so neither
-       moves. .story-frame is a fixed-size window that clips. .story-track is
-       the five images in one column; scripts/story-stack.js translates it
-       upward as the page scrolls through .story-scroll.
+       .story-pin sticks, so nothing inside it moves. .story-frame is a fixed
+       window that clips. .story-track is the photographs in one column;
+       scripts/story-stack.js translates it upward.
 
-       Only one frame is ever on screen. Section height is therefore
-       independent of how many images there are — see SCROLL_TRAVEL below.
+       Sticky safety: no ancestor of .story-pin may clip overflow-y or carry
+       a transform. html uses overflow-x: CLIP (hidden would compute
+       overflow-y to auto and kill the pin), and .reveal lives INSIDE the
+       pinned element, never above it. */
 
-       Sticky safety: no ancestor of .story-pin may clip overflow-y or carry a
-       transform. html uses overflow-x: CLIP (hidden would compute overflow-y
-       to auto and kill the pin), and the .reveal lives INSIDE the pinned
-       element, never above it. */
-
-    /* Scroll distance per section, derived from the slide count so every
-       section paces the same: 375px of scroll per image, roughly three or four
-       wheel notches each. --slides is set by scripts/story-stack.js from the
-       list length, so adding a sixth photo lengthens that one section by one
-       image's worth of scroll rather than making the filmstrip race. A section
-       still costs nothing for images beyond what its own pace needs. */
     .story-scroll {
       --slides: 5;
-      /* 411px is the frame's height at the common 548px column (4:3). The JS
-         measures the real frame for the travel maths, so a narrower column
-         between 1025 and 1200px only shifts pacing slightly. */
+      /* Fallback only. The script overwrites this with a height derived from
+         the REAL frame height, because the frame is 411px on a desktop and
+         240px on a 320px phone — a single hardcoded distance would make the
+         phone scroll for hundreds of pixels of nothing. */
       height: calc(411px + (var(--slides) - 1) * 375px);
       position: relative;
     }
-    .story-pin    { position: sticky; top: 112px; }
+    .story-pin { position: sticky; top: 112px; }
 
     .story-grid { align-items: center !important; }
     .story-text { min-width: 0; }
@@ -747,15 +742,12 @@
     .story-frame {
       position: relative;
       width: 100%;
-      /* 4:3. Chosen by measuring the 16 photographs actually in the list, not
-         by eye: across ratios from 0.56 to 1.78 it keeps 79.1% of the average
-         frame visible against 68.1% for the near-square window it replaces,
-         and drops the number of badly-cropped slots from 9 to 3. It is also
-         the shape the mobile carousel uses, so the window is one proportion
-         across the whole site. aspect-ratio rather than a fixed height so the
-         frame and its slides stay in step at any column width. */
+      /* 4:3, chosen by measuring the sixteen photographs in the list: across
+         0.56 to 1.78 it keeps 79.1% of the average frame against 68.1% for a
+         near-square window. aspect-ratio rather than a fixed height so the
+         frame and its slides stay in step at any width. */
       aspect-ratio: 4 / 3;
-      overflow: hidden;           /* hidden is safe: not an ancestor of the pin */
+      overflow: hidden;            /* safe: not an ancestor of the pin */
       border-radius: 4px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
       background: var(--color-bg-alt);
@@ -763,126 +755,68 @@
     .story-track { will-change: auto; }
     .story-track .story-slide {
       margin: 0;
-      /* Same width as the frame and the same ratio, so each slide is exactly
-         one window tall however wide the column happens to be. */
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 4 / 3;         /* same width and ratio as the frame */
       overflow: hidden;
     }
     .story-track .story-slide picture { display: block; width: 100%; height: 100%; }
-    .story-track .story-slide img.is-cover {
-      display: block; width: 100%; height: 100%; object-fit: cover;
-    }
+    .story-track .story-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-    /* The carousel is the mobile and reduced-motion layout only. */
-    .story-carousel { display: none; }
+    .story-tail { display: none; }
 
-    /* ---------- Carousel chrome (shared with news/index.html) ----------
-       Arrows are solid and always visible — never opacity-gated on hover,
-       which would make them invisible on touch. */
-    .news-carousel { position: relative; }
-    .news-carousel-viewport { overflow: hidden; }
-    .news-carousel-track {
-      display: flex;
-      transition: transform 450ms cubic-bezier(0.2, 0.8, 0.2, 1);
-      will-change: transform;
-    }
-    .news-carousel-slide {
-      flex: 0 0 100%;
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: var(--color-bg-alt);
-    }
-    /* MOBILE CAROUSEL — a fixed 4:3 window, full-bleed, images filling it.
-       Letting each slide size to its own photo looked wrong on a phone: the
-       viewport took the height of the tallest slide, so a 16:9 landscape sat
-       in a 471px box with ~140px of dead grey above and below it, and the
-       three sections disagreed with each other (501px vs 281px) because one
-       of them happens to have no portrait in it. A fixed ratio with cover
-       gives every slide and every section the same frame, edge to edge, with
-       no dead space. 4:3 because the photographs are mostly landscape and it
-       is the gentlest common denominator across 0.56 to 1.78. */
-    .story-carousel .news-carousel-viewport { aspect-ratio: 4 / 3; }
-    .story-carousel .news-carousel-track,
-    .story-carousel .news-carousel-slide { height: 100%; }
-    .story-carousel .story-slide { margin: 0; width: 100%; height: 100%; }
-    .story-carousel .story-slide picture { display: block; width: 100%; height: 100%; }
-    .story-carousel .story-slide img {
-      display: block; width: 100%; height: 100%; object-fit: cover;
-    }
-    /* Edge to edge: .container-main carries 20px of side padding at this
-       width, and a photograph has more presence without it. */
-    .story-carousel { margin-left: -20px; margin-right: -20px; }
-    .story-carousel .news-carousel-arrow.prev { left: 16px; }
-    .story-carousel .news-carousel-arrow.next { right: 16px; }
-    .news-carousel-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.95);
-      border: 1px solid rgba(255,255,255,0.25);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 2; padding: 0;
-      font-size: 22px; line-height: 1;
-      color: var(--color-text-primary);
-      transition: background 0.2s ease, color 0.2s ease;
-    }
-    .news-carousel-arrow:hover { background: #fff; color: var(--color-primary); }
-    .news-carousel-arrow:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
-    .news-carousel-arrow.prev { left: 12px; }
-    .news-carousel-arrow.next { right: 12px; }
-    .news-carousel-dots {
-      display: flex; justify-content: center; gap: 10px;
-      padding: 18px 20px 4px; flex-wrap: wrap;
-    }
-    .news-carousel-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: #c3c6c9; border: 0; padding: 0; cursor: pointer;
-      transition: background 0.2s ease, transform 0.2s ease; flex-shrink: 0;
-    }
-    .news-carousel-dot:hover { background: var(--color-text-primary); }
-    .news-carousel-dot.is-active {
-      background: var(--color-primary);
-      transform: scale(1.25);
-      box-shadow: 0 0 0 2px rgba(158,27,50,0.3);
-    }
-
-    /* REVEALS — decided, not inherited. The frame carries none: a transform on
-       the image column would be noise beside a pinned one, and the filmstrip
-       is the motion. The text keeps its fade, forced to the VERTICAL variant
-       because the position-aware system translates 64px sideways, which on a
-       full-width column pushes the document wider than the viewport. */
+    /* REVEALS — decided, not inherited. The frame carries none: the filmstrip
+       is the motion. The text keeps its fade, forced to the VERTICAL variant,
+       because the position-aware system translates 64px sideways and on a
+       full-width column that pushes the document wider than the viewport. */
     .story-pin .reveal.reveal-fx,
     .story-pin .reveal.reveal-fx.reveal-left,
     .story-pin .reveal.reveal-fx.reveal-right { transform: translateY(24px); }
     .story-pin .reveal.reveal-fx.is-visible { transform: none; }
 
-    /* Below 1024px .mission-stats-grid is already a single column, so there is
-       no second column to pin beside: collapse the scroll container and hand
-       over to the carousel. */
+    /* ---------- Stacked arrangement ----------
+       Below the two-column width the pin holds the heading above the frame.
+       The paragraph is moved out of the pin by the script and shown here
+       instead: measured, the text column runs 636-802px on phones and at
+       320x640 the paragraph alone is taller than the screen, so a pin
+       containing all of it plus a frame could never fit the viewport. */
     @media (max-width: 1024px) {
-      .story-scroll { height: auto; }
-      .story-pin { position: static; }
-      .story-frame { display: none; }
-      .story-carousel { display: block; }
+      /* The pinned block fills the screen and centres its contents. Pinning
+         it at a fixed offset left the heading high and a few hundred pixels
+         of nothing under the frame; centred, the pair sits as one composed
+         unit while the filmstrip runs. */
+      .story-pin {
+        top: 0;
+        min-height: 100svh;
+        display: flex;
+        align-items: center;
+      }
+      .story-pin > .container-main { width: 100%; }
+      .story-grid { display: block !important; }
+      .story-head { margin-bottom: 20px; }
+      .story-media { margin-top: 0; }
+      /* Stays 4:3 at every width. The width is capped three ways: by the
+         column, by 680px so it does not become absurd on a tablet, and by
+         whatever vertical room the heading leaves — that last one is what
+         guarantees the whole pinned block fits on screen, since a pin taller
+         than the viewport cannot pin. --story-head is published by the
+         script from the real heading, which wraps to two or three lines
+         depending on width. */
+      .story-frame {
+        width: min(100%, 680px,
+                   calc((100svh - var(--story-head, 200px) - 190px) * 4 / 3));
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .story-tail { display: block; padding-top: 28px; }
     }
-
-    /* No scroll-linked translation under reduced motion. The JS driver bails
-       out entirely; the carousel takes over on desktop too, so all five images
-       stay reachable with no motion at all (its own transition is 0s here). */
-    @media (prefers-reduced-motion: reduce) {
-      .story-scroll { height: auto; }
-      .story-pin { position: static; }
-      .story-frame { display: none; }
-      .story-carousel { display: block; }
-      .news-carousel-track { transition: none; }
-      .news-carousel-dot { transition: none; }
+    /* Edge to edge on phones only — .container-main carries 20px of side
+       padding, and a photograph has more presence without it. On a tablet the
+       frame is already capped well inside the column, so it stays inset. */
+    @media (max-width: 640px) {
+      .story-frame { width: calc(100% + 40px); margin-left: -20px; margin-right: -20px; }
+      .story-tail .mission-body { margin-bottom: 24px; }
     }
-
     /* ---------- Reusable placeholder slot box ---------- */
     .slot-box {
       background: #e5e5e5;
@@ -2622,10 +2556,14 @@
           <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
           <div class="story-text">
               <div class="reveal">
-                <div class="section-eyebrow">The Project</div>
+                <div class="story-head">
+                  <div class="section-eyebrow">The Project</div>
             <h2 class="section-title">Dnyanprakash — An Experiment in Education</h2>
-            <p class="mission-body">What Dnyanprakash has built in Latur was not built easily. It was built despite limited physical infrastructure, without government funding, and against the grain of how most schools in this region have always operated. That it has earned the deep trust of parents, educators, and children over twenty-six years is not a coincidence, it is the result of a conscious, sustained commitment to doing education differently.</p>
-            <a href="about/an-experiment-in-education.html" class="btn btn-outline">Read More</a>
+                </div>
+                <div class="story-body">
+                  <p class="mission-body">What Dnyanprakash has built in Latur was not built easily. It was built despite limited physical infrastructure, without government funding, and against the grain of how most schools in this region have always operated. That it has earned the deep trust of parents, educators, and children over twenty-six years is not a coincidence, it is the result of a conscious, sustained commitment to doing education differently.</p>
+                  <a href="about/an-experiment-in-education.html" class="btn btn-outline">Read More</a>
+                </div>
               </div>
             </div>
           <!-- RIGHT: image slot -->
@@ -2667,10 +2605,14 @@
           <!-- RIGHT: eyebrow + headline + one paragraph + Read More -->
           <div class="story-text">
               <div class="reveal">
-                <div class="section-eyebrow">About Us</div>
+                <div class="story-head">
+                  <div class="section-eyebrow">About Us</div>
             <h2 class="section-title">A Vision of Joyful Learning</h2>
-            <p class="mission-body">Experiencing the importance of effective learning through the mother tongue, the head of the institution, Mr. Satish Narhare, began teaching mathematics in 1989 through Narhare Classes. During this time, he realized the significance of making learning enjoyable and stress-free for children. With a vision to make education engaging, meaningful, and self-motivated — where children naturally want to learn, ask questions, seek answers, and express their thoughts freely — Savita and Satish Narhare founded Dnyanprakash in 1999, starting with their own child.</p>
-            <a href="about/index.html" class="btn btn-outline">Read More</a>
+                </div>
+                <div class="story-body">
+                  <p class="mission-body">Experiencing the importance of effective learning through the mother tongue, the head of the institution, Mr. Satish Narhare, began teaching mathematics in 1989 through Narhare Classes. During this time, he realized the significance of making learning enjoyable and stress-free for children. With a vision to make education engaging, meaningful, and self-motivated — where children naturally want to learn, ask questions, seek answers, and express their thoughts freely — Savita and Satish Narhare founded Dnyanprakash in 1999, starting with their own child.</p>
+                  <a href="about/index.html" class="btn btn-outline">Read More</a>
+                </div>
               </div>
             </div>
         </div>
@@ -2777,10 +2719,14 @@
           <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
           <div class="story-text">
               <div class="reveal">
-                <div class="section-eyebrow">Our Approach</div>
+                <div class="story-head">
+                  <div class="section-eyebrow">Our Approach</div>
             <h2 class="section-title">Learning through action and experience</h2>
-            <p class="mission-body">From the very beginning of Dnyanprakash, children's learning was linked with action and experience. Various materials are used according to the subject for that. Various reading and writing experiments were also conducted. Children get to know letters and words in kindergarten itself. After that, the children read and write sentences, and then they create stories from pictures, complete incomplete stories, write stories from points, experience writing, case writing, dialogue writing, letter writing, etc.</p>
-            <a href="about/learning-through-action.html" class="btn btn-outline">Read More</a>
+                </div>
+                <div class="story-body">
+                  <p class="mission-body">From the very beginning of Dnyanprakash, children's learning was linked with action and experience. Various materials are used according to the subject for that. Various reading and writing experiments were also conducted. Children get to know letters and words in kindergarten itself. After that, the children read and write sentences, and then they create stories from pictures, complete incomplete stories, write stories from points, experience writing, case writing, dialogue writing, letter writing, etc.</p>
+                  <a href="about/learning-through-action.html" class="btn btn-outline">Read More</a>
+                </div>
               </div>
             </div>
           <!-- RIGHT: image -->
@@ -3425,10 +3371,6 @@
   <script defer src="scripts/header-blur.js"></script>
   <script defer src="scripts/translations-manifest.js"></script>
   <script defer src="scripts/lang-toggle.js"></script>
-  <!-- Carousel engine — shared with news/index.html; it is what the story
-       stacks degrade to below 1024px. Must come before story-stack.js so
-       window.DPCarousel exists when the stacks build their carousels. -->
-  <script defer src="scripts/news-carousel.js"></script>
   <script defer src="scripts/story-stacks.js"></script>
   <script defer src="scripts/story-stack.js"></script>
   <script defer src="scripts/scroll-reveals.js"></script>
