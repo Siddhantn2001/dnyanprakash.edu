@@ -724,11 +724,17 @@
        to auto and kill the pin), and the .reveal lives INSIDE the pinned
        element, never above it. */
 
-    /* Scroll distance per section. 1500px maps the track's full travel onto
-       ~375px of scroll per image — roughly three or four wheel notches each,
-       unhurried without the page paying for it. The old stacked version cost
-       ~2700px per section because height scaled with the images themselves. */
-    .story-scroll { height: calc(520px + 1500px); position: relative; }
+    /* Scroll distance per section, derived from the slide count so every
+       section paces the same: 375px of scroll per image, roughly three or four
+       wheel notches each. --slides is set by scripts/story-stack.js from the
+       list length, so adding a sixth photo lengthens that one section by one
+       image's worth of scroll rather than making the filmstrip race. A section
+       still costs nothing for images beyond what its own pace needs. */
+    .story-scroll {
+      --slides: 5;
+      height: calc(520px + (var(--slides) - 1) * 375px);
+      position: relative;
+    }
     .story-pin    { position: sticky; top: 112px; }
 
     .story-grid { align-items: center !important; }

@@ -154,8 +154,14 @@
     if (window.DPCarousel) window.DPCarousel.init(car);
 
     var scroll = mount.closest('[data-story-scroll]');
-    if (scroll) tracks.push({ scroll: scroll, frame: frame,
-                              track: frame.querySelector('.story-track') });
+    if (scroll) {
+      /* Pace is per-image, not per-section: the CSS multiplies this by the
+         scroll-per-image figure, so a section with six photos simply gets one
+         more image's worth of scroll instead of moving 25% faster. */
+      scroll.style.setProperty('--slides', list.length);
+      tracks.push({ scroll: scroll, frame: frame,
+                    track: frame.querySelector('.story-track') });
+    }
   });
 
   if (!tracks.length || reduceMotion) return;   // carousel handles both cases

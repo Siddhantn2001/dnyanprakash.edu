@@ -40,11 +40,12 @@ window.DP_STORY_STACKS = {
   ],
 
   action: [
-    { base: "action-01", alt: "Learning through action — students engaged in a hands-on classroom activity", w: 560, h: 420 },
-    { base: "action-02", alt: "Slot 2 — awaiting photo", w: 432, h: 540 },
-    { base: "action-03", alt: "Slot 3 — awaiting photo", w: 560, h: 374 },
-    { base: "action-04", alt: "Slot 4 — awaiting photo", w: 540, h: 540 },
-    { base: "action-05", alt: "Slot 5 — awaiting photo", w: 560, h: 315 },
+    { base: "action-01", alt: "Learning through action — students engaged in a hands-on classroom activity", w: 720, h: 540 },
+    { base: "action-02", alt: "Students gathered around open-fire cooking vessels during an outdoor cooking session", w: 960, h: 540 },
+    { base: "action-03", alt: "Two students harvesting from a tree into a bag on a field visit", w: 720, h: 540 },
+    { base: "action-04", alt: "Students walking the rows of a cabbage field, examining the crop", w: 720, h: 540 },
+    { base: "action-05", alt: "Health workers running a dental check-up camp for children at the school", w: 720, h: 540 },
+    { base: "action-06", alt: "Students mixing compost by hand in a large tub", w: 960, h: 540 },
   ],
 
 };
