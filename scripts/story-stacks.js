@@ -24,10 +24,10 @@
 window.DP_STORY_STACKS = {
 
   experiment: [
-    { base: "experiment-01", alt: "An Experiment in Education — a moment from the Dnyanprakash community", w: 304, h: 540 },
-    { base: "experiment-02", alt: "Slot 2 — awaiting photo", w: 560, h: 420 },
-    { base: "experiment-03", alt: "Slot 3 — awaiting photo", w: 540, h: 540 },
-    { base: "experiment-04", alt: "Slot 4 — awaiting photo", w: 560, h: 374 },
+    { base: "experiment-01", alt: "Children sitting on the classroom floor building words from picture and letter cards", w: 629, h: 540 },
+    { base: "experiment-02", alt: "Students weighing guavas on a balance scale during a hands-on measurement lesson", w: 960, h: 540 },
+    { base: "experiment-03", alt: "Students and teachers with a wheelbarrow of seed balls prepared for a tree-planting drive", w: 960, h: 540 },
+    { base: "experiment-04", alt: "Students working the soil with hoes in the school vegetable plot", w: 720, h: 540 },
     { base: "experiment-05", alt: "Slot 5 — awaiting photo", w: 432, h: 540 },
   ],
 
