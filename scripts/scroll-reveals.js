@@ -18,8 +18,16 @@
  * Pattern 3 (stat number count-up) is preserved at the bottom.
  */
 
-/* ===== Pattern 4 — Position-aware horizontal reveals ===== */
-window.addEventListener('load', function () {
+/* ===== Pattern 4 — Position-aware horizontal reveals =====
+   Initialises at DOMContentLoaded, not on 'load'. Bound to 'load' the
+   directions were not assigned until every image on the page had finished
+   downloading — with sixteen photographs in the story sections that is
+   seconds on a real connection, and until then every reveal fell back to
+   the inline translateY rule and entered from below. It looked right
+   locally only because images come off disk instantly. Directions are
+   re-assigned on 'load' and on resize, so later layout shifts correct
+   themselves. */
+function initReveals() {
   if (!('IntersectionObserver' in window)) return;
 
   var reveals = document.querySelectorAll('.reveal');
@@ -112,7 +120,17 @@ window.addEventListener('load', function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(assignDirections, 200);
   });
-});
+
+  // (e) Images settling can move an element across the centre line, so
+  //     re-read the positions once everything has loaded.
+  window.addEventListener('load', assignDirections);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initReveals);
+} else {
+  initReveals();
+}
 
 /* ===== Pattern 3 — Stat number count-up ===== */
 (function () {

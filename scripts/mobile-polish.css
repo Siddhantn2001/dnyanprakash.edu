@@ -27,7 +27,7 @@
    alternating. Distance, easing, and duration follow the brief.
 
    Specificity strategy: every HTML file's inline <style> defines
-   `.reveal { opacity: 1 }` and `.reveal.reveal-fx { transform: translateY(24px); transition: 0.7s }`.
+   `.reveal { opacity: 1 }` and a horizontal `.reveal.reveal-fx` fallback.
    To override without editing 43 HTML files we lean on source order —
    mobile-polish.css is injected just before </head>, AFTER the inline
    <style> block, so on equal specificity our rules win. The selectors
@@ -56,7 +56,7 @@
   will-change: auto;
 }
 
-/* Override inline .reveal.reveal-fx (0,2,0) — it sets translateY(24px)
+/* Override inline .reveal.reveal-fx (0,2,0) — it sets a side-agnostic X travel
    and 0.7s transitions when the inline IIFE adds .reveal-fx. We bump
    specificity to 0,3,0 with .reveal.reveal-fx.reveal-left so we win
    regardless of source order. */

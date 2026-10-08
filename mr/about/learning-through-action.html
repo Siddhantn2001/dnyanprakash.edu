@@ -1084,7 +1084,7 @@
     /* JS adds .reveal-fx before observing; observer then adds .is-visible to fade in. */
     .reveal.reveal-fx {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translate3d(var(--reveal-travel, 64px), 0, 0);
       transition: opacity 0.4s ease-out, transform 0.4s ease-out;
       will-change: opacity, transform;
     }
@@ -1103,7 +1103,7 @@
     .stat-counter { display: inline-block; font-variant-numeric: tabular-nums; }
     @media (max-width: 768px) {
       .reveal.reveal-fx {
-        transform: translateY(40px);
+        transform: translate3d(var(--reveal-travel, 28px), 0, 0);
         transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
                     transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
       }
