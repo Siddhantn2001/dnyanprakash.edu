@@ -121,32 +121,59 @@
     });
   }
 
-  /* ---------- scroll driver ---------- */
-  var ticking = false;
+  /* ---------- scroll driver ----------
+     STRICTLY SEPARATED READ AND WRITE PHASES. The old loop read
+     getBoundingClientRect, offsetHeight, scrollHeight and clientHeight for
+     every track and wrote a transform in the same pass — read, write, read,
+     write, three times over, which forces a synchronous layout on each read
+     and is exactly what made the track trail the scroll.
+
+     Now every measurement is cached in cache(), which runs on resize, on
+     load and whenever a ResizeObserver reports the layout actually moved
+     (lazy photographs settling shift the sections). The per-frame path reads
+     nothing from layout — only window.scrollY, which is a scroll offset
+     rather than a geometry query — and writes one transform per track. */
+  var ticking = false, vh = window.innerHeight;
+
+  function cache() {
+    vh = window.innerHeight;
+    var y = window.scrollY;
+    for (var i = 0; i < tracks.length; i++) {
+      var t = tracks[i];
+      var pin = t.frame.closest('.story-pin');
+      t.pinTop = parseFloat(getComputedStyle(pin).top) || 0;
+      t.pinH   = pin.offsetHeight;
+      t.top    = t.scroll.getBoundingClientRect().top + y;   // document space
+      t.h      = t.scroll.offsetHeight;
+      t.max    = t.track.scrollHeight - t.frame.clientHeight;
+      t.travel = t.h - t.pinH - t.pinTop;
+      t.last   = null;                                        // force a rewrite
+    }
+  }
 
   function update() {
     ticking = false;
-    var vh = window.innerHeight;
+    var y = window.scrollY;
     for (var i = 0; i < tracks.length; i++) {
       var t = tracks[i];
-      var r = t.scroll.getBoundingClientRect();
+      if (t.travel <= 0 || t.max <= 0) continue;
 
-      if (r.bottom < -vh || r.top > vh * 2) {
+      var top = t.top - y;                 // what getBoundingClientRect would say
+      var bottom = top + t.h;
+
+      if (bottom < -vh || top > vh * 2) {
         if (t.lifted) { t.track.style.willChange = 'auto'; t.lifted = false; }
         continue;
       }
       if (!t.lifted) { t.track.style.willChange = 'transform'; t.lifted = true; }
 
-      var travel = t.scroll.offsetHeight - t.pinH - t.pinTop;
-      if (travel <= 0) continue;
-      var p = (t.pinTop - r.top) / travel;
+      var p = (t.pinTop - top) / t.travel;
       p = p < 0 ? 0 : (p > 1 ? 1 : p);
 
-      var max = t.track.scrollHeight - t.frame.clientHeight;
-      var y = -(p * max);
-      if (y !== t.last) {
-        t.track.style.transform = 'translate3d(0,' + y.toFixed(2) + 'px,0)';
-        t.last = y;
+      var ny = -(p * t.max);
+      if (ny !== t.last) {
+        t.track.style.transform = 'translate3d(0,' + ny.toFixed(2) + 'px,0)';
+        t.last = ny;
       }
     }
   }
@@ -159,12 +186,6 @@
     layout();
     for (var i = 0; i < tracks.length; i++) {
       var pin = tracks[i].frame.closest('.story-pin');
-      tracks[i].pinTop = parseFloat(getComputedStyle(pin).top) || 0;
-      tracks[i].pinH = pin.offsetHeight;        // the pin, not just the frame
-      tracks[i].last = null;
-      /* The stacked frame sizes to whatever the heading leaves. Publish the
-         real heading height so the CSS min() has a true number instead of a
-         guess — headlines wrap to two or three lines depending on width. */
       var head = pin.querySelector('.story-head');
       if (head) pin.style.setProperty('--story-head', head.offsetHeight + 'px');
 
@@ -176,9 +197,9 @@
       var n = tracks[i].track.children.length;
       if (fh > 0 && n > 1) {
         tracks[i].scroll.style.height = Math.round(fh + (n - 1) * fh * 0.91) + 'px';
-        tracks[i].pinH = pin.offsetHeight;
       }
     }
+    cache();
     if (!reduceMotion) update();
   }
 
@@ -190,7 +211,21 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', measure);
   window.addEventListener('orientationchange', measure);
-  /* Images settling changes the pin's height, so re-measure once loaded. */
   window.addEventListener('load', measure);
+
+  /* The cache is only safe while the layout holds still. A lazy photograph
+     settling moves every section below it, so watch for that and re-read —
+     coalesced into one rAF so a burst of images costs a single pass. */
+  if (window.ResizeObserver) {
+    var pending = false;
+    var ro = new ResizeObserver(function () {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () { pending = false; cache(); if (!reduceMotion) update(); });
+    });
+    ro.observe(document.documentElement);
+    tracks.forEach(function (t) { ro.observe(t.scroll); });
+  }
+
   measure();
 })();

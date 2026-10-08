@@ -763,14 +763,10 @@
 
     .story-tail { display: none; }
 
-    /* REVEALS — decided, not inherited. The frame carries none: the filmstrip
-       is the motion. The text keeps its fade, forced to the VERTICAL variant,
-       because the position-aware system translates 64px sideways and on a
-       full-width column that pushes the document wider than the viewport. */
-    .story-pin .reveal.reveal-fx,
-    .story-pin .reveal.reveal-fx.reveal-left,
-    .story-pin .reveal.reveal-fx.reveal-right { transform: translateY(24px); }
-    .story-pin .reveal.reveal-fx.is-visible { transform: none; }
+    /* REVEALS — the frame itself carries none: the filmstrip is the motion.
+       The text keeps the site's position-aware horizontal entrance like
+       everything else; its sideways travel is contained by overflow-x: clip
+       on main and the sections, not cancelled. */
 
     /* ---------- Stacked arrangement ----------
        Below the two-column width the pin holds the heading above the frame.

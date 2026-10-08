@@ -75,25 +75,24 @@
   transform: translate3d(0, 0, 0);
 }
 
-/* The horizontal reveal choreography — text and image sliding in to meet at
-   the centre — only makes sense while those two things sit side by side. The
-   grids that pair them (.mission-stats-grid and friends) collapse to a single
-   column at 1024px, but this correction used to start at 768px. In the 769-1024
-   band the layout was already single-column while the reveals were still
-   translating 64px sideways, which pushed the document wider than the viewport:
-   64px of real horizontal scroll on every tablet, and more once another
-   full-width column was added. Raised to 1024px so the choreography and the
-   layout change at the same breakpoint. Below it, a vertical rise — same fade,
-   no horizontal cost. */
-@media (max-width: 1024px) {
-  .reveal-left,
-  .reveal-right,
-  .reveal.reveal-fx.reveal-left,
-  .reveal.reveal-fx.reveal-right { transform: translate3d(0, 32px, 0); }
-  .reveal.is-visible,
-  .reveal.reveal-fx.reveal-left.is-visible,
-  .reveal.reveal-fx.reveal-right.is-visible { transform: translate3d(0, 0, 0); }
-}
+/* Travel distance by width. The choreography is horizontal at EVERY width —
+   an element in the left half enters from the left, one in the right half from
+   the right — but 64px of sideways travel is too much for a phone, both
+   visually and because it is 64px of document to contain. Shortened as the
+   viewport narrows; containment is handled by overflow-x: clip on the section
+   wrappers (see "reveal containment" below), not by cancelling the effect. */
+:root { --reveal-travel: 64px; }
+@media (max-width: 1024px) { :root { --reveal-travel: 40px; } }
+@media (max-width: 640px)  { :root { --reveal-travel: 28px; } }
+@media (max-width: 360px)  { :root { --reveal-travel: 20px; } }
+
+.reveal-left,
+.reveal.reveal-fx.reveal-left  { transform: translate3d(calc(-1 * var(--reveal-travel)), 0, 0); }
+.reveal-right,
+.reveal.reveal-fx.reveal-right { transform: translate3d(var(--reveal-travel), 0, 0); }
+.reveal.is-visible,
+.reveal.reveal-fx.reveal-left.is-visible,
+.reveal.reveal-fx.reveal-right.is-visible { transform: translate3d(0, 0, 0); }
 
 @media (max-width: 768px) {
   .reveal {
@@ -102,15 +101,8 @@
       transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
     transition-delay: var(--reveal-delay, 0ms);
   }
-  /* Mobile is single-column, so the desktop "text and image meet at
-     center" horizontal choreography doesn't apply — and the off-screen
-     translateX start-state leaked horizontal scroll width on narrow
-     viewports (fix/mobile-horizontal-overflow). Use a vertical rise
-     instead: same fade-in feel, zero horizontal overflow. */
-  .reveal-left,
-  .reveal-right,
-  .reveal.reveal-fx.reveal-left,
-  .reveal.reveal-fx.reveal-right { transform: translate3d(0, 32px, 0); }
+  /* Horizontal here too — only the travel distance changes, via
+     --reveal-travel above. */
   .reveal.reveal-fx.reveal-left,
   .reveal.reveal-fx.reveal-right {
     transition:
@@ -495,3 +487,24 @@ html { overflow-x: hidden; overflow-x: clip; }
     }
   }
 }
+
+
+/* ---------- reveal containment ----------
+   A horizontal entrance means an element briefly sits up to --reveal-travel
+   outside its column, which is document width the viewport can scroll to. The
+   previous fix for that was to cancel the horizontal travel below 1024px;
+   this contains it instead, so the choreography survives at every width.
+
+   overflow-x: CLIP, never hidden. hidden computes overflow-y to auto, which
+   creates a scroll container and would silently break every position: sticky
+   inside — the story sections, the article sidebars, the sticky header. clip
+   does not create a scroll container, so sticky is unaffected, and it still
+   stops the translated element contributing scrollable width.
+
+   Applied to the section wrappers rather than globally, so nothing that is
+   meant to overflow (the newsletter coverflow fanning its covers, the gallery
+   lightbox) is touched. */
+main,
+main > section,
+.article-body,
+.section-pad { overflow-x: clip; }
