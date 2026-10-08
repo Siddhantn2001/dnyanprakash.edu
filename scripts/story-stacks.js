@@ -32,11 +32,11 @@ window.DP_STORY_STACKS = {
   ],
 
   vision: [
-    { base: "vision-01", alt: "Dnyanprakash — a school moment from the campus", w: 560, h: 996 },
+    { base: "vision-01", alt: "Dnyanprakash — a school moment from the campus", w: 560, h: 996 , pos: "center 78%" },
     { base: "vision-02", alt: "A potter shaping clay on the wheel while students watch, rows of finished pots drying beside them", w: 811, h: 540 },
     { base: "vision-03", alt: "Young children standing among the crops on a field visit, each holding a seedling", w: 960, h: 540 },
     { base: "vision-04", alt: "Children sitting on the ground outdoors rolling seed balls from soil", w: 960, h: 540 },
-    { base: "vision-05", alt: "Students painting a mural along a street wall beside the school", w: 560, h: 747 },
+    { base: "vision-05", alt: "Students painting a mural along a street wall beside the school", w: 560, h: 747 , pos: "center 68%" },
   ],
 
   action: [

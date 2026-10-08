@@ -72,6 +72,12 @@
     if (index > 0) img.loading = 'lazy';     // only slot 1 is eager
     if (photo.w && photo.h) { img.width = photo.w; img.height = photo.h; }
     if (cover) img.className = 'is-cover';
+    /* Optional focal point. Cover crops around the centre by default, which
+       is wrong when the subject sits at one edge — a tall photo of children
+       under trees keeps the canopy and loses the children. `pos` in the list
+       moves the crop; it applies to the desktop frame and the mobile carousel
+       alike, since both use cover. */
+    if (photo.pos) img.style.objectPosition = photo.pos;
     pic.appendChild(img);
 
     fig.appendChild(pic);

@@ -782,8 +782,28 @@
       justify-content: center;
       background-color: var(--color-bg-alt);
     }
-    .story-carousel .story-slide { margin: 0; max-height: 58vh; }
-    .story-carousel .story-slide img { display: block; max-width: 100%; max-height: 58vh; width: auto; height: auto; }
+    /* MOBILE CAROUSEL — a fixed 4:3 window, full-bleed, images filling it.
+       Letting each slide size to its own photo looked wrong on a phone: the
+       viewport took the height of the tallest slide, so a 16:9 landscape sat
+       in a 471px box with ~140px of dead grey above and below it, and the
+       three sections disagreed with each other (501px vs 281px) because one
+       of them happens to have no portrait in it. A fixed ratio with cover
+       gives every slide and every section the same frame, edge to edge, with
+       no dead space. 4:3 because the photographs are mostly landscape and it
+       is the gentlest common denominator across 0.56 to 1.78. */
+    .story-carousel .news-carousel-viewport { aspect-ratio: 4 / 3; }
+    .story-carousel .news-carousel-track,
+    .story-carousel .news-carousel-slide { height: 100%; }
+    .story-carousel .story-slide { margin: 0; width: 100%; height: 100%; }
+    .story-carousel .story-slide picture { display: block; width: 100%; height: 100%; }
+    .story-carousel .story-slide img {
+      display: block; width: 100%; height: 100%; object-fit: cover;
+    }
+    /* Edge to edge: .container-main carries 20px of side padding at this
+       width, and a photograph has more presence without it. */
+    .story-carousel { margin-left: -20px; margin-right: -20px; }
+    .story-carousel .news-carousel-arrow.prev { left: 16px; }
+    .story-carousel .news-carousel-arrow.next { right: 16px; }
     .news-carousel-arrow {
       position: absolute;
       top: 50%;
