@@ -1413,6 +1413,13 @@
        utilities override the inline block above on equal specificity.
        Moving this earlier silently flips that cascade. -->
   <link rel="stylesheet" href="../../styles/tailwind.css">
+  <!-- LCP preload. This page's hero is the largest contentful paint
+       and sits inside a responsive image element, so the preload
+       scanner cannot start it until that element is parsed. Type-gated,
+       so browsers without AVIF skip it. Keep in sync with the hero. -->
+  <link rel="preload" as="image" type="image/avif"
+        imagesrcset="../../images/20-mission-hero-800.avif 800w, ../../images/20-mission-hero-960.avif 960w, ../../images/20-mission-hero-1600.avif 1600w, ../../images/20-mission-hero-1800.avif 1800w"
+        imagesizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" fetchpriority="high">
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -1701,7 +1708,7 @@
 
   <main>
         <section class="article-hero-media" aria-label="ध्येय आणि दृष्टी">
-      <picture><source type="image/avif" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../../images/20-mission-hero-800.avif 800w, ../../images/20-mission-hero-960.avif 960w, ../../images/20-mission-hero-1600.avif 1600w, ../../images/20-mission-hero-1800.avif 1800w"><source type="image/webp" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../../images/20-mission-hero-800.webp 800w, ../../images/20-mission-hero-960.webp 960w, ../../images/20-mission-hero-1600.webp 1600w, ../../images/20-mission-hero-1800.webp 1800w"><img src="../../images/20-mission-hero-1800.jpg" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../../images/20-mission-hero-800.jpg 800w, ../../images/20-mission-hero-960.jpg 960w, ../../images/20-mission-hero-1600.jpg 1600w, ../../images/20-mission-hero-1800.jpg 1800w" alt="ध्येय आणि दृष्टी — ज्ञानप्रकाश शैक्षणिक प्रकल्प" width="1800" height="750" decoding="async" loading="lazy" data-full="../../images/20-mission-hero.jpg"></picture>
+      <picture><source type="image/avif" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../../images/20-mission-hero-800.avif 800w, ../../images/20-mission-hero-960.avif 960w, ../../images/20-mission-hero-1600.avif 1600w, ../../images/20-mission-hero-1800.avif 1800w"><source type="image/webp" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../../images/20-mission-hero-800.webp 800w, ../../images/20-mission-hero-960.webp 960w, ../../images/20-mission-hero-1600.webp 1600w, ../../images/20-mission-hero-1800.webp 1800w"><img src="../../images/20-mission-hero-1800.jpg" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../../images/20-mission-hero-800.jpg 800w, ../../images/20-mission-hero-960.jpg 960w, ../../images/20-mission-hero-1600.jpg 1600w, ../../images/20-mission-hero-1800.jpg 1800w" alt="ध्येय आणि दृष्टी — ज्ञानप्रकाश शैक्षणिक प्रकल्प" width="1800" height="750" decoding="async" loading="eager" fetchpriority="high" data-full="../../images/20-mission-hero.jpg"></picture>
     </section>
 <div class="breadcrumb"><div class="container-main"><a href="../../index.html">Home</a><span class="sep">›</span><a href="../../about/index.html">About</a><span class="sep">›</span><span>ध्येय आणि दृष्टी</span></div></div>
     <section class="section-pad reveal article-body">

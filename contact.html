@@ -1275,6 +1275,13 @@
        utilities override the inline block above on equal specificity.
        Moving this earlier silently flips that cascade. -->
   <link rel="stylesheet" href="styles/tailwind.css">
+  <!-- LCP preload. This page's hero is the largest contentful paint
+       and sits inside a responsive image element, so the preload
+       scanner cannot start it until that element is parsed. Type-gated,
+       so browsers without AVIF skip it. Keep in sync with the hero. -->
+  <link rel="preload" as="image" type="image/avif"
+        imagesrcset="images/40-contact-hero-800.avif 800w, images/40-contact-hero-960.avif 960w, images/40-contact-hero-1200.avif 1200w, images/40-contact-hero-1280.avif 1280w"
+        imagesizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" fetchpriority="high">
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -1563,7 +1570,7 @@
 
   <main>
     <section class="article-hero-media" aria-label="Contact Dnyanprakash">
-      <picture><source type="image/avif" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="images/40-contact-hero-800.avif 800w, images/40-contact-hero-960.avif 960w, images/40-contact-hero-1200.avif 1200w, images/40-contact-hero-1280.avif 1280w"><source type="image/webp" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="images/40-contact-hero-800.webp 800w, images/40-contact-hero-960.webp 960w, images/40-contact-hero-1200.webp 1200w, images/40-contact-hero-1280.webp 1280w"><img src="images/40-contact-hero-1280.jpg" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="images/40-contact-hero-800.jpg 800w, images/40-contact-hero-960.jpg 960w, images/40-contact-hero-1200.jpg 1200w, images/40-contact-hero-1280.jpg 1280w" alt="Contact Dnyanprakash — school building or reception" width="1280" height="720" decoding="async" loading="lazy" data-full="images/40-contact-hero.jpg"></picture>
+      <picture><source type="image/avif" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="images/40-contact-hero-800.avif 800w, images/40-contact-hero-960.avif 960w, images/40-contact-hero-1200.avif 1200w, images/40-contact-hero-1280.avif 1280w"><source type="image/webp" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="images/40-contact-hero-800.webp 800w, images/40-contact-hero-960.webp 960w, images/40-contact-hero-1200.webp 1200w, images/40-contact-hero-1280.webp 1280w"><img src="images/40-contact-hero-1280.jpg" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="images/40-contact-hero-800.jpg 800w, images/40-contact-hero-960.jpg 960w, images/40-contact-hero-1200.jpg 1200w, images/40-contact-hero-1280.jpg 1280w" alt="Contact Dnyanprakash — school building or reception" width="1280" height="720" decoding="async" loading="eager" fetchpriority="high" data-full="images/40-contact-hero.jpg"></picture>
     </section>
     <div class="breadcrumb"><div class="container-main"><a href="index.html">Home</a><span class="sep">›</span><span>Contact</span></div></div>
     <section class="section-pad reveal article-body" style="padding-bottom: 0;">
