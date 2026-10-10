@@ -48,18 +48,46 @@
     var stem = DIR + photo.base;
     var pic = document.createElement('picture');
 
+    /* Width descriptors, not 1x/2x. Density descriptors make the browser
+       choose on devicePixelRatio alone, ignoring that a tile is ~180px wide
+       on a phone -- which is how an 1800px @2x file ended up being fetched
+       for a thumbnail. With w descriptors plus sizes the browser picks the
+       variant that matches the box it will actually paint into. */
+    /* Top step is 800px, except for the handful of originals narrower than
+       that -- DP_GALLERY_MAXW records their real ceiling so the w descriptor
+       always states the file's true width and nothing is ever upscaled. */
+    var MAXW = (window.DP_GALLERY_MAXW || {})[photo.base] || 800;
+    var SRCSET = function (ext) {
+      var s = stem + '-400' + ext + ' 400w';
+      if (MAXW > 400) s += ', ' + stem + '-' + MAXW + ext + ' ' + MAXW + 'w';
+      return s;
+    };
+    /* Tiles are 2 columns up to 640px, 3 above, inside a 1200px container. */
+    var SIZES = '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 380px';
+
+    var avif = document.createElement('source');
+    avif.type = 'image/avif';
+    avif.sizes = SIZES;
+    avif.srcset = SRCSET('.avif');
+    pic.appendChild(avif);
+
     var source = document.createElement('source');
     source.type = 'image/webp';
-    source.srcset = stem + '.webp 1x, ' + stem + '@2x.webp 2x';
+    source.sizes = SIZES;
+    source.srcset = SRCSET('.webp');
     pic.appendChild(source);
 
     var img = document.createElement('img');
+    img.sizes = SIZES;
+    img.srcset = SRCSET('.jpg');
+    /* Full-resolution original for the lightbox, which is full-screen and
+       must not be handed a thumbnail. */
+    img.setAttribute('data-full', stem + '@2x.jpg');
     /* Reading order for the lightbox. CSS columns fill top-to-bottom in DOM
        order, so this matches what the eye follows; it is stamped explicitly
        so the lightbox never has to infer order from layout. */
     if (typeof photo.__i === 'number') img.setAttribute('data-lb-index', photo.__i);
-    img.src = stem + '.jpg';
-    img.srcset = stem + '.jpg 1x, ' + stem + '@2x.jpg 2x';
+    img.src = stem + '-' + MAXW + '.jpg';
     img.alt = photo.alt || '';
     img.loading = 'lazy';
     img.decoding = 'async';
