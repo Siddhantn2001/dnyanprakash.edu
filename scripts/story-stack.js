@@ -47,23 +47,48 @@
   var reduceMotion = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function picture(photo, index) {
+  function picture(photo, index, stackIndex) {
     var stem = DIR + photo.base;
     var fig = document.createElement('figure');
     fig.className = 'story-slide';
 
     var pic = document.createElement('picture');
+
+    /* Width descriptors, not 1x/2x: the frame is 375px wide on a phone and
+       548px on desktop, so density descriptors made every slide fetch the
+       full @2x original regardless. DP_STORY_WIDTHS lists the variants the
+       pipeline actually produced for this slot. */
+    var WS = (window.DP_STORY_WIDTHS || {})[photo.base] || [];
+    var SIZES = '(max-width: 1024px) 100vw, 548px';
+    var set = function (ext) {
+      return WS.length
+        ? WS.map(function (w) { return stem + '-' + w + ext + ' ' + w + 'w'; }).join(', ')
+        : stem + ext;
+    };
+
+    var avif = document.createElement('source');
+    avif.type = 'image/avif';
+    avif.sizes = SIZES;
+    avif.srcset = set('.avif');
+    pic.appendChild(avif);
+
     var src = document.createElement('source');
     src.type = 'image/webp';
-    src.srcset = stem + '.webp 1x, ' + stem + '@2x.webp 2x';
+    src.sizes = SIZES;
+    src.srcset = set('.webp');
     pic.appendChild(src);
 
     var img = document.createElement('img');
-    img.src = stem + '.jpg';
-    img.srcset = stem + '.jpg 1x, ' + stem + '@2x.jpg 2x';
+    img.src = WS.length ? stem + '-' + WS[WS.length - 1] + '.jpg' : stem + '.jpg';
+    img.sizes = SIZES;
+    img.srcset = set('.jpg');
     img.alt = photo.alt || '';
     img.decoding = 'async';
-    if (index > 0) img.loading = 'lazy';          // only slot 1 is eager
+    /* Only the FIRST slide of the FIRST stack on the page is near the fold.
+       The other stacks sit thousands of pixels down, so their first slide is
+       lazy too -- eagerly fetching all three cost about half a megabyte on
+       the initial load for images nobody has scrolled to yet. */
+    if (index > 0 || stackIndex > 0) img.loading = 'lazy';
     if (photo.w && photo.h) { img.width = photo.w; img.height = photo.h; }
     /* Optional focal point: cover crops around the centre, which is wrong
        when the subject sits at one edge. */
@@ -75,7 +100,7 @@
   }
 
   var tracks = [];
-  Array.prototype.forEach.call(mounts, function (mount) {
+  Array.prototype.forEach.call(mounts, function (mount, stackIndex) {
     var key = mount.getAttribute('data-story-stack');
     var list = data[key];
     if (!list || !list.length) { console.warn('[story-frame] no slots for "' + key + '"'); return; }
@@ -84,7 +109,7 @@
     frame.className = 'story-frame';
     var track = document.createElement('div');
     track.className = 'story-track';
-    list.forEach(function (p, i) { track.appendChild(picture(p, i)); });
+    list.forEach(function (p, i) { track.appendChild(picture(p, i, stackIndex)); });
     frame.appendChild(track);
 
     mount.textContent = '';

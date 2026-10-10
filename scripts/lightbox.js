@@ -60,7 +60,10 @@
     if (!list.length) return;
     current = ((current % list.length) + list.length) % list.length;
     var node = list[current];
-    lbImg.src = node.src;
+    /* node.src is the TILE variant -- small by design, since tiles render at
+       a couple of hundred pixels. The lightbox is full-screen, so it must take
+       the full-resolution original that the tile records in data-full. */
+    lbImg.src = node.getAttribute('data-full') || node.src;
     lbImg.alt = node.alt || '';
     lbCap.textContent = node.alt || '';
     lbCtr.textContent = (current + 1) + ' / ' + list.length;

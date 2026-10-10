@@ -9,10 +9,7 @@
   <!-- Google Fonts: Playfair Display (display italic substitute for adelle-condensed) + Libre Franklin (body substitute for franklin-gothic-urw) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500&family=Playfair+Display:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&amp;family=Noto+Sans+Devanagari:wght@400;500&amp;family=Playfair+Display:wght@400;500;600&amp;display=swap">
 
   <!-- Favicon / touch icons (generated from the square brand logo) -->
   <link rel="icon" type="image/x-icon" href="/images/favicon/favicon.ico?v=3">
@@ -23,10 +20,8 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon/favicon-512x512.png?v=3">
 
   <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Lucide icons for social/utility icons -->
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
   <!-- =========================================================
        LOCKED DESIGN TOKENS — extracted from Taft's live CSS
@@ -1282,6 +1277,11 @@
   ]
 }
   </script>
+  <!-- Tailwind, precompiled. Must stay LAST in <head>: the CDN script it
+       replaces appended its generated <style> at the end of head, so these
+       utilities override the inline block above on equal specificity.
+       Moving this earlier silently flips that cascade. -->
+  <link rel="stylesheet" href="../styles/tailwind.css">
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -1302,7 +1302,7 @@
           href="tel:02382220598"
           class="hidden sm:flex items-center gap-1.5 text-[var(--color-text-muted)] hover:text-[var(--color-primary)]"
         >
-          <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+          <svg class="lucide lucide-phone w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" /></svg>
           <span>02382 220598</span>
         </a>
       </div>
@@ -1317,10 +1317,10 @@
           rel="noopener"
           class="uppercase font-medium text-[var(--color-text-muted)] hover:text-[var(--color-primary)] flex items-center gap-1.5"
         >
-          <i data-lucide="user" class="w-3.5 h-3.5"></i>
+          <svg class="lucide lucide-user w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /> <circle cx="12" cy="7" r="4" /></svg>
           <span>Parent Login</span>
         </a>
-        <a href="#" id="lang-toggle" class="uppercase flex items-center gap-1.5 font-medium" aria-label="Switch language"><i data-lucide="globe" class="w-3.5 h-3.5"></i><span class="lang-toggle-label">मराठी</span></a>
+        <a href="#" id="lang-toggle" class="uppercase flex items-center gap-1.5 font-medium" aria-label="Switch language"><svg class="lucide lucide-globe w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /></svg><span class="lang-toggle-label">मराठी</span></a>
         <div class="flex items-center gap-3 text-[var(--color-text-muted)]">
           <a
             href="https://www.facebook.com/share/1CQwtkb8ix/?mibextid=wwXIfr"
@@ -1381,11 +1381,7 @@
       <!-- Logo — horizontal brand asset (mark + ज्ञानप्रकाश wordmark + subtitle, all preserved).
            .site-header-logo triggers the white-pill backdrop in overlay mode. -->
       <a href="../index.html" class="site-header-logo flex items-center shrink-0" aria-label="Dnyanprakash Educational Project — home">
-        <img
-          src="../images/00-school-logo.png"
-          alt="Dnyanprakash Educational Project"
-          class="h-11 w-auto object-contain"
-        />
+        <picture><source type="image/avif" sizes="(max-width: 767px) 274px, (max-width: 1023px) 274px, (max-width: 1439px) 315px, 315px" srcset="../images/00-school-logo-640.avif 640w"><source type="image/webp" sizes="(max-width: 767px) 274px, (max-width: 1023px) 274px, (max-width: 1439px) 315px, 315px" srcset="../images/00-school-logo-640.webp 640w"><img src="../images/00-school-logo-640.png" sizes="(max-width: 767px) 274px, (max-width: 1023px) 274px, (max-width: 1439px) 315px, 315px" srcset="../images/00-school-logo-640.png 640w" alt="Dnyanprakash Educational Project" class="h-11 w-auto object-contain" width="925" height="270" decoding="async" loading="lazy" data-full="../images/00-school-logo.png"></picture>
       </a>
 
       <!-- Desktop navigation (hidden <lg) -->
@@ -1566,7 +1562,7 @@
         aria-controls="mobile-drawer"
         data-mobile-open
       >
-        <i data-lucide="menu" class="w-6 h-6"></i>
+        <svg class="lucide lucide-menu w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <path d="M4 5h16" /> <path d="M4 12h16" /> <path d="M4 19h16" /></svg>
       </button>
     </div>
   </nav>
@@ -1704,73 +1700,73 @@
         <div class="news-carousel-viewport">
           <div class="news-carousel-track" data-carousel-track>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="1 of 23">
-              <picture><source srcset="../images/news-clippings/clipping-01.webp" type="image/webp"><img src="../images/news-clippings/clipping-01.jpg" alt="News coverage of Dnyanprakash — clipping 1 of 23" /></picture>
+              <picture><source type="image/avif" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 976px, 1280px" srcset="../images/news-clippings/clipping-01-800.avif 800w, ../images/news-clippings/clipping-01-960.avif 960w, ../images/news-clippings/clipping-01-1200.avif 1200w, ../images/news-clippings/clipping-01-1280.avif 1280w"><source type="image/webp" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 976px, 1280px" srcset="../images/news-clippings/clipping-01-800.webp 800w, ../images/news-clippings/clipping-01-960.webp 960w, ../images/news-clippings/clipping-01-1200.webp 1200w, ../images/news-clippings/clipping-01-1280.webp 1280w"><img src="../images/news-clippings/clipping-01-1280.jpg" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 976px, 1280px" srcset="../images/news-clippings/clipping-01-800.jpg 800w, ../images/news-clippings/clipping-01-960.jpg 960w, ../images/news-clippings/clipping-01-1200.jpg 1200w, ../images/news-clippings/clipping-01-1280.jpg 1280w" alt="News coverage of Dnyanprakash — clipping 1 of 23" width="1280" height="853" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-01.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="2 of 23">
-              <img src="../images/news-clippings/clipping-02.jpg" alt="News coverage of Dnyanprakash — clipping 2 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 150px, (max-width: 1023px) 332px, (max-width: 1439px) 280px, 379px" srcset="../images/news-clippings/clipping-02-320.avif 320w, ../images/news-clippings/clipping-02-400.avif 400w, ../images/news-clippings/clipping-02-480.avif 480w, ../images/news-clippings/clipping-02-612.avif 612w"><source type="image/webp" sizes="(max-width: 767px) 150px, (max-width: 1023px) 332px, (max-width: 1439px) 280px, 379px" srcset="../images/news-clippings/clipping-02-320.webp 320w, ../images/news-clippings/clipping-02-400.webp 400w, ../images/news-clippings/clipping-02-480.webp 480w, ../images/news-clippings/clipping-02-612.webp 612w"><img src="../images/news-clippings/clipping-02-612.jpg" sizes="(max-width: 767px) 150px, (max-width: 1023px) 332px, (max-width: 1439px) 280px, 379px" srcset="../images/news-clippings/clipping-02-320.jpg 320w, ../images/news-clippings/clipping-02-400.jpg 400w, ../images/news-clippings/clipping-02-480.jpg 480w, ../images/news-clippings/clipping-02-612.jpg 612w" alt="News coverage of Dnyanprakash — clipping 2 of 23" width="612" height="827" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-02.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="3 of 23">
-              <img src="../images/news-clippings/clipping-03.jpg" alt="News coverage of Dnyanprakash — clipping 3 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 135px, (max-width: 1023px) 298px, (max-width: 1439px) 252px, 341px" srcset="../images/news-clippings/clipping-03-320.avif 320w, ../images/news-clippings/clipping-03-400.avif 400w, ../images/news-clippings/clipping-03-640.avif 640w, ../images/news-clippings/clipping-03-800.avif 800w"><source type="image/webp" sizes="(max-width: 767px) 135px, (max-width: 1023px) 298px, (max-width: 1439px) 252px, 341px" srcset="../images/news-clippings/clipping-03-320.webp 320w, ../images/news-clippings/clipping-03-400.webp 400w, ../images/news-clippings/clipping-03-640.webp 640w, ../images/news-clippings/clipping-03-800.webp 800w"><img src="../images/news-clippings/clipping-03-800.jpg" sizes="(max-width: 767px) 135px, (max-width: 1023px) 298px, (max-width: 1439px) 252px, 341px" srcset="../images/news-clippings/clipping-03-320.jpg 320w, ../images/news-clippings/clipping-03-400.jpg 400w, ../images/news-clippings/clipping-03-640.jpg 640w, ../images/news-clippings/clipping-03-800.jpg 800w" alt="News coverage of Dnyanprakash — clipping 3 of 23" width="852" height="1280" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-03.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="4 of 23">
-              <img src="../images/news-clippings/clipping-04.jpg" alt="News coverage of Dnyanprakash — clipping 4 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 139px, (max-width: 1023px) 307px, (max-width: 1439px) 259px, 350px" srcset="../images/news-clippings/clipping-04-320.avif 320w, ../images/news-clippings/clipping-04-400.avif 400w, ../images/news-clippings/clipping-04-640.avif 640w, ../images/news-clippings/clipping-04-800.avif 800w"><source type="image/webp" sizes="(max-width: 767px) 139px, (max-width: 1023px) 307px, (max-width: 1439px) 259px, 350px" srcset="../images/news-clippings/clipping-04-320.webp 320w, ../images/news-clippings/clipping-04-400.webp 400w, ../images/news-clippings/clipping-04-640.webp 640w, ../images/news-clippings/clipping-04-800.webp 800w"><img src="../images/news-clippings/clipping-04-800.jpg" sizes="(max-width: 767px) 139px, (max-width: 1023px) 307px, (max-width: 1439px) 259px, 350px" srcset="../images/news-clippings/clipping-04-320.jpg 320w, ../images/news-clippings/clipping-04-400.jpg 400w, ../images/news-clippings/clipping-04-640.jpg 640w, ../images/news-clippings/clipping-04-800.jpg 800w" alt="News coverage of Dnyanprakash — clipping 4 of 23" width="876" height="1280" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-04.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="5 of 23">
-              <img src="../images/news-clippings/clipping-05.jpg" alt="News coverage of Dnyanprakash — clipping 5 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 976px, 1280px" srcset="../images/news-clippings/clipping-05-800.avif 800w, ../images/news-clippings/clipping-05-960.avif 960w, ../images/news-clippings/clipping-05-1200.avif 1200w, ../images/news-clippings/clipping-05-1280.avif 1280w"><source type="image/webp" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 976px, 1280px" srcset="../images/news-clippings/clipping-05-800.webp 800w, ../images/news-clippings/clipping-05-960.webp 960w, ../images/news-clippings/clipping-05-1200.webp 1200w, ../images/news-clippings/clipping-05-1280.webp 1280w"><img src="../images/news-clippings/clipping-05-1280.jpg" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 976px, 1280px" srcset="../images/news-clippings/clipping-05-800.jpg 800w, ../images/news-clippings/clipping-05-960.jpg 960w, ../images/news-clippings/clipping-05-1200.jpg 1200w, ../images/news-clippings/clipping-05-1280.jpg 1280w" alt="News coverage of Dnyanprakash — clipping 5 of 23" width="1280" height="471" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-05.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="6 of 23">
-              <img src="../images/news-clippings/clipping-06.jpg" alt="News coverage of Dnyanprakash — clipping 6 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 204px, (max-width: 1023px) 451px, (max-width: 1439px) 381px, 516px" srcset="../images/news-clippings/clipping-06-480.avif 480w, ../images/news-clippings/clipping-06-640.avif 640w, ../images/news-clippings/clipping-06-960.avif 960w, ../images/news-clippings/clipping-06-1079.avif 1079w"><source type="image/webp" sizes="(max-width: 767px) 204px, (max-width: 1023px) 451px, (max-width: 1439px) 381px, 516px" srcset="../images/news-clippings/clipping-06-480.webp 480w, ../images/news-clippings/clipping-06-640.webp 640w, ../images/news-clippings/clipping-06-960.webp 960w, ../images/news-clippings/clipping-06-1079.webp 1079w"><img src="../images/news-clippings/clipping-06-1079.jpg" sizes="(max-width: 767px) 204px, (max-width: 1023px) 451px, (max-width: 1439px) 381px, 516px" srcset="../images/news-clippings/clipping-06-480.jpg 480w, ../images/news-clippings/clipping-06-640.jpg 640w, ../images/news-clippings/clipping-06-960.jpg 960w, ../images/news-clippings/clipping-06-1079.jpg 1079w" alt="News coverage of Dnyanprakash — clipping 6 of 23" width="1079" height="1071" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-06.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="7 of 23">
-              <img src="../images/news-clippings/clipping-07.jpg" alt="News coverage of Dnyanprakash — clipping 7 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 183px, (max-width: 1023px) 405px, (max-width: 1439px) 342px, 463px" srcset="../images/news-clippings/clipping-07-400.avif 400w, ../images/news-clippings/clipping-07-480.avif 480w, ../images/news-clippings/clipping-07-800.avif 800w, ../images/news-clippings/clipping-07-960.avif 960w"><source type="image/webp" sizes="(max-width: 767px) 183px, (max-width: 1023px) 405px, (max-width: 1439px) 342px, 463px" srcset="../images/news-clippings/clipping-07-400.webp 400w, ../images/news-clippings/clipping-07-480.webp 480w, ../images/news-clippings/clipping-07-800.webp 800w, ../images/news-clippings/clipping-07-960.webp 960w"><img src="../images/news-clippings/clipping-07-960.jpg" sizes="(max-width: 767px) 183px, (max-width: 1023px) 405px, (max-width: 1439px) 342px, 463px" srcset="../images/news-clippings/clipping-07-400.jpg 400w, ../images/news-clippings/clipping-07-480.jpg 480w, ../images/news-clippings/clipping-07-800.jpg 800w, ../images/news-clippings/clipping-07-960.jpg 960w" alt="News coverage of Dnyanprakash — clipping 7 of 23" width="1156" height="1279" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-07.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="8 of 23">
-              <img src="../images/news-clippings/clipping-08.jpg" alt="News coverage of Dnyanprakash — clipping 8 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 333px, (max-width: 1023px) 736px, (max-width: 1439px) 623px, 842px" srcset="../images/news-clippings/clipping-08-800.avif 800w, ../images/news-clippings/clipping-08-960.avif 960w, ../images/news-clippings/clipping-08-1200.avif 1200w, ../images/news-clippings/clipping-08-1280.avif 1280w"><source type="image/webp" sizes="(max-width: 767px) 333px, (max-width: 1023px) 736px, (max-width: 1439px) 623px, 842px" srcset="../images/news-clippings/clipping-08-800.webp 800w, ../images/news-clippings/clipping-08-960.webp 960w, ../images/news-clippings/clipping-08-1200.webp 1200w, ../images/news-clippings/clipping-08-1280.webp 1280w"><img src="../images/news-clippings/clipping-08-1280.jpg" sizes="(max-width: 767px) 333px, (max-width: 1023px) 736px, (max-width: 1439px) 623px, 842px" srcset="../images/news-clippings/clipping-08-800.jpg 800w, ../images/news-clippings/clipping-08-960.jpg 960w, ../images/news-clippings/clipping-08-1200.jpg 1200w, ../images/news-clippings/clipping-08-1280.jpg 1280w" alt="News coverage of Dnyanprakash — clipping 8 of 23" width="1280" height="778" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-08.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="9 of 23">
-              <img src="../images/news-clippings/clipping-09.jpg" alt="News coverage of Dnyanprakash — clipping 9 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 162px, (max-width: 1023px) 359px, (max-width: 1439px) 303px, 410px" srcset="../images/news-clippings/clipping-09-400.avif 400w, ../images/news-clippings/clipping-09-480.avif 480w, ../images/news-clippings/clipping-09-640.avif 640w, ../images/news-clippings/clipping-09-686.avif 686w"><source type="image/webp" sizes="(max-width: 767px) 162px, (max-width: 1023px) 359px, (max-width: 1439px) 303px, 410px" srcset="../images/news-clippings/clipping-09-400.webp 400w, ../images/news-clippings/clipping-09-480.webp 480w, ../images/news-clippings/clipping-09-640.webp 640w, ../images/news-clippings/clipping-09-686.webp 686w"><img src="../images/news-clippings/clipping-09-686.jpg" sizes="(max-width: 767px) 162px, (max-width: 1023px) 359px, (max-width: 1439px) 303px, 410px" srcset="../images/news-clippings/clipping-09-400.jpg 400w, ../images/news-clippings/clipping-09-480.jpg 480w, ../images/news-clippings/clipping-09-640.jpg 640w, ../images/news-clippings/clipping-09-686.jpg 686w" alt="News coverage of Dnyanprakash — clipping 9 of 23" width="686" height="857" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-09.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="10 of 23">
-              <img src="../images/news-clippings/clipping-10.jpg" alt="News coverage of Dnyanprakash — clipping 10 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 333px, (max-width: 1023px) 736px, (max-width: 1439px) 623px, 842px" srcset="../images/news-clippings/clipping-10-800.avif 800w, ../images/news-clippings/clipping-10-960.avif 960w, ../images/news-clippings/clipping-10-1200.avif 1200w, ../images/news-clippings/clipping-10-1280.avif 1280w"><source type="image/webp" sizes="(max-width: 767px) 333px, (max-width: 1023px) 736px, (max-width: 1439px) 623px, 842px" srcset="../images/news-clippings/clipping-10-800.webp 800w, ../images/news-clippings/clipping-10-960.webp 960w, ../images/news-clippings/clipping-10-1200.webp 1200w, ../images/news-clippings/clipping-10-1280.webp 1280w"><img src="../images/news-clippings/clipping-10-1280.jpg" sizes="(max-width: 767px) 333px, (max-width: 1023px) 736px, (max-width: 1439px) 623px, 842px" srcset="../images/news-clippings/clipping-10-800.jpg 800w, ../images/news-clippings/clipping-10-960.jpg 960w, ../images/news-clippings/clipping-10-1200.jpg 1200w, ../images/news-clippings/clipping-10-1280.jpg 1280w" alt="News coverage of Dnyanprakash — clipping 10 of 23" width="1280" height="778" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-10.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="11 of 23">
-              <img src="../images/news-clippings/clipping-11.jpg" alt="News coverage of Dnyanprakash — clipping 11 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 976px, 1280px" srcset="../images/news-clippings/clipping-11-800.avif 800w, ../images/news-clippings/clipping-11-960.avif 960w, ../images/news-clippings/clipping-11-1200.avif 1200w, ../images/news-clippings/clipping-11-1280.avif 1280w"><source type="image/webp" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 976px, 1280px" srcset="../images/news-clippings/clipping-11-800.webp 800w, ../images/news-clippings/clipping-11-960.webp 960w, ../images/news-clippings/clipping-11-1200.webp 1200w, ../images/news-clippings/clipping-11-1280.webp 1280w"><img src="../images/news-clippings/clipping-11-1280.jpg" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 976px, 1280px" srcset="../images/news-clippings/clipping-11-800.jpg 800w, ../images/news-clippings/clipping-11-960.jpg 960w, ../images/news-clippings/clipping-11-1200.jpg 1200w, ../images/news-clippings/clipping-11-1280.jpg 1280w" alt="News coverage of Dnyanprakash — clipping 11 of 23" width="1280" height="437" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-11.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="12 of 23">
-              <img src="../images/news-clippings/clipping-12.jpg" alt="News coverage of Dnyanprakash — clipping 12 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 178px, (max-width: 1023px) 394px, (max-width: 1439px) 333px, 450px" srcset="../images/news-clippings/clipping-12-400.avif 400w, ../images/news-clippings/clipping-12-480.avif 480w, ../images/news-clippings/clipping-12-640.avif 640w, ../images/news-clippings/clipping-12-709.avif 709w"><source type="image/webp" sizes="(max-width: 767px) 178px, (max-width: 1023px) 394px, (max-width: 1439px) 333px, 450px" srcset="../images/news-clippings/clipping-12-400.webp 400w, ../images/news-clippings/clipping-12-480.webp 480w, ../images/news-clippings/clipping-12-640.webp 640w, ../images/news-clippings/clipping-12-709.webp 709w"><img src="../images/news-clippings/clipping-12-709.jpg" sizes="(max-width: 767px) 178px, (max-width: 1023px) 394px, (max-width: 1439px) 333px, 450px" srcset="../images/news-clippings/clipping-12-400.jpg 400w, ../images/news-clippings/clipping-12-480.jpg 480w, ../images/news-clippings/clipping-12-640.jpg 640w, ../images/news-clippings/clipping-12-709.jpg 709w" alt="News coverage of Dnyanprakash — clipping 12 of 23" width="709" height="807" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-12.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="13 of 23">
-              <img src="../images/news-clippings/clipping-13.jpg" alt="News coverage of Dnyanprakash — clipping 13 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 718px, 971px" srcset="../images/news-clippings/clipping-13-800.avif 800w, ../images/news-clippings/clipping-13-960.avif 960w, ../images/news-clippings/clipping-13-1200.avif 1200w, ../images/news-clippings/clipping-13-1280.avif 1280w"><source type="image/webp" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 718px, 971px" srcset="../images/news-clippings/clipping-13-800.webp 800w, ../images/news-clippings/clipping-13-960.webp 960w, ../images/news-clippings/clipping-13-1200.webp 1200w, ../images/news-clippings/clipping-13-1280.webp 1280w"><img src="../images/news-clippings/clipping-13-1280.jpg" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 718px, 971px" srcset="../images/news-clippings/clipping-13-800.jpg 800w, ../images/news-clippings/clipping-13-960.jpg 960w, ../images/news-clippings/clipping-13-1200.jpg 1200w, ../images/news-clippings/clipping-13-1280.jpg 1280w" alt="News coverage of Dnyanprakash — clipping 13 of 23" width="1280" height="675" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-13.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="14 of 23">
-              <img src="../images/news-clippings/clipping-14.jpg" alt="News coverage of Dnyanprakash — clipping 14 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 808px, 808px" srcset="../images/news-clippings/clipping-14-800.avif 800w, ../images/news-clippings/clipping-14-808.avif 808w"><source type="image/webp" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 808px, 808px" srcset="../images/news-clippings/clipping-14-800.webp 800w, ../images/news-clippings/clipping-14-808.webp 808w"><img src="../images/news-clippings/clipping-14-808.jpg" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 808px, 808px" srcset="../images/news-clippings/clipping-14-800.jpg 800w, ../images/news-clippings/clipping-14-808.jpg 808w" alt="News coverage of Dnyanprakash — clipping 14 of 23" width="808" height="352" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-14.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="15 of 23">
-              <img src="../images/news-clippings/clipping-15.jpg" alt="News coverage of Dnyanprakash — clipping 15 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 307px, (max-width: 1023px) 680px, (max-width: 1439px) 575px, 777px" srcset="../images/news-clippings/clipping-15-640.avif 640w, ../images/news-clippings/clipping-15-800.avif 800w, ../images/news-clippings/clipping-15-960.avif 960w, ../images/news-clippings/clipping-15-1081.avif 1081w"><source type="image/webp" sizes="(max-width: 767px) 307px, (max-width: 1023px) 680px, (max-width: 1439px) 575px, 777px" srcset="../images/news-clippings/clipping-15-640.webp 640w, ../images/news-clippings/clipping-15-800.webp 800w, ../images/news-clippings/clipping-15-960.webp 960w, ../images/news-clippings/clipping-15-1081.webp 1081w"><img src="../images/news-clippings/clipping-15-1081.jpg" sizes="(max-width: 767px) 307px, (max-width: 1023px) 680px, (max-width: 1439px) 575px, 777px" srcset="../images/news-clippings/clipping-15-640.jpg 640w, ../images/news-clippings/clipping-15-800.jpg 800w, ../images/news-clippings/clipping-15-960.jpg 960w, ../images/news-clippings/clipping-15-1081.jpg 1081w" alt="News coverage of Dnyanprakash — clipping 15 of 23" width="1081" height="712" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-15.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="16 of 23">
-              <img src="../images/news-clippings/clipping-16.jpg" alt="News coverage of Dnyanprakash — clipping 16 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 215px, (max-width: 1023px) 476px, (max-width: 1439px) 402px, 544px" srcset="../images/news-clippings/clipping-16-480.avif 480w, ../images/news-clippings/clipping-16-640.avif 640w, ../images/news-clippings/clipping-16-774.avif 774w"><source type="image/webp" sizes="(max-width: 767px) 215px, (max-width: 1023px) 476px, (max-width: 1439px) 402px, 544px" srcset="../images/news-clippings/clipping-16-480.webp 480w, ../images/news-clippings/clipping-16-640.webp 640w, ../images/news-clippings/clipping-16-774.webp 774w"><img src="../images/news-clippings/clipping-16-774.jpg" sizes="(max-width: 767px) 215px, (max-width: 1023px) 476px, (max-width: 1439px) 402px, 544px" srcset="../images/news-clippings/clipping-16-480.jpg 480w, ../images/news-clippings/clipping-16-640.jpg 640w, ../images/news-clippings/clipping-16-774.jpg 774w" alt="News coverage of Dnyanprakash — clipping 16 of 23" width="774" height="729" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-16.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="17 of 23">
-              <img src="../images/news-clippings/clipping-17.jpg" alt="News coverage of Dnyanprakash — clipping 17 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 762px, 1030px" srcset="../images/news-clippings/clipping-17-800.avif 800w, ../images/news-clippings/clipping-17-960.avif 960w, ../images/news-clippings/clipping-17-1200.avif 1200w, ../images/news-clippings/clipping-17-1280.avif 1280w"><source type="image/webp" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 762px, 1030px" srcset="../images/news-clippings/clipping-17-800.webp 800w, ../images/news-clippings/clipping-17-960.webp 960w, ../images/news-clippings/clipping-17-1200.webp 1200w, ../images/news-clippings/clipping-17-1280.webp 1280w"><img src="../images/news-clippings/clipping-17-1280.jpg" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 762px, 1030px" srcset="../images/news-clippings/clipping-17-800.jpg 800w, ../images/news-clippings/clipping-17-960.jpg 960w, ../images/news-clippings/clipping-17-1200.jpg 1200w, ../images/news-clippings/clipping-17-1280.jpg 1280w" alt="News coverage of Dnyanprakash — clipping 17 of 23" width="1280" height="636" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-17.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="18 of 23">
-              <img src="../images/news-clippings/clipping-18.jpg" alt="News coverage of Dnyanprakash — clipping 18 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 91px, (max-width: 1023px) 202px, (max-width: 1439px) 170px, 230px" srcset="../images/news-clippings/clipping-18-320.avif 320w, ../images/news-clippings/clipping-18-400.avif 400w, ../images/news-clippings/clipping-18-480.avif 480w"><source type="image/webp" sizes="(max-width: 767px) 91px, (max-width: 1023px) 202px, (max-width: 1439px) 170px, 230px" srcset="../images/news-clippings/clipping-18-320.webp 320w, ../images/news-clippings/clipping-18-400.webp 400w, ../images/news-clippings/clipping-18-480.webp 480w"><img src="../images/news-clippings/clipping-18-480.jpg" sizes="(max-width: 767px) 91px, (max-width: 1023px) 202px, (max-width: 1439px) 170px, 230px" srcset="../images/news-clippings/clipping-18-320.jpg 320w, ../images/news-clippings/clipping-18-400.jpg 400w, ../images/news-clippings/clipping-18-480.jpg 480w" alt="News coverage of Dnyanprakash — clipping 18 of 23" width="576" height="1280" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-18.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="19 of 23">
-              <img src="../images/news-clippings/clipping-19.jpg" alt="News coverage of Dnyanprakash — clipping 19 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 233px, (max-width: 1023px) 516px, (max-width: 1439px) 436px, 590px" srcset="../images/news-clippings/clipping-19-480.avif 480w, ../images/news-clippings/clipping-19-640.avif 640w, ../images/news-clippings/clipping-19-800.avif 800w, ../images/news-clippings/clipping-19-960.avif 960w"><source type="image/webp" sizes="(max-width: 767px) 233px, (max-width: 1023px) 516px, (max-width: 1439px) 436px, 590px" srcset="../images/news-clippings/clipping-19-480.webp 480w, ../images/news-clippings/clipping-19-640.webp 640w, ../images/news-clippings/clipping-19-800.webp 800w, ../images/news-clippings/clipping-19-960.webp 960w"><img src="../images/news-clippings/clipping-19-960.jpg" sizes="(max-width: 767px) 233px, (max-width: 1023px) 516px, (max-width: 1439px) 436px, 590px" srcset="../images/news-clippings/clipping-19-480.jpg 480w, ../images/news-clippings/clipping-19-640.jpg 640w, ../images/news-clippings/clipping-19-800.jpg 800w, ../images/news-clippings/clipping-19-960.jpg 960w" alt="News coverage of Dnyanprakash — clipping 19 of 23" width="960" height="833" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-19.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="20 of 23">
-              <img src="../images/news-clippings/clipping-20.jpg" alt="News coverage of Dnyanprakash — clipping 20 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 324px, (max-width: 1023px) 717px, (max-width: 1439px) 606px, 819px" srcset="../images/news-clippings/clipping-20-800.avif 800w, ../images/news-clippings/clipping-20-960.avif 960w"><source type="image/webp" sizes="(max-width: 767px) 324px, (max-width: 1023px) 717px, (max-width: 1439px) 606px, 819px" srcset="../images/news-clippings/clipping-20-800.webp 800w, ../images/news-clippings/clipping-20-960.webp 960w"><img src="../images/news-clippings/clipping-20-960.jpg" sizes="(max-width: 767px) 324px, (max-width: 1023px) 717px, (max-width: 1439px) 606px, 819px" srcset="../images/news-clippings/clipping-20-800.jpg 800w, ../images/news-clippings/clipping-20-960.jpg 960w" alt="News coverage of Dnyanprakash — clipping 20 of 23" width="960" height="600" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-20.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="21 of 23">
-              <img src="../images/news-clippings/clipping-21.jpg" alt="News coverage of Dnyanprakash — clipping 21 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 797px, 960px" srcset="../images/news-clippings/clipping-21-800.avif 800w, ../images/news-clippings/clipping-21-960.avif 960w"><source type="image/webp" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 797px, 960px" srcset="../images/news-clippings/clipping-21-800.webp 800w, ../images/news-clippings/clipping-21-960.webp 960w"><img src="../images/news-clippings/clipping-21-960.jpg" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 797px, 960px" srcset="../images/news-clippings/clipping-21-800.jpg 800w, ../images/news-clippings/clipping-21-960.jpg 960w" alt="News coverage of Dnyanprakash — clipping 21 of 23" width="960" height="456" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-21.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="22 of 23">
-              <img src="../images/news-clippings/clipping-22.jpg" alt="News coverage of Dnyanprakash — clipping 22 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 307px, (max-width: 1023px) 679px, (max-width: 1439px) 574px, 776px" srcset="../images/news-clippings/clipping-22-640.avif 640w, ../images/news-clippings/clipping-22-800.avif 800w, ../images/news-clippings/clipping-22-960.avif 960w"><source type="image/webp" sizes="(max-width: 767px) 307px, (max-width: 1023px) 679px, (max-width: 1439px) 574px, 776px" srcset="../images/news-clippings/clipping-22-640.webp 640w, ../images/news-clippings/clipping-22-800.webp 800w, ../images/news-clippings/clipping-22-960.webp 960w"><img src="../images/news-clippings/clipping-22-960.jpg" sizes="(max-width: 767px) 307px, (max-width: 1023px) 679px, (max-width: 1439px) 574px, 776px" srcset="../images/news-clippings/clipping-22-640.jpg 640w, ../images/news-clippings/clipping-22-800.jpg 800w, ../images/news-clippings/clipping-22-960.jpg 960w" alt="News coverage of Dnyanprakash — clipping 22 of 23" width="960" height="633" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-22.jpg"></picture>
             </div>
             <div class="news-carousel-slide" role="group" aria-roledescription="slide" aria-label="23 of 23">
-              <img src="../images/news-clippings/clipping-23.jpg" alt="News coverage of Dnyanprakash — clipping 23 of 23" />
+              <picture><source type="image/avif" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 944px, 960px" srcset="../images/news-clippings/clipping-23-800.avif 800w, ../images/news-clippings/clipping-23-960.avif 960w"><source type="image/webp" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 944px, 960px" srcset="../images/news-clippings/clipping-23-800.webp 800w, ../images/news-clippings/clipping-23-960.webp 960w"><img src="../images/news-clippings/clipping-23-960.jpg" sizes="(max-width: 767px) 343px, (max-width: 1023px) 736px, (max-width: 1439px) 944px, 960px" srcset="../images/news-clippings/clipping-23-800.jpg 800w, ../images/news-clippings/clipping-23-960.jpg 960w" alt="News coverage of Dnyanprakash — clipping 23 of 23" width="960" height="385" decoding="async" loading="lazy" data-full="../images/news-clippings/clipping-23.jpg"></picture>
             </div>
           </div>
         </div>
@@ -1827,7 +1823,7 @@
               <h3 class="news-headline">Felicitation of 142 Meritorious Students in Various Competitive Exams</h3>
             </div>
             <div class="news-img-wrap">
-              <picture><source srcset="../images/03-felicitation-142.webp" type="image/webp"><img src="../images/03-felicitation-142.jpg" alt="Felicitation ceremony at Dnyanprakash honouring 142 meritorious students in various competitive exams" loading="lazy" /></picture>
+              <picture><source type="image/avif" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../images/03-felicitation-142-800.avif 800w, ../images/03-felicitation-142-960.avif 960w, ../images/03-felicitation-142-1600.avif 1600w, ../images/03-felicitation-142-1800.avif 1800w"><source type="image/webp" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../images/03-felicitation-142-800.webp 800w, ../images/03-felicitation-142-960.webp 960w, ../images/03-felicitation-142-1600.webp 1600w, ../images/03-felicitation-142-1800.webp 1800w"><img src="../images/03-felicitation-142-1800.jpg" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../images/03-felicitation-142-800.jpg 800w, ../images/03-felicitation-142-960.jpg 960w, ../images/03-felicitation-142-1600.jpg 1600w, ../images/03-felicitation-142-1800.jpg 1800w" alt="Felicitation ceremony at Dnyanprakash honouring 142 meritorious students in various competitive exams" width="1800" height="1200" decoding="async" loading="lazy" data-full="../images/03-felicitation-142.jpg"></picture>
             </div>
           </a>
 
@@ -1837,7 +1833,7 @@
               <h3 class="news-headline">Challenging Times Shape the Strongest Leaders</h3>
             </div>
             <div class="news-img-wrap">
-              <picture><source srcset="../images/04-babson-alumni-mentoring.webp" type="image/webp"><img src="../images/04-babson-alumni-mentoring.jpg" alt="Babson College alumni Hriday Munoth, Neha Aswani, and Siddhant Narhare with Dnyanprakash students during a mentoring session" loading="lazy" /></picture>
+              <picture><source type="image/avif" sizes="(max-width: 767px) 335px, (max-width: 1023px) 728px, (max-width: 1439px) 312px, 371px" srcset="../images/04-babson-alumni-mentoring-640.avif 640w, ../images/04-babson-alumni-mentoring-800.avif 800w, ../images/04-babson-alumni-mentoring-1200.avif 1200w, ../images/04-babson-alumni-mentoring-1600.avif 1600w"><source type="image/webp" sizes="(max-width: 767px) 335px, (max-width: 1023px) 728px, (max-width: 1439px) 312px, 371px" srcset="../images/04-babson-alumni-mentoring-640.webp 640w, ../images/04-babson-alumni-mentoring-800.webp 800w, ../images/04-babson-alumni-mentoring-1200.webp 1200w, ../images/04-babson-alumni-mentoring-1600.webp 1600w"><img src="../images/04-babson-alumni-mentoring-1600.jpg" sizes="(max-width: 767px) 335px, (max-width: 1023px) 728px, (max-width: 1439px) 312px, 371px" srcset="../images/04-babson-alumni-mentoring-640.jpg 640w, ../images/04-babson-alumni-mentoring-800.jpg 800w, ../images/04-babson-alumni-mentoring-1200.jpg 1200w, ../images/04-babson-alumni-mentoring-1600.jpg 1600w" alt="Babson College alumni Hriday Munoth, Neha Aswani, and Siddhant Narhare with Dnyanprakash students during a mentoring session" width="1793" height="3189" decoding="async" loading="lazy" data-full="../images/04-babson-alumni-mentoring.jpg"></picture>
             </div>
           </a>
 
@@ -1859,7 +1855,7 @@
               <h3 class="news-headline">Dnyanprakash Ranked Best School in the District and Second Best in the Region</h3>
             </div>
             <div class="news-img-wrap">
-              <picture><source srcset="../images/02-award-ceremony.webp" type="image/webp"><img src="../images/02-award-ceremony.jpg" alt="Dnyanprakash honoured with trophy and 15 lakh cheque at the Chief Minister's My School, Beautiful School ceremony in Mumbai" loading="lazy" /></picture>
+              <picture><source type="image/avif" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../images/02-award-ceremony-800.avif 800w, ../images/02-award-ceremony-960.avif 960w, ../images/02-award-ceremony-1600.avif 1600w, ../images/02-award-ceremony-1800.avif 1800w"><source type="image/webp" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../images/02-award-ceremony-800.webp 800w, ../images/02-award-ceremony-960.webp 960w, ../images/02-award-ceremony-1600.webp 1600w, ../images/02-award-ceremony-1800.webp 1800w"><img src="../images/02-award-ceremony-1800.jpg" sizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" srcset="../images/02-award-ceremony-800.jpg 800w, ../images/02-award-ceremony-960.jpg 960w, ../images/02-award-ceremony-1600.jpg 1600w, ../images/02-award-ceremony-1800.jpg 1800w" alt="Dnyanprakash honoured with trophy and 15 lakh cheque at the Chief Minister's My School, Beautiful School ceremony in Mumbai" width="1800" height="1200" decoding="async" loading="lazy" data-full="../images/02-award-ceremony.jpg"></picture>
             </div>
           </a>
 
@@ -1896,11 +1892,7 @@
       <div class="footer-grid">
         <!-- Left: logo + address -->
         <div>
-          <img
-            src="../images/00-school-logo.png"
-            alt="Dnyanprakash Educational Project"
-            class="footer-logo"
-          />
+          <picture><source type="image/avif" sizes="(max-width: 767px) 274px, (max-width: 1023px) 274px, (max-width: 1439px) 315px, 315px" srcset="../images/00-school-logo-640.avif 640w"><source type="image/webp" sizes="(max-width: 767px) 274px, (max-width: 1023px) 274px, (max-width: 1439px) 315px, 315px" srcset="../images/00-school-logo-640.webp 640w"><img src="../images/00-school-logo-640.png" sizes="(max-width: 767px) 274px, (max-width: 1023px) 274px, (max-width: 1439px) 315px, 315px" srcset="../images/00-school-logo-640.png 640w" alt="Dnyanprakash Educational Project" class="footer-logo" width="925" height="270" decoding="async" loading="lazy" data-full="../images/00-school-logo.png"></picture>
           <address class="not-italic text-[15px] leading-relaxed mb-3">
             Dnyanprakash Balvikas Kendra,<br />
             near Narhare Classes,<br />
@@ -1979,13 +1971,9 @@
     <div class="mobile-backdrop" data-mobile-close aria-label="Close menu"></div>
     <aside class="mobile-panel" role="dialog" aria-modal="true" aria-label="Mobile navigation">
       <header class="flex items-center justify-between h-16 px-5 border-b border-[var(--color-border)] shrink-0">
-        <img
-          src="../images/00-school-logo.png"
-          alt="Dnyanprakash"
-          class="h-9 w-auto object-contain"
-        />
+        <picture><source type="image/avif" sizes="(max-width: 767px) 274px, (max-width: 1023px) 274px, (max-width: 1439px) 315px, 315px" srcset="../images/00-school-logo-640.avif 640w"><source type="image/webp" sizes="(max-width: 767px) 274px, (max-width: 1023px) 274px, (max-width: 1439px) 315px, 315px" srcset="../images/00-school-logo-640.webp 640w"><img src="../images/00-school-logo-640.png" sizes="(max-width: 767px) 274px, (max-width: 1023px) 274px, (max-width: 1439px) 315px, 315px" srcset="../images/00-school-logo-640.png 640w" alt="Dnyanprakash" class="h-9 w-auto object-contain" width="925" height="270" decoding="async" loading="lazy" data-full="../images/00-school-logo.png"></picture>
         <button type="button" class="flex items-center justify-center w-10 h-10 text-[var(--color-text-muted)]" aria-label="Close menu" data-mobile-close>
-          <i data-lucide="x" class="w-6 h-6"></i>
+          <svg class="lucide lucide-x w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <path d="M18 6 6 18" /> <path d="m6 6 12 12" /></svg>
         </button>
       </header>
       <nav class="grow">
@@ -2005,8 +1993,6 @@
   </div>
 
   <script>
-    // Initialize Lucide icons
-    if (window.lucide) window.lucide.createIcons();
 
     // Mobile drawer
     (function () {
