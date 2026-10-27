@@ -1,23 +1,24 @@
 /* =========================================================================
-   STORY STACKS — the slot list for the homepage sticky-text sections.
+   STORY PHOTOS — the photo list for the three homepage story sections
+   (An experiment in education, A Vision of Joyful Learning, Learning by
+   doing). This file is the only place those photographs are declared;
+   never add them in index.html.
 
-   Three sections on index.html pair a pinned text column with a scrolling
-   column of images. This file is the only place those images are declared.
-   Adding, removing or reordering a slide is a one-line edit here — never
-   touch the markup in index.html.
+   Each section shows ONE large photo (the slot marked lead: true) beside or
+   above its text, and the rest in a row beneath it: a swipe row on phones,
+   a single row on desktop. Order here is the order in the row.
 
-   TO FILL A SLOT
-     1. Drop the photo in  images/story/  named exactly after its slot:
-          experiment-02.jpg   vision-04.jpg   action-05.jpg   ...
-        (any format; the pipeline converts). The numbered placeholder
-        currently sitting there shows which slot is which.
-     2. Run the pipeline so it emits .jpg/.webp at 1x and 2x.
-     3. Update that line's alt, w and h below. w/h are the TRUE pixel size
-        of the 1x file — the stack sets each slide's aspect-ratio from them,
-        and the varying ratios are what give the column its rhythm.
+   TO FILL OR ADD A SLOT
+     1. Drop the photo in  images/story/  named after its slot
+        (experiment-02.jpg, vision-04.jpg, action-05.jpg, ...).
+     2. Run the pipeline so it emits .jpg/.webp/.avif at the widths listed
+        in DP_STORY_WIDTHS below.
+     3. Update that line's alt, w and h (the TRUE pixel size of the 1x file).
 
-   Order is top to bottom down the page. Slot 1 shows first and is the only
-   one that loads eagerly; everything below it lazy-loads.
+   A lead photo must be sharp at full phone width: 1200px wide or more.
+   experiment-01, experiment-05, vision-01 and action-04 are 560-720px, so
+   they stay in the rows. action-02 (no clear subject) and action-03 (soft)
+   are left out; their files remain in images/story/.
 
    Keys match data-story-stack="..." in index.html.
    ========================================================================= */
@@ -26,23 +27,21 @@ window.DP_STORY_STACKS = {
   experiment: [
     { base: "experiment-01", alt: "An Experiment in Education — a moment from the Dnyanprakash community", w: 560, h: 995 },
     { base: "experiment-02", alt: "Children sitting on the classroom floor building words from picture and letter cards", w: 629, h: 540 },
-    { base: "experiment-03", alt: "Students weighing guavas on a balance scale during a hands-on measurement lesson", w: 960, h: 540 },
+    { base: "experiment-03", lead: true, alt: "Students weighing guavas on a balance scale during a hands-on measurement lesson", w: 960, h: 540 },
     { base: "experiment-04", alt: "Students and teachers with a wheelbarrow of seed balls prepared for a tree-planting drive", w: 960, h: 540 },
     { base: "experiment-05", alt: "Students working the soil with hoes in the school vegetable plot", w: 720, h: 540 },
   ],
 
   vision: [
     { base: "vision-01", alt: "Dnyanprakash — a school moment from the campus", w: 560, h: 996 , pos: "center 78%" },
-    { base: "vision-02", alt: "A potter shaping clay on the wheel while students watch, rows of finished pots drying beside them", w: 811, h: 540 },
+    { base: "vision-02", lead: true, alt: "A potter shaping clay on the wheel while students watch, rows of finished pots drying beside them", w: 811, h: 540 },
     { base: "vision-03", alt: "Young children standing among the crops on a field visit, each holding a seedling", w: 960, h: 540 },
     { base: "vision-04", alt: "Children sitting on the ground outdoors rolling seed balls from soil", w: 960, h: 540 },
     { base: "vision-05", alt: "Students painting a mural along a street wall beside the school", w: 560, h: 747 , pos: "center 68%" },
   ],
 
   action: [
-    { base: "action-01", alt: "Learning through action — students engaged in a hands-on classroom activity", w: 720, h: 540 },
-    { base: "action-02", alt: "Students gathered around open-fire cooking vessels during an outdoor cooking session", w: 960, h: 540 },
-    { base: "action-03", alt: "Two students harvesting from a tree into a bag on a field visit", w: 720, h: 540 },
+    { base: "action-01", lead: true, alt: "Learning through action — students engaged in a hands-on classroom activity", w: 720, h: 540 },
     { base: "action-04", alt: "Students walking the rows of a cabbage field, examining the crop", w: 720, h: 540 },
     { base: "action-05", alt: "Health workers running a dental check-up camp for children at the school", w: 720, h: 540 },
     { base: "action-06", alt: "Students mixing compost by hand in a large tub", w: 960, h: 540 },

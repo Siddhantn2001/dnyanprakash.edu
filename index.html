@@ -707,109 +707,60 @@
     }
 
 
-    /* ---------- Story frame: one window, a filmstrip behind it ----------
-       ONE MECHANISM AT EVERY WIDTH, 320 up. No carousel, no breakpoint
-       switch: the same pinned frame and the same scroll-linked track run on
-       a phone and on a desktop. Only the arrangement changes.
-
-       .story-scroll is tall and does nothing but provide scroll distance.
-       .story-pin sticks, so nothing inside it moves. .story-frame is a fixed
-       window that clips. .story-track is the photographs in one column;
-       scripts/story-stack.js translates it upward.
-
-       Sticky safety: no ancestor of .story-pin may clip overflow-y or carry
-       a transform. html uses overflow-x: CLIP (hidden would compute
-       overflow-y to auto and kill the pin), and .reveal lives INSIDE the
-       pinned element, never above it. */
-
-    .story-scroll {
-      --slides: 5;
-      /* Fallback only. The script overwrites this with a height derived from
-         the REAL frame height, because the frame is 411px on a desktop and
-         240px on a 320px phone — a single hardcoded distance would make the
-         phone scroll for hundreds of pixels of nothing. */
-      height: calc(411px + (var(--slides) - 1) * 375px);
-      position: relative;
+    /* ---------- Story sections: one lead photo, a row of the rest ----------
+       Built by scripts/story-stack.js from scripts/story-stacks.js.
+       Phones: photo, then headline, paragraph and link, then a swipe row
+       with the next photo peeking in. Desktop: text beside the lead photo,
+       the row beneath. Nothing is pinned (targeted upgrade, B3). */
+    .story-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "lead" "text" "row";
+      gap: 24px;
     }
-    .story-pin { position: sticky; top: 112px; }
+    .story-media { display: contents; }
+    .story-text { grid-area: text; min-width: 0; }
+    .story-text .section-title { margin: 0 0 16px !important; }
+    .story-text .mission-body { margin: 0 0 4px !important; }
+    .story-lead { grid-area: lead; margin: 0; aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-bg-alt); }
+    .story-row { grid-area: row; min-width: 0; }
+    .story-lead picture, .story-slide picture { display: block; width: 100%; height: 100%; }
+    .story-lead img, .story-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .story-slide { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-bg-alt); }
 
-    .story-grid { align-items: center !important; }
-    .story-text { min-width: 0; }
-    .story-media { min-width: 0; }
-
-    .story-frame {
-      position: relative;
-      width: 100%;
-      /* 4:3, chosen by measuring the sixteen photographs in the list: across
-         0.56 to 1.78 it keeps 79.1% of the average frame against 68.1% for a
-         near-square window. aspect-ratio rather than a fixed height so the
-         frame and its slides stay in step at any width. */
-      aspect-ratio: 4 / 3;
-      overflow: hidden;            /* safe: not an ancestor of the pin */
-      border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      background: var(--color-bg-alt);
+    @media (max-width: 1023px) {
+      /* The lead photo runs edge to edge; .container-main has 20px sides. */
+      .story-lead { margin: 0 -20px; }
+      .story-row {
+        display: flex; gap: 8px;
+        overflow-x: auto; overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-x: contain;
+        margin: 0 -20px; padding: 0 20px;
+        scroll-padding: 0 20px;
+        scrollbar-width: none;
+      }
+      .story-row::-webkit-scrollbar { display: none; }
+      .story-slide { flex: 0 0 80%; scroll-snap-align: start; aspect-ratio: 3 / 2; }
+      .story-grid { gap: 20px; }
+      .story-text .section-title { margin-bottom: 12px !important; }
+      section.story.section-pad { padding: 40px 0 !important; }
     }
-    .story-track { will-change: auto; }
-    .story-track .story-slide {
-      margin: 0;
-      aspect-ratio: 4 / 3;         /* same width and ratio as the frame */
-      overflow: hidden;
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .story-lead { margin: 0; }
+      .story-slide { flex-basis: 45%; }
     }
-    .story-track .story-slide picture { display: block; width: 100%; height: 100%; }
-    .story-track .story-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
-
-    .story-tail { display: none; }
-
-    /* REVEALS — the frame itself carries none: the filmstrip is the motion.
-       The text keeps the site's position-aware horizontal entrance like
-       everything else; its sideways travel is contained by overflow-x: clip
-       on main and the sections, not cancelled. */
-
-    /* ---------- Stacked arrangement ----------
-       Below the two-column width the pin holds the heading above the frame.
-       The paragraph is moved out of the pin by the script and shown here
-       instead: measured, the text column runs 636-802px on phones and at
-       320x640 the paragraph alone is taller than the screen, so a pin
-       containing all of it plus a frame could never fit the viewport. */
-    @media (max-width: 1024px) {
-      /* The pinned block fills the screen and centres its contents. Pinning
-         it at a fixed offset left the heading high and a few hundred pixels
-         of nothing under the frame; centred, the pair sits as one composed
-         unit while the filmstrip runs. */
-      .story-pin {
-        top: 0;
-        min-height: 100svh;
-        display: flex;
+    @media (min-width: 1024px) {
+      .story-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas: "text lead" "row row";
+        column-gap: 64px; row-gap: 16px;
         align-items: center;
       }
-      .story-pin > .container-main { width: 100%; }
-      .story-grid { display: block !important; }
-      .story-head { margin-bottom: 20px; }
-      .story-media { margin-top: 0; }
-      /* Stays 4:3 at every width. The width is capped three ways: by the
-         column, by 680px so it does not become absurd on a tablet, and by
-         whatever vertical room the heading leaves — that last one is what
-         guarantees the whole pinned block fits on screen, since a pin taller
-         than the viewport cannot pin. --story-head is published by the
-         script from the real heading, which wraps to two or three lines
-         depending on width. */
-      .story-frame {
-        width: min(100%, 680px,
-                   calc((100svh - var(--story-head, 200px) - 190px) * 4 / 3));
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: 0;
-        box-shadow: none;
-      }
-      .story-tail { display: block; padding-top: 28px; }
-    }
-    /* Edge to edge on phones only — .container-main carries 20px of side
-       padding, and a photograph has more presence without it. On a tablet the
-       frame is already capped well inside the column, so it stays inset. */
-    @media (max-width: 640px) {
-      .story-frame { width: calc(100% + 40px); margin-left: -20px; margin-right: -20px; }
-      .story-tail .mission-body { margin-bottom: 24px; }
+      .story-grid--media-first { grid-template-areas: "lead text" "row row"; }
+      /* landing-elevation.css gives sections 160px; these close the bands. */
+      section.story.section-pad { padding: 96px 0 !important; }
+      .story-row { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 16px; }
     }
     /* ---------- Reusable placeholder slot box ---------- */
     .slot-box {
@@ -2530,37 +2481,18 @@
          Section 8.4b — An Experiment in Education
          Article LEFT, picture box RIGHT (matches §8.6b layout).
          ========================================================= -->
-    <section class="section-pad" aria-label="An Experiment in Education">
-      <!-- .story-scroll only provides scroll distance; .story-pin carries the
-           text AND the single image frame, so neither moves while the
-           filmstrip travels behind the window. -->
-      <div class="story-scroll" data-story-scroll>
-        <div class="story-pin">
+    <section class="section-pad story" aria-label="An Experiment in Education">
       <div class="container-main">
-        <div class="mission-stats-grid story-grid">
-          <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
+        <div class="story-grid">
           <div class="story-text">
-              <div class="reveal">
-                <div class="story-head">
             <h2 class="section-title">An experiment in education</h2>
-                </div>
-                <div class="story-body">
-                  <p class="mission-body">What Dnyanprakash has built in Latur was not built easily. It was built despite limited physical infrastructure, without government funding, and against the grain of how most schools in this region have always operated. That it has earned the deep trust of parents, educators, and children over twenty-six years is not a coincidence, it is the result of a conscious, sustained commitment to doing education differently.</p>
-                  <a href="about/an-experiment-in-education.html" class="btn btn-outline">Read how it began</a>
-                </div>
-              </div>
-            </div>
-          <!-- RIGHT: image slot -->
-          <!-- IMAGE COLUMN — five numbered slots, declared in scripts/story-stacks.js
-               under the "experiment" key. Slot 1 is this section's original photo;
-               slots 2-5 are numbered placeholders at images/story/experiment-0N.jpg.
-               To fill one: drop the file, run the pipeline, update that one
-               line in story-stacks.js. Never add markup here.
-               Deliberately NOT .reveal — five images must not fly in
-               separately, and a transform here would break the sticky pin. -->
+            <p class="mission-body">What Dnyanprakash has built in Latur was not built easily. It was built despite limited physical infrastructure, without government funding, and against the grain of how most schools in this region have always operated. That it has earned the deep trust of parents, educators, and children over twenty-six years is not a coincidence, it is the result of a conscious, sustained commitment to doing education differently.</p>
+            <a href="about/an-experiment-in-education.html" class="btn btn-outline">Read how it began</a>
+          </div>
+          <!-- Photographs come from scripts/story-stacks.js: the slot marked
+               lead: true is the large photo, the rest form the row beneath.
+               Never add photos here. -->
           <div class="story-media" data-story-stack="experiment" data-story-label="An Experiment in Education"></div>
-        </div>
-      </div>
         </div>
       </div>
     </section>
@@ -2569,37 +2501,18 @@
          Section 8.5 — About Us (replaced "Meet Our Community" 2026-04-21)
          Image LEFT, first About paragraph + Read More on the RIGHT.
          ========================================================= -->
-    <section class="section-pad" style="background: var(--color-bg-alt);" aria-label="About Us">
-      <!-- .story-scroll only provides scroll distance; .story-pin carries the
-           text AND the single image frame, so neither moves while the
-           filmstrip travels behind the window. -->
-      <div class="story-scroll" data-story-scroll>
-        <div class="story-pin">
+    <section class="section-pad story" style="background: var(--color-bg-alt);" aria-label="About Us">
       <div class="container-main">
-        <div class="mission-stats-grid story-grid">
-          <!-- LEFT: image -->
-          <!-- IMAGE COLUMN — five numbered slots, declared in scripts/story-stacks.js
-               under the "vision" key. Slot 1 is this section's original photo;
-               slots 2-5 are numbered placeholders at images/story/vision-0N.jpg.
-               To fill one: drop the file, run the pipeline, update that one
-               line in story-stacks.js. Never add markup here.
-               Deliberately NOT .reveal — five images must not fly in
-               separately, and a transform here would break the sticky pin. -->
+        <div class="story-grid story-grid--media-first">
+          <!-- Photographs come from scripts/story-stacks.js: the slot marked
+               lead: true is the large photo, the rest form the row beneath.
+               Never add photos here. -->
           <div class="story-media" data-story-stack="vision" data-story-label="A Vision of Joyful Learning"></div>
-          <!-- RIGHT: eyebrow + headline + one paragraph + Read More -->
           <div class="story-text">
-              <div class="reveal">
-                <div class="story-head">
             <h2 class="section-title">A Vision of Joyful Learning</h2>
-                </div>
-                <div class="story-body">
-                  <p class="mission-body">Experiencing the importance of effective learning through the mother tongue, the head of the institution, Mr. Satish Narhare, began teaching mathematics in 1989 through Narhare Classes. During this time, he realized the significance of making learning enjoyable and stress-free for children. With a vision to make education engaging, meaningful, and self-motivated — where children naturally want to learn, ask questions, seek answers, and express their thoughts freely — Savita and Satish Narhare founded Dnyanprakash in 1999, starting with their own child.</p>
-                  <a href="about/index.html" class="btn btn-outline">Read the founders’ story</a>
-                </div>
-              </div>
-            </div>
-        </div>
-      </div>
+            <p class="mission-body">Experiencing the importance of effective learning through the mother tongue, the head of the institution, Mr. Satish Narhare, began teaching mathematics in 1989 through Narhare Classes. During this time, he realized the significance of making learning enjoyable and stress-free for children. With a vision to make education engaging, meaningful, and self-motivated — where children naturally want to learn, ask questions, seek answers, and express their thoughts freely — Savita and Satish Narhare founded Dnyanprakash in 1999, starting with their own child.</p>
+            <a href="about/index.html" class="btn btn-outline">Read the founders’ story</a>
+          </div>
         </div>
       </div>
     </section>
@@ -2689,37 +2602,18 @@
          Section 8.6b — Learning through action and experience
          Article LEFT, picture box RIGHT (mirror of §8.5 layout).
          ========================================================= -->
-    <section class="section-pad" aria-label="Learning through action and experience">
-      <!-- .story-scroll only provides scroll distance; .story-pin carries the
-           text AND the single image frame, so neither moves while the
-           filmstrip travels behind the window. -->
-      <div class="story-scroll" data-story-scroll>
-        <div class="story-pin">
+    <section class="section-pad story" aria-label="Learning through action and experience">
       <div class="container-main">
-        <div class="mission-stats-grid story-grid">
-          <!-- LEFT: eyebrow + headline + one paragraph + Read More -->
+        <div class="story-grid">
           <div class="story-text">
-              <div class="reveal">
-                <div class="story-head">
             <h2 class="section-title">Learning by doing</h2>
-                </div>
-                <div class="story-body">
-                  <p class="mission-body">From the very beginning of Dnyanprakash, children's learning was linked with action and experience. Various materials are used according to the subject for that. Various reading and writing experiments were also conducted. Children get to know letters and words in kindergarten itself. After that, the children read and write sentences, and then they create stories from pictures, complete incomplete stories, write stories from points, experience writing, case writing, dialogue writing, letter writing, etc.</p>
-                  <a href="about/learning-through-action.html" class="btn btn-outline">See how a lesson works</a>
-                </div>
-              </div>
-            </div>
-          <!-- RIGHT: image -->
-          <!-- IMAGE COLUMN — five numbered slots, declared in scripts/story-stacks.js
-               under the "action" key. Slot 1 is this section's original photo;
-               slots 2-5 are numbered placeholders at images/story/action-0N.jpg.
-               To fill one: drop the file, run the pipeline, update that one
-               line in story-stacks.js. Never add markup here.
-               Deliberately NOT .reveal — five images must not fly in
-               separately, and a transform here would break the sticky pin. -->
+            <p class="mission-body">From the very beginning of Dnyanprakash, children's learning was linked with action and experience. Various materials are used according to the subject for that. Various reading and writing experiments were also conducted. Children get to know letters and words in kindergarten itself. After that, the children read and write sentences, and then they create stories from pictures, complete incomplete stories, write stories from points, experience writing, case writing, dialogue writing, letter writing, etc.</p>
+            <a href="about/learning-through-action.html" class="btn btn-outline">See how a lesson works</a>
+          </div>
+          <!-- Photographs come from scripts/story-stacks.js: the slot marked
+               lead: true is the large photo, the rest form the row beneath.
+               Never add photos here. -->
           <div class="story-media" data-story-stack="action" data-story-label="Learning through Action"></div>
-        </div>
-      </div>
         </div>
       </div>
     </section>
