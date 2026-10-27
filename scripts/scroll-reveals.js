@@ -1,136 +1,98 @@
 /**
- * Scroll-triggered reveals — position-aware horizontal slide-in.
+ * Scroll reveals — calm, staggered, and never hiding content.
  *
- * 2026-04-30 rewrite: replaces the legacy translateY fade-up with
- * directional translate3d slide-ins where each element's horizontal
- * position vs viewport center decides which side it enters from.
- * Elements on the left half slide in from the left; elements on the
- * right slide in from the right; elements within ±10% of center fall
- * back to alternating. Mobile (single-column stacked layout) lands
- * most elements near center, so the alternating fallback dominates.
+ * Targeted upgrade (A5, A6). Content is visible by default: CSS no longer
+ * hides anything marked .reveal (styles/upgrade.css). This script adds the
+ * motion on top, and only to parts that start BELOW the fold, so the first
+ * screen never waits for it and a page with no script loses nothing.
  *
- * Architecture: the inline IIFE in every HTML file still runs and
- * adds .reveal-fx to off-screen .reveal elements. Harmless because
- * mobile-polish.css uses .reveal.reveal-fx.reveal-left (0,3,0) to
- * override the inline .reveal.reveal-fx (0,2,0) translateY rule.
- * Both observers add .is-visible; whichever fires first wins.
+ * Inside each section the parts enter in reading order (heading, then the
+ * text, then the photographs), 70ms apart: each rises 24px and fades in over
+ * 600ms, once. Photographs also settle from a 1.04 scale to 1.
  *
- * Pattern 3 (stat number count-up) is preserved at the bottom.
+ * Fail-safe: anything that is in or above the viewport is shown at once,
+ * checked on every scroll frame and again two seconds after load, so a
+ * fast scroll, an anchor jump or a missed observer callback can never
+ * leave a block blank. Reduced motion: nothing is marked at all.
+ *
+ * Pattern 3 (stat number count-up) is kept at the bottom.
  */
+(function () {
+  'use strict';
 
-/* ===== Pattern 4 — Position-aware horizontal reveals =====
-   Initialises at DOMContentLoaded, not on 'load'. Bound to 'load' the
-   directions were not assigned until every image on the page had finished
-   downloading — with sixteen photographs in the story sections that is
-   seconds on a real connection, and until then every reveal fell back to
-   the inline translateY rule and entered from below. It looked right
-   locally only because images come off disk instantly. Directions are
-   re-assigned on 'load' and on resize, so later layout shifts correct
-   themselves. */
-function initReveals() {
   if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  var reveals = document.querySelectorAll('.reveal');
-  if (!reveals.length) return;
+  /* The parts that move, per section. Order within a section follows the
+     DOM, which is reading order: heading, text, then pictures. */
+  var PARTS = [
+    'h1', 'h2', '.happening-sub', '.gallery-strip-frame', '.gallery-strip-foot',
+    '.story-text > *', '.story-lead', '.story-row',
+    '.news-card', '.academics-card', '.tour-facade',
+    '.newsletter-header', '.newsletter-editorial', '.newsletter-cover-wrap',
+    '.mission-stats-grid > *', '.events-list',
+    '.lede', '.prose > p', '.prose > h2', '.prose > ul', '.article-aside > *',
+    '.faq-section', '.data-row'
+  ].join(', ');
+  var MEDIA = '.story-lead, .story-row, .news-card, .academics-card, .tour-facade, .newsletter-cover-wrap, .gallery-strip-frame';
+  var STEP = 70, MAX_STEPS = 5;
 
-  var prefersReduced = window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pending = [];
 
-  // Reduced motion: mark everything visible immediately, skip observer.
-  if (prefersReduced) {
-    for (var p = 0; p < reveals.length; p++) {
-      reveals[p].classList.add('is-visible');
-    }
-    return;
-  }
-
-  // (a) Position-aware direction assignment.
-  // Element's horizontal center vs viewport center decides direction.
-  // Within ±10% of center → fall back to alternating index.
-  function assignDirections() {
-    var vw = window.innerWidth;
-    var vc = vw / 2;
-    var band = vw * 0.10;
-    var fallback = 0;
-    for (var i = 0; i < reveals.length; i++) {
-      var el = reveals[i];
-      // Skip already-revealed elements during resize recompute
-      if (el.classList.contains('is-visible')) continue;
-      el.classList.remove('reveal-left', 'reveal-right');
-      var rect = el.getBoundingClientRect();
-      var elCenter = rect.left + rect.width / 2;
-      var offset = elCenter - vc;
-      if (offset < -band) {
-        el.classList.add('reveal-left');
-      } else if (offset > band) {
-        el.classList.add('reveal-right');
-      } else {
-        el.classList.add(fallback % 2 === 0 ? 'reveal-left' : 'reveal-right');
-        fallback++;
-      }
-    }
-  }
-
-  assignDirections();
-
-  // (b) Parent-grouped stagger: when a parent has multiple .reveal
-  //     children (news cards, explore tiles), each child fires 120ms
-  //     after the previous via --reveal-delay CSS variable.
-  var parentMap = new Map();
-  for (var k = 0; k < reveals.length; k++) {
-    var parent = reveals[k].parentElement;
-    if (!parentMap.has(parent)) parentMap.set(parent, []);
-    parentMap.get(parent).push(reveals[k]);
-  }
-  parentMap.forEach(function (group) {
-    if (group.length > 1) {
-      for (var n = 0; n < group.length; n++) {
-        group[n].style.setProperty('--reveal-delay', (n * 120) + 'ms');
-      }
-    }
-  });
-
-  // (c) IntersectionObserver with anticipatory trigger.
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        // 1100ms = 900ms (max transform duration) + buffer for stagger.
-        // After this, .reveal-done sets will-change: auto in CSS so the
-        // GPU layer is released.
-        setTimeout(function (target) {
-          return function () { target.classList.add('reveal-done'); };
-        }(entry.target), 1100);
-        observer.unobserve(entry.target);
-      }
+  function start() {
+    var vh = window.innerHeight;
+    var sections = document.querySelectorAll('main section');
+    Array.prototype.forEach.call(sections, function (section) {
+      var parts = section.querySelectorAll(PARTS);
+      var step = 0;
+      Array.prototype.forEach.call(parts, function (el) {
+        /* Never a part inside a part: the outer one carries the motion. */
+        if (el.parentElement && el.parentElement.closest('.rv')) return;
+        if (el.getBoundingClientRect().top <= vh) return;   // above the fold: leave alone
+        el.classList.add('rv');
+        if (el.matches(MEDIA)) el.classList.add('rv-media');
+        el.style.setProperty('--rv-delay', (Math.min(step, MAX_STEPS) * STEP) + 'ms');
+        step++;
+        pending.push(el);
+        io.observe(el);
+      });
     });
-  }, {
-    threshold: 0.05,
-    rootMargin: '0px 0px -8% 0px'
-  });
-
-  for (var m = 0; m < reveals.length; m++) {
-    observer.observe(reveals[m]);
+    if (pending.length) {
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('load', function () { setTimeout(sweep, 2000); });
+    }
   }
 
-  // (d) Recompute directions on resize for elements not yet revealed.
-  //     Debounced so we don't thrash on every pixel of a resize drag.
-  var resizeTimer;
-  window.addEventListener('resize', function () {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(assignDirections, 200);
-  });
+  function show(el) {
+    if (!el.classList.contains('rv') || el.classList.contains('rv-in')) return;
+    el.classList.add('rv-in');
+    io.unobserve(el);
+  }
 
-  // (e) Images settling can move an element across the centre line, so
-  //     re-read the positions once everything has loaded.
-  window.addEventListener('load', assignDirections);
-}
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) show(e.target); });
+  }, { rootMargin: '0px 0px -6% 0px', threshold: 0 });
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initReveals);
-} else {
-  initReveals();
-}
+  /* Anything in or above the viewport is shown, whatever the observer did. */
+  function sweep() {
+    var vh = window.innerHeight;
+    pending = pending.filter(function (el) {
+      if (el.classList.contains('rv-in')) return false;
+      if (el.getBoundingClientRect().top < vh) { show(el); return false; }
+      return true;
+    });
+    if (!pending.length) window.removeEventListener('scroll', onScroll);
+  }
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; sweep(); });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
 
 /* ===== Pattern 3 — Stat number count-up ===== */
 (function () {
@@ -185,14 +147,9 @@ if (document.readyState === 'loading') {
     requestAnimationFrame(tick);
   }
 
-  // Initialize each counter to 0 so it doesn't flash the final value before
-  // animation starts.
-  if (!prefersReduced) {
-    counters.forEach(function (el) {
-      el.textContent = '0';
-    });
-  }
-
+  /* The real number stays in the markup until the counter is on screen; it
+     starts from 0 only once it is about to animate, so a reader who never
+     scrolls that far (or a screenshot) still sees the true figure. */
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
