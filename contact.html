@@ -1282,6 +1282,7 @@
   <link rel="preload" as="image" type="image/avif"
         imagesrcset="images/40-contact-hero-800.avif 800w, images/40-contact-hero-960.avif 960w, images/40-contact-hero-1200.avif 1200w, images/40-contact-hero-1280.avif 1280w"
         imagesizes="(max-width: 767px) 375px, (max-width: 1023px) 768px, (max-width: 1439px) 1024px, 1440px" fetchpriority="high">
+  <link rel="stylesheet" href="styles/upgrade.css">
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -1391,7 +1392,6 @@
           <div class="mega-panel" role="menu" aria-label="About">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
-                <div class="mega-eyebrow">Who We Are</div>
                 <h3 class="mega-title">About Dnyanprakash</h3>
                 <p class="mega-desc">Since 1999, Dnyanprakash has been a center for joyful, research-informed learning in Latur. Founded by Satish and Savita Narhare, we serve children from age 3 through Grade 10.</p>
                 <div class="flex gap-3">
@@ -1420,7 +1420,6 @@
           <div class="mega-panel" role="menu" aria-label="Admission">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
-                <div class="mega-eyebrow">Join Us</div>
                 <h3 class="mega-title">Apply to Dnyanprakash</h3>
                 <p class="mega-desc">We welcome families from Latur and beyond. Our team can walk you through the admissions process, timelines, fee structure, and visit options.</p>
                 <div class="flex gap-3">
@@ -1449,7 +1448,6 @@
           <div class="mega-panel" role="menu" aria-label="Academics">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
-                <div class="mega-eyebrow">Learn With Us</div>
                 <h3 class="mega-title">Academics at Dnyanprakash</h3>
                 <p class="mega-desc">Three divisions — Balbhavan, Balvikas Kendra, and Vidyaniketan — span pre-primary through Grade 10, rooted in the motto: Know &amp; Inspire.</p>
                 <div class="flex gap-3">
@@ -1479,7 +1477,6 @@
           <div class="mega-panel" role="menu" aria-label="Alumni">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
-                <div class="mega-eyebrow">Our Community</div>
                 <h3 class="mega-title">Dnyanprakash Alumni</h3>
                 <p class="mega-desc">Our alumni carry the Dnyanprakash spirit into careers, communities, and universities across India and beyond. Stay connected and give back.</p>
                 <div class="flex gap-3">
@@ -1508,7 +1505,6 @@
           <div class="mega-panel" role="menu" aria-label="News">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
-                <div class="mega-eyebrow">Latest</div>
                 <h3 class="mega-title">News &amp; Updates</h3>
                 <p class="mega-desc">Read the latest from Dnyanprakash — competitions, celebrations, curriculum updates, and student achievements from across our three divisions.</p>
                 <div class="flex gap-3">
@@ -1532,7 +1528,6 @@
           <div class="mega-panel" role="menu" aria-label="Login">
             <div class="container-main grid grid-cols-12 gap-10">
               <div class="col-span-5">
-                <div class="mega-eyebrow">Access</div>
                 <h3 class="mega-title">Log In to Your Portal</h3>
                 <p class="mega-desc">Sign in to access grades, announcements, resources, and community updates.</p>
                 <div class="flex gap-3">
@@ -1576,7 +1571,6 @@
     <section class="section-pad reveal article-body" style="padding-bottom: 0;">
       <div class="container-main">
         <header class="article-heading">
-          <div class="eyebrow">Contact</div>
           <h1>Contact Dnyanprakash</h1>
         </header>
         <p class="lede">We’d love to hear from you.</p>
@@ -1598,7 +1592,7 @@
             </address>
             <p><strong>Phone:</strong> <a href="tel:02382220598">02382 220598</a></p>
             <p><strong>Email:</strong> <a href="mailto:dnyanprakashltr@gmail.com">dnyanprakashltr@gmail.com</a></p>
-            <div style="aspect-ratio:4/3; overflow:hidden; border:1px solid var(--color-border); margin-top:28px;">
+            <div style="aspect-ratio:4/3; overflow:hidden; margin-top:28px;">
               <iframe
                 src="https://maps.google.com/maps?q=Dayanand+College+Latur&z=15&output=embed"
                 width="100%" height="100%"
@@ -1614,16 +1608,16 @@
             <h2 style="font-family: var(--font-display); font-style: normal; font-weight: 400; font-size: 32px; margin: 0 0 16px;">Send us a note</h2>
             <form action="mailto:dnyanprakashltr@gmail.com" method="post" enctype="text/plain" style="display:flex; flex-direction:column; gap:14px;">
               <label style="font-size:13px; text-transform:uppercase; letter-spacing:0.05em; color: var(--color-text-muted);">Your name
-                <input name="name" required style="display:block; width:100%; margin-top:6px; padding:12px; border:1px solid var(--color-border); font-size:15px; font-family: var(--font-sans);" />
+                <input name="name" required style="display:block; width:100%; margin-top:6px; padding:12px; font-size:15px; font-family: var(--font-sans);" />
               </label>
               <label style="font-size:13px; text-transform:uppercase; letter-spacing:0.05em; color: var(--color-text-muted);">Email
-                <input name="email" type="email" required style="display:block; width:100%; margin-top:6px; padding:12px; border:1px solid var(--color-border); font-size:15px; font-family: var(--font-sans);" />
+                <input name="email" type="email" required style="display:block; width:100%; margin-top:6px; padding:12px; font-size:15px; font-family: var(--font-sans);" />
               </label>
               <label style="font-size:13px; text-transform:uppercase; letter-spacing:0.05em; color: var(--color-text-muted);">Subject
-                <input name="subject" style="display:block; width:100%; margin-top:6px; padding:12px; border:1px solid var(--color-border); font-size:15px; font-family: var(--font-sans);" />
+                <input name="subject" style="display:block; width:100%; margin-top:6px; padding:12px; font-size:15px; font-family: var(--font-sans);" />
               </label>
               <label style="font-size:13px; text-transform:uppercase; letter-spacing:0.05em; color: var(--color-text-muted);">Message
-                <textarea name="message" rows="6" required style="display:block; width:100%; margin-top:6px; padding:12px; border:1px solid var(--color-border); font-size:15px; font-family: var(--font-sans); resize:vertical;"></textarea>
+                <textarea name="message" rows="6" required style="display:block; width:100%; margin-top:6px; padding:12px; font-size:15px; font-family: var(--font-sans); resize:vertical;"></textarea>
               </label>
               <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Send Message</button>
               <p style="font-size:13px; color: var(--color-text-muted);">This form opens your email app with the message pre-filled. If that doesn’t work, write to <a href="mailto:dnyanprakashltr@gmail.com">dnyanprakashltr@gmail.com</a> directly.</p>

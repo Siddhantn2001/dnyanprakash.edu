@@ -1,0 +1,113 @@
+/* =========================================================================
+   upgrade.css — the targeted upgrade (Oct 2026 audit), shared by every page.
+
+   Linked LAST in every <head>, so it settles the per-page inline styles
+   without editing 48 copies of them. Sections are labelled by audit item
+   (A1, A2, …) so each one can be read, or undone, on its own.
+
+   Colours and fonts are the existing ones: red #9E1B32, deep #6B0F1A,
+   ink #2b2724, white, surface #f1f2f2; Playfair Display, Libre Franklin,
+   Noto Serif / Sans Devanagari.
+   ========================================================================= */
+
+/* ---------- A2. No template ornaments ----------------------------------- */
+/* Labels above headings and the 01–08 numbers are gone from the markup.
+   What is left here is the CSS half: rules under headings, resting
+   shadows, 1px outlined boxes. Sections separate by space and tone. */
+
+/* Shadows only on things that truly float: the open mega-menu, the phone
+   menu panel, the lightbox and the welcome strip. */
+body *:not(.mega-panel):not(.mobile-panel):not(.lightbox):not(.dp-strip):not(.dp-welcome-card) {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Rules under headings, breadcrumbs, title blocks and the nav */
+.section-title,
+.article-heading,
+.breadcrumb,
+.happening-sub,
+.main-nav,
+.events-list,
+[data-section="utility-bar"] {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+.section-title::after,
+.section-title::before,
+.article-heading::after,
+.stats-title::after,
+.cf-item::after,
+.faq-section-divider::after { content: none !important; display: none !important; }
+main hr { display: none; }
+
+/* The page header's own rules (the per-page styles set these with
+   .site-header… !important, so the selectors here match that weight). */
+.site-header [data-section="utility-bar"],
+.site-header .main-nav,
+.site-header.nav-solid [data-section="utility-bar"],
+.site-header.nav-solid .main-nav { border-top: 0 !important; border-bottom: 0 !important; }
+/* On solid-header pages the utility row is told apart from the nav by a
+   tone step, not a line. */
+.site-header.nav-solid [data-section="utility-bar"] { background: #f1f2f2 !important; }
+/* The phone header's scrolled state was frosted glass with a 1px line;
+   it is now a plain white bar. */
+.site-header.is-scrolled .main-nav,
+.site-header.is-scrolled [data-section="utility-bar"] {
+  background: #ffffff !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-bottom: 0 !important;
+}
+
+/* 1px outlined boxes become plain or filled surfaces */
+.aside-instagram,
+.aside-card,
+.aside-cta,
+.gallery-img,
+.ac-img,
+.news-img-wrap,
+.stats-circle,
+.not-found-card,
+.newsletter-original-link {
+  border: 0 !important;
+}
+.aside-instagram,
+.aside-card { background: #f1f2f2; }
+.not-found-card { background: #f1f2f2; }
+.newsletter-original-link { text-decoration: underline; text-underline-offset: 0.2em; }
+
+/* Labels that remain as real text: sentence case, readable size, no tracking */
+.happening-sub-label,
+.stats-title,
+.aside-card-title,
+.page-meta,
+.news-date,
+.aside-pullquote cite {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+.happening-sub-label { font-family: 'Libre Franklin', system-ui, sans-serif; font-size: 20px; font-weight: 600; color: #2b2724; margin: 0; }
+.stats-title { font-family: "Playfair Display", Georgia, serif; font-size: 24px; font-weight: 500; line-height: 1.15; color: #2b2724; margin: 0 0 12px; }
+.aside-card-title { font-family: 'Libre Franklin', system-ui, sans-serif; font-size: 16px; font-weight: 600; color: #2b2724; margin: 0 0 10px; }
+.page-meta { font-family: 'Libre Franklin', system-ui, sans-serif; font-size: 14px; line-height: 1.5; color: #6B6D70; margin: 12px 0 0; }
+.news-date { font-family: 'Libre Franklin', system-ui, sans-serif; font-size: 14px; line-height: 1.5; color: #6B6D70; margin: 8px 0 0; }
+html[lang="mr"] .page-meta { font-family: 'Noto Sans Devanagari', 'Libre Franklin', sans-serif; }
+
+/* Inner-page lines: FAQ groups, notices, sign-offs, the Marathi fallback note */
+.faq-section-divider {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 28px; font-weight: 500; line-height: 1.15; letter-spacing: -0.01em;
+  text-transform: none; color: #2b2724;
+  border: 0 !important; padding: 0; margin: 0 0 20px;
+}
+html[lang="mr"] .faq-section-divider { font-family: 'Noto Serif Devanagari', 'Noto Sans Devanagari', serif; font-weight: 600; }
+.faq-item { border: 0 !important; background: #f1f2f2; padding: 0 20px; margin-bottom: 8px; }
+.article-notice,
+.article-signoff,
+.prose li,
+.lang-fallback-notice { border: 0 !important; }
+.lang-fallback-notice { background: #f1f2f2; }
+.news-card .news-date { color: inherit; opacity: 0.88; }
+/* The issue line now sits under the newsletter heading as plain meta. */
+.newsletter-issue-meta { color: #6B6D70 !important; letter-spacing: 0 !important; margin: -8px 0 24px !important; }
