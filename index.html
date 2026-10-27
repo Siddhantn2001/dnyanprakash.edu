@@ -2520,19 +2520,16 @@
     <!-- =========================================================
          Section 8.6 — Video Spotlight
          ========================================================= -->
-    <section id="tour" class="section-pad pad-image reveal" aria-label="Video Spotlight">
+    <section id="tour" class="section-pad tour-field" aria-label="Video Spotlight">
       <div class="container-main">
         <h2 class="section-title">A virtual tour</h2>
-
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px;">
-          <iframe
-            src="https://www.youtube.com/embed/d8WFBmGhmzQ"
-            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-          </iframe>
-        </div>
+        <!-- Lite facade: the poster and a play button; the YouTube player
+             loads only when tapped (inline script at the end of the page).
+             Without script the link opens the video on YouTube. -->
+        <a class="tour-facade" href="https://www.youtube.com/watch?v=d8WFBmGhmzQ" target="_blank" rel="noopener" data-yt-facade data-yt-id="d8WFBmGhmzQ" aria-label="Play the virtual tour of Dnyanprakash">
+          <picture><source type="image/webp" sizes="(max-width: 1199px) 100vw, 1160px" srcset="images/tour-poster-640.webp 640w, images/tour-poster-1280.webp 1280w"><img src="images/tour-poster-1280.jpg" sizes="(max-width: 1199px) 100vw, 1160px" srcset="images/tour-poster-640.jpg 640w, images/tour-poster-1280.jpg 1280w" alt="" width="1280" height="720" loading="lazy" decoding="async"></picture>
+          <span class="tour-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+        </a>
       </div>
     </section>
 
@@ -3202,6 +3199,22 @@
   (65 [FILLED 2026-04-21] images/65-learning-through-action-hero.jpg — about/learning-through-action.html page hero)
   =====================================================================
   -->
+  <script>
+    /* Tour facade: swap the poster for the YouTube player on tap. */
+    document.addEventListener('click', function (e) {
+      var f = e.target.closest && e.target.closest('[data-yt-facade]');
+      if (!f) return;
+      e.preventDefault();
+      var frame = document.createElement('iframe');
+      frame.src = 'https://www.youtube.com/embed/' + f.getAttribute('data-yt-id') + '?autoplay=1&rel=0';
+      frame.title = 'A virtual tour of Dnyanprakash';
+      frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      frame.allowFullscreen = true;
+      frame.className = 'tour-player';
+      f.replaceWith(frame);
+      frame.focus();
+    });
+  </script>
   <script defer src="scripts/gallery-photos.js"></script>
   <script defer src="scripts/gallery-render.js"></script>
   <script defer src="scripts/lightbox.js"></script>
