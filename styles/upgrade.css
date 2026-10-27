@@ -384,3 +384,21 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
   .academics-card .ac-img img, .story-lead img, .story-slide img { transition: transform 600ms var(--ease-out); }
   .academics-card:hover .ac-img img, .story-lead:hover img, .story-slide:hover img { transform: scale(1.03); }
 }
+
+/* ---------- B2. First-visit language strip (replaces the pop-up) -------- */
+.dp-strip {
+  position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 150;
+  display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 6px 6px 18px;
+  background: #2b2724; color: #fff;
+}
+.dp-strip[hidden] { display: none; }
+.dp-strip p { margin: 0; flex: 1; font-size: 14px; line-height: 1.4; color: #fff; }
+.dp-strip a.dp-strip-mr {
+  font-family: 'Noto Sans Devanagari', var(--sans); font-weight: 500; color: #fff;
+  min-height: 44px; display: inline-flex; align-items: center; padding: 0 14px; background: #9E1B32; text-decoration: none;
+}
+.dp-strip button {
+  width: 44px; height: 44px; flex: none; border: 0; background: transparent; color: #fff; font-size: 26px; line-height: 1; cursor: pointer;
+}
+html.dp-strip-on body { padding-bottom: 72px; }
+@media (min-width: 768px) { .dp-strip { left: auto; max-width: 560px; } }

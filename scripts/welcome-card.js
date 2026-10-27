@@ -1,122 +1,60 @@
 /* =====================================================================
-   welcome-card.js — homepage-only, once-per-visitor welcome dialog.
+   welcome-card.js — the first-visit language note, as a slim strip.
 
-   - Runs only where the #dp-welcome markup exists (homepage). Safe no-op
+   Replaces the full-screen welcome dialog (owner, Gate 1, Oct 2026).
+   - Homepage only: runs where the #dp-strip markup exists; a no-op
      elsewhere, so it never shows on /mr/ or inner pages.
-   - Shows once per visitor: localStorage flag "dp_welcome_seen" = "true".
-   - localStorage wrapped in try/catch — if blocked, the card still shows
-     and dismiss still works (it just won't persist).
-   - Dismiss: X button, "Got it" button, Escape, backdrop click.
-   - Respects prefers-reduced-motion (no fade/drift — appear / remove).
-   - Locks background scroll while open; restores on dismiss.
-   - Accessible: role="dialog", aria-modal, focus moves in + is trapped,
-     focus returns to the previously focused element on close.
+   - Once per visitor: localStorage "dp_welcome_seen" = "true", read and
+     written inside try/catch. If storage is blocked the strip still shows
+     and still closes; it just will not remember.
+   - It never covers the headline, the navigation or the hero's action:
+     it appears only after the hero has scrolled out of view.
+   - It is position: fixed, so showing or closing it moves nothing on the
+     page. The body keeps a little bottom padding while it is up so the
+     footer's last line can scroll clear of it.
+   - Close: the × button (44px) or Escape.
    ===================================================================== */
 (function () {
   'use strict';
 
-  var overlay = document.getElementById('dp-welcome');
-  if (!overlay) return; // not the homepage — do nothing
+  var strip = document.getElementById('dp-strip');
+  if (!strip) return;
 
-  var STORAGE_KEY = 'dp_welcome_seen';
-
-  // Already seen? Remove the markup and bail (no flash, no listeners).
+  var KEY = 'dp_welcome_seen';
   var seen = false;
-  try { seen = localStorage.getItem(STORAGE_KEY) === 'true'; } catch (e) { seen = false; }
-  if (seen) {
-    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-    return;
+  try { seen = localStorage.getItem(KEY) === 'true'; } catch (e) { seen = false; }
+  if (seen) { strip.parentNode.removeChild(strip); return; }
+
+  var shown = false;
+  function show() {
+    if (shown) return;
+    shown = true;
+    strip.hidden = false;
+    document.documentElement.classList.add('dp-strip-on');
+    document.addEventListener('keydown', onKey);
   }
+  function close() {
+    try { localStorage.setItem(KEY, 'true'); } catch (e) {}
+    strip.hidden = true;
+    document.removeEventListener('keydown', onKey);
+    // dp-strip-on stays: removing the bottom padding now could move the
+    // page under the reader's eyes. It is gone on the next page view.
+  }
+  function onKey(e) { if (e.key === 'Escape') close(); }
 
-  var card = overlay.querySelector('.dp-welcome-card');
-  var closeBtn = overlay.querySelector('[data-welcome-close]');
-  var gotItBtn = overlay.querySelector('[data-welcome-dismiss]');
-  var prefersReduced =
-    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var lastFocused = null;
-  var dismissed = false;
+  strip.querySelector('[data-strip-close]').addEventListener('click', close);
+  var mr = strip.querySelector('.dp-strip-mr');
+  if (mr) mr.addEventListener('click', function () { try { localStorage.setItem(KEY, 'true'); } catch (e) {} });
 
-  function open() {
-    lastFocused = document.activeElement;
-    overlay.hidden = false;
-    overlay.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('dp-welcome-open');
-
-    if (prefersReduced) {
-      overlay.classList.add('is-visible');
-    } else {
-      // Two frames so the browser paints the opacity:0 / drift state first,
-      // then transitions to the visible state.
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () { overlay.classList.add('is-visible'); });
+  var hero = document.querySelector('.hero');
+  if (hero && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting && en.boundingClientRect.bottom <= 0) { show(); io.disconnect(); }
       });
-    }
-
-    document.addEventListener('keydown', onKeydown, true);
-    // Move focus into the dialog.
-    (card || gotItBtn || closeBtn).focus();
-  }
-
-  function finalizeClose() {
-    overlay.classList.remove('is-visible');
-    document.body.classList.remove('dp-welcome-open');
-    document.removeEventListener('keydown', onKeydown, true);
-    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-    if (lastFocused && typeof lastFocused.focus === 'function') {
-      try { lastFocused.focus(); } catch (e) {}
-    }
-  }
-
-  function dismiss() {
-    if (dismissed) return;
-    dismissed = true;
-    try { localStorage.setItem(STORAGE_KEY, 'true'); } catch (e) {}
-
-    if (prefersReduced) {
-      finalizeClose();
-      return;
-    }
-    overlay.classList.remove('is-visible');
-    var done = false;
-    var onEnd = function () { if (done) return; done = true; finalizeClose(); };
-    overlay.addEventListener('transitionend', function (e) {
-      if (e.target === overlay) onEnd();
     });
-    setTimeout(onEnd, 400); // fallback if transitionend doesn't fire
+    io.observe(hero);
+  } else {
+    show();
   }
-
-  function onKeydown(e) {
-    if (e.key === 'Escape' || e.key === 'Esc') {
-      e.preventDefault();
-      dismiss();
-    } else if (e.key === 'Tab') {
-      trapFocus(e);
-    }
-  }
-
-  function trapFocus(e) {
-    var focusables = overlay.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    if (!focusables.length) return;
-    var first = focusables[0];
-    var last = focusables[focusables.length - 1];
-    var active = document.activeElement;
-    if (e.shiftKey && (active === first || active === card)) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && active === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  }
-
-  if (closeBtn) closeBtn.addEventListener('click', dismiss);
-  if (gotItBtn) gotItBtn.addEventListener('click', dismiss);
-  // Backdrop click — only when the click lands on the overlay, not the card.
-  overlay.addEventListener('click', function (e) {
-    if (e.target === overlay) dismiss();
-  });
-
-  open();
 })();
