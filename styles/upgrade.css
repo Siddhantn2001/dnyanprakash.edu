@@ -230,3 +230,66 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
 .coverflow-nav { min-width: 44px !important; min-height: 44px !important; }
 .stats-arrow { min-width: 44px !important; min-height: 44px !important; }
 .newsletter-original-link { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* ---------- A4. Footer (ported from redesign/taste-pass) ---------------- */
+/* Markup from partials/footer.html on that branch; rules from its
+   "8. Footer" block. The per-page inline footer styles (white footer, round
+   outlined icons, uppercase headings) are neutralised where they overlap. */
+:root {
+  --accent-dark: #6B0F1A;
+  --margin: clamp(1rem, 2.2vw, 2rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.2vw, 1.1875rem);   /* 17–19px */
+  --step-small: 0.875rem;                                   /* 14px */
+  --font-text: 'Libre Franklin', 'Noto Sans Devanagari', system-ui, -apple-system, sans-serif;
+  --t-hover: 180ms;
+}
+.site-footer {
+  background: var(--accent-dark) !important; color: #fff !important;
+  padding: clamp(40px, 5vw, 72px) var(--margin) 20px !important;
+  border-top: 0 !important;
+  display: grid; grid-template-rows: auto 1fr auto; gap: clamp(48px, 9vh, 120px);
+}
+.footer-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; font-size: var(--step-body); line-height: 1.6; }
+.footer-cols h2 { font-family: var(--font-text) !important; font-size: var(--step-body) !important; font-weight: 600 !important; line-height: 1.6 !important; letter-spacing: 0 !important; margin: 0 0 8px; color: #fff; }
+.footer-cols address { font-style: normal; color: rgba(255,255,255,0.86); }
+.site-footer .footer-cols a { color: rgba(255,255,255,0.86); text-decoration: none; }
+.site-footer .footer-cols a:hover { color: #fff; text-decoration: underline; }
+.footer-list { display: flex; flex-direction: column; }
+.footer-list a { min-height: 32px; display: inline-flex; align-items: center; }
+.footer-social { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0 !important; }
+.site-footer .footer-social a {
+  width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.12); color: #fff; border: 0 !important; border-radius: 0 !important;
+  transition: background-color var(--t-hover) ease;
+}
+.site-footer .footer-social a:hover { background: rgba(255,255,255,0.24); text-decoration: none; }
+.footer-social svg { width: 18px; height: 18px; }
+.footer-subscribe { display: flex; gap: 6px; margin-top: 16px; max-width: 100% !important; }
+.footer-subscribe input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px !important; border: 0 !important; background: rgba(255,255,255,0.12) !important; color: #fff; font: inherit; font-size: 16px !important; opacity: 1 !important; }
+.footer-subscribe input::placeholder { color: rgba(255,255,255,0.7); }
+.footer-subscribe input:disabled { background: rgba(255,255,255,0.12); color: #fff; -webkit-text-fill-color: rgba(255,255,255,0.75); opacity: 1; }
+.footer-subscribe button { min-height: 44px; padding: 0 14px !important; border: 0; background: #fff !important; color: var(--accent-dark) !important; font: 600 1rem var(--font-text) !important; text-transform: none !important; letter-spacing: 0 !important; opacity: 0.6 !important; cursor: not-allowed; }
+.footer-note { margin: 8px 0 0; color: rgba(255,255,255,0.86); }
+/* The wordmark is always visible: it never carries .reveal (at the very
+   bottom of a page the reveal never fires, which left an empty band). */
+.footer-wordmark { display: block; width: 100%; height: auto; color: #fff; opacity: 1 !important; transform: none !important; }
+.footer-wordmark text { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.03em; fill: currentColor; }
+.footer-legal { font-size: var(--step-small); color: rgba(255,255,255,0.86); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+.site-footer .footer-legal a { color: inherit; }
+.footer-cols a { overflow-wrap: anywhere; }
+@media (max-width: 1023px) {
+  .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 20px; }
+  .footer-subscribe { flex-direction: column; }
+}
+/* Phones: Visit across the full width (so the address keeps its five lines),
+   Pages and Follow side by side, Contact across the full width. */
+@media (max-width: 767px) {
+  .footer-col-visit, .footer-col-contact { grid-column: 1 / -1; }
+  .footer-cols a { overflow-wrap: normal; }
+}
+@media (min-width: 1024px) and (min-height: 760px) {
+  .is-home .site-footer { min-height: min(100svh, 820px); }
+}
+/* On the red admissions box the solid button turns white (A3 fix). */
+.aside-cta .aside-cta-btn { background: #fff !important; color: #9E1B32 !important; }
+@media (hover: hover) and (pointer: fine) { .aside-cta .aside-cta-btn:hover { background: #f1f2f2 !important; } }
