@@ -38,6 +38,18 @@
                         scope.querySelector('[data-carousel-dots]');
     var dots = dotsContainer ? dotsContainer.querySelectorAll('[data-slide-index]') : [];
 
+    /* A counter ("3 / 23") replaces the dots: twenty-odd 8px dots were too
+       small to read or tap. The dots stay in the markup, hidden, so the page
+       still works the old way if this script is an older copy. */
+    var counter = null;
+    if (dotsContainer) {
+      counter = document.createElement('p');
+      counter.className = 'carousel-counter';
+      counter.setAttribute('aria-live', 'polite');
+      dotsContainer.parentNode.insertBefore(counter, dotsContainer);
+      dotsContainer.hidden = true;
+    }
+
     var autoplay = carousel.getAttribute('data-carousel-autoplay') !== 'false';
     var current = 0;
     var autoAdvanceId = null;
@@ -50,6 +62,7 @@
         dots[i].classList.toggle('is-active', i === current);
         dots[i].setAttribute('aria-current', i === current ? 'true' : 'false');
       }
+      if (counter) counter.textContent = (current + 1) + ' / ' + slides.length;
     }
 
     function startAutoAdvance() {

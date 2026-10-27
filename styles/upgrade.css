@@ -323,3 +323,18 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
 .academics-card h3 { font-size: 28px !important; margin: 0 !important; }
 .academics-card .ac-age { font-size: 16px !important; font-weight: 600; color: #9E1B32 !important; margin: 4px 0 8px !important; }
 .academics-card p:not(.ac-age) { font-size: var(--body) !important; line-height: 1.6 !important; }
+
+/* ---------- C2. Inner-page header --------------------------------------- */
+/* Breadcrumb, then the title close beneath it; an article's date sits at
+   the end of the breadcrumb line as plain text. */
+.breadcrumb + section.section-pad { padding-top: 24px !important; }
+@media (min-width: 1024px) { .breadcrumb + section.section-pad { padding-top: 40px !important; } }
+.crumb-date { margin-left: auto; padding-left: 16px; font-size: 14px; color: #6B6D70; white-space: nowrap; }
+.breadcrumb .container-main { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0; }
+.article-heading { margin-bottom: 24px !important; padding-bottom: 0 !important; }
+
+/* News and alumni carousels: a counter and two 44px arrows, no dots. */
+.carousel-counter { margin: 12px 0 0; font-size: 14px; color: #6B6D70; text-align: center; font-variant-numeric: tabular-nums; }
+.news-carousel-arrow { width: 44px !important; height: 44px !important; }
+[data-carousel-dots][hidden] { display: none !important; }
+@media (max-width: 639px) { .crumb-date { margin-left: 0; padding-left: 0; flex-basis: 100%; margin-top: 2px; } }
