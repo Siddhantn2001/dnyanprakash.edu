@@ -111,3 +111,60 @@ html[lang="mr"] .faq-section-divider { font-family: 'Noto Serif Devanagari', 'No
 .news-card .news-date { color: inherit; opacity: 0.88; }
 /* The issue line now sits under the newsletter heading as plain meta. */
 .newsletter-issue-meta { color: #6B6D70 !important; letter-spacing: 0 !important; margin: -8px 0 24px !important; }
+
+/* ---------- A1. Confident type ------------------------------------------ */
+/* One scale, as discrete steps. Headings at weight 500, tight leading,
+   sentence case; body in full ink. */
+:root {
+  --h1: 64px; --h1-page: 40px; --h2: 40px; --h3: 24px;
+  --lead: 20px; --body: 17px; --small: 14px;
+  --ink: #2b2724;
+  --serif: 'Playfair Display', Georgia, serif;
+  --serif-mr: 'Noto Serif Devanagari', 'Noto Sans Devanagari', serif;
+  --sans: 'Libre Franklin', system-ui, -apple-system, sans-serif;
+}
+/* The narrowest phones (under 360px) take one step down so short titles
+   still fit in two lines. */
+@media (max-width: 359px) { :root { --h1: 56px; --h1-page: 34px; --h2: 34px; } }
+@media (min-width: 768px)  { :root { --h1: 88px;  --h1-page: 52px; --h2: 52px; --h3: 26px; --lead: 22px; --body: 18px; } }
+@media (min-width: 1024px) { :root { --h1: 112px; --h1-page: 64px; --h2: 64px; --h3: 28px; --lead: 24px; --body: 18px; } }
+
+main h1, main h2, main h3,
+.hero-title, .section-title, .news-headline, .academics-card h3,
+.newsletter-blurb-title, .mega-title, .faq-section-divider, .stats-title {
+  font-weight: 500 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+  font-style: normal;
+}
+html:not([lang="mr"]) main h1, html:not([lang="mr"]) main h2:not(.newsletter-title),
+html:not([lang="mr"]) .news-headline, html:not([lang="mr"]) .academics-card h3,
+html:not([lang="mr"]) .newsletter-blurb-title, html:not([lang="mr"]) .mega-title { font-family: var(--serif); }
+/* Marathi headings keep their Devanagari serif, at the weight it needs */
+html[lang="mr"] main h1, html[lang="mr"] main h2, html[lang="mr"] main h3 { font-family: var(--serif-mr); font-weight: 600 !important; line-height: 1.25 !important; letter-spacing: 0 !important; }
+.newsletter-title { font-family: var(--serif-mr) !important; line-height: 1.2 !important; letter-spacing: 0 !important; }
+
+.hero-title { font-size: var(--h1) !important; }
+main h1 { font-size: var(--h1-page) !important; }
+.section-title, .newsletter-title { font-size: var(--h2) !important; }
+main h3, .news-headline, .academics-card h3, .newsletter-blurb-title, .mega-title,
+.prose h2, .article-layout h2, .faq-section-divider { font-size: var(--h3) !important; line-height: 1.15 !important; }
+main h2:not(.section-title):not(.newsletter-title):not(.faq-section-divider):not(.prose h2) { font-size: var(--h3) !important; line-height: 1.15 !important; }
+.happening-sub-label, .stats-title { font-size: var(--h3) !important; line-height: 1.15 !important; font-family: var(--serif) !important; }
+
+/* Body: full ink, one size, 1.6 leading */
+main p, main li, .mission-body, .prose p, .prose li {
+  font-size: var(--body);
+  line-height: 1.6;
+}
+main p:not(.page-meta):not(.news-date):not(.newsletter-issue-meta), main li, .mission-body { color: var(--ink); }
+html[lang="mr"] main p, html[lang="mr"] main li { line-height: 1.8; }
+.lede, .hero-sub { font-size: var(--lead) !important; line-height: 1.45 !important; font-style: normal !important; color: var(--ink); }
+.hero .hero-sub { color: #fff !important; }
+
+/* Small caps-and-tracking text becomes sentence case at a readable size */
+.nav-link { text-transform: none !important; letter-spacing: 0 !important; font-size: 16px !important; font-family: var(--sans) !important; }
+[data-section="utility-bar"] a, [data-section="utility-bar"] span, [data-section="utility-bar"] button { text-transform: none !important; letter-spacing: 0 !important; font-size: 14px !important; }
+main label { text-transform: none !important; letter-spacing: 0 !important; font-size: 15px !important; }
+.aside-pullquote cite { font-size: 14px; font-style: normal; }
