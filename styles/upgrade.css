@@ -402,3 +402,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
 }
 html.dp-strip-on body { padding-bottom: 72px; }
 @media (min-width: 768px) { .dp-strip { left: auto; max-width: 560px; } }
+
+/* ---------- B7 (events). The visit line, in Our Mission ----------------- */
+.mission-visit { margin: 0 0 16px !important; }
+.mission-visit a { color: inherit; text-decoration: underline; text-decoration-color: #9E1B32; text-underline-offset: 0.2em; white-space: nowrap; }
