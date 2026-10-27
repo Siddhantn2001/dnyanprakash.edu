@@ -22,9 +22,12 @@
   padding: 24px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  /* Closed, it is also hidden from hit-testing and screen readers; the
+     visibility switch waits for the fade so closing still fades out. */
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
 }
-.lightbox.is-open { opacity: 1; pointer-events: auto; }
+.lightbox.is-open { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity 0.3s ease; }
 .lightbox-stage {
   position: relative;
   max-width: 1200px; width: 100%;

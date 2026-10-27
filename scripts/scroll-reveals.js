@@ -32,7 +32,8 @@
     '.newsletter-header', '.newsletter-editorial', '.newsletter-cover-wrap',
     '.mission-stats-grid > *', '.events-list',
     '.lede', '.prose > p', '.prose > h2', '.prose > ul', '.article-aside > *',
-    '.faq-section', '.data-row'
+    '.faq-section', '.data-row',
+    '.gallery-all .gallery-img', '.footer-cols > div', '.footer-legal'
   ].join(', ');
   var MEDIA = '.story-lead, .story-row, .news-card, .academics-card, .tour-facade, .newsletter-cover-wrap, .gallery-strip-frame';
   var STEP = 70, MAX_STEPS = 5;
@@ -41,7 +42,9 @@
 
   function start() {
     var vh = window.innerHeight;
-    var sections = document.querySelectorAll('main section');
+    /* The footer counts as one more section. Its wordmark is never marked:
+       it must always be visible (A4). */
+    var sections = document.querySelectorAll('main section, footer.site-footer');
     Array.prototype.forEach.call(sections, function (section) {
       var parts = section.querySelectorAll(PARTS);
       var step = 0;
@@ -51,7 +54,9 @@
         if (el.getBoundingClientRect().top <= vh) return;   // above the fold: leave alone
         el.classList.add('rv');
         if (el.matches(MEDIA)) el.classList.add('rv-media');
-        el.style.setProperty('--rv-delay', (Math.min(step, MAX_STEPS) * STEP) + 'ms');
+        /* Gallery tiles stagger across a row, not down the whole grid. */
+        var n = el.classList.contains('gallery-img') ? step % 3 : Math.min(step, MAX_STEPS);
+        el.style.setProperty('--rv-delay', (n * STEP) + 'ms');
         step++;
         pending.push(el);
         io.observe(el);

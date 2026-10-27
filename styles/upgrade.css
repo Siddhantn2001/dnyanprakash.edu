@@ -406,3 +406,7 @@ html.dp-strip-on body { padding-bottom: 72px; }
 /* ---------- B7 (events). The visit line, in Our Mission ----------------- */
 .mission-visit { margin: 0 0 16px !important; }
 .mission-visit a { color: inherit; text-decoration: underline; text-decoration-color: #9E1B32; text-underline-offset: 0.2em; white-space: nowrap; }
+/* The admissions box keeps white text on its red (A1's ink rule reached it). */
+.aside-cta p { color: #fff !important; }
+/* No glass: the newsletter arrows and the menu backdrop lose their blur. */
+.coverflow-nav, .mobile-backdrop { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
