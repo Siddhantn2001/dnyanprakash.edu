@@ -293,3 +293,33 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
 /* On the red admissions box the solid button turns white (A3 fix). */
 .aside-cta .aside-cta-btn { background: #fff !important; color: #9E1B32 !important; }
 @media (hover: hover) and (pointer: fine) { .aside-cta .aside-cta-btn:hover { background: #f1f2f2 !important; } }
+
+/* ---------- B6. News and division cards --------------------------------- */
+/* News tiles: photo first, then the headline, then the date as plain text.
+   No red fill; the whole tile is one link. */
+.news-card {
+  display: flex !important; flex-direction: column;
+  background: transparent !important; color: var(--ink) !important;
+  overflow: visible !important; transform: none !important;
+}
+.news-card .news-img-wrap { order: -1; aspect-ratio: 3 / 2; }
+.news-card .news-heading-block {
+  background: transparent !important; color: var(--ink) !important;
+  padding: 16px 0 0 !important; min-height: 0 !important;
+}
+.news-card .news-headline, .news-card .news-headline a { color: var(--ink) !important; }
+.news-card .news-date { color: #6B6D70 !important; opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .news-card:hover .news-headline, .news-card:hover .news-headline a { color: #9E1B32 !important; }
+}
+
+/* Division cards: one per row on phones, 2×2 on desktop so the photos are
+   big enough to read; title, then the age range on its own line. */
+.academics-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 40px !important; }
+@media (min-width: 768px) { .academics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 48px 32px !important; } }
+.academics-card.row-1, .academics-card.row-2 { grid-column: auto !important; }
+.academics-card, .academics-card:hover { transform: none !important; }
+.academics-card .ac-img { aspect-ratio: 3 / 2 !important; margin-bottom: 16px !important; }
+.academics-card h3 { font-size: 28px !important; margin: 0 !important; }
+.academics-card .ac-age { font-size: 16px !important; font-weight: 600; color: #9E1B32 !important; margin: 4px 0 8px !important; }
+.academics-card p:not(.ac-age) { font-size: var(--body) !important; line-height: 1.6 !important; }
