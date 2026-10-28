@@ -450,9 +450,10 @@ html.dp-strip-on body { padding-bottom: 72px; }
   .story-grid:not(.story-grid--media-first) .story-frame { margin-left: auto; }
 }
 @media (min-width: 1280px) {
-  /* The tour stays a whole picture on screen (at most 80% of its height),
-     on the heading's left edge. */
-  .tour-facade, .tour-player { max-width: min(100%, calc(80svh * 16 / 9)); margin-left: 0; margin-right: auto; }
+  /* The tour fills the landing container exactly, the same left and right
+     edges as its heading and the sections above and below (at 1920:
+     1688x950, inside a 1080px screen). */
+  .tour-facade, .tour-player { max-width: 100%; margin-left: 0; margin-right: 0; }
   /* The newsletter had its own 1200px cap; it follows the container now,
      text on the story measure, the covers take the rest. */
   .newsletter-featured { max-width: none; grid-template-columns: minmax(0, clamp(460px, 30vw, 560px)) minmax(0, 1fr); gap: clamp(56px, 5vw, 128px); }
