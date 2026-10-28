@@ -627,3 +627,26 @@ section[aria-labelledby="happening-heading"].section-pad { padding-bottom: clamp
 .mobile-accordion summary::after { font-family: "Libre Franklin", system-ui, sans-serif; font-size: 24px !important; color: #2b2724 !important; }
 .mobile-accordion .mobile-sublinks { padding: 0 20px 16px 20px !important; gap: 0 !important; }
 .mobile-accordion .mobile-sublinks a { font-size: 17px !important; min-height: 44px; display: flex; align-items: center; padding: 0 !important; }
+
+/* ---------- Forms: fields that can be seen --------------------------------
+   Removing outlines (A2) also took the borders off the contact form, so on
+   white its fields were invisible: labels over blank space. Form fields
+   keep a line (the house style allows it there), the same 1px ink edge as
+   the footer's email field. */
+main form input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]),
+main form textarea, main form select {
+  border: 1px solid #2b2724 !important; border-radius: 0 !important; background: #fff !important;
+  color: #2b2724; font: inherit; font-size: 16px !important; padding: 10px 12px !important; min-height: 48px;
+}
+main form input:focus-visible, main form textarea:focus-visible, main form select:focus-visible {
+  outline: 3px solid #010155 !important; outline-offset: 2px;
+}
+
+/* ---------- Phone polish: inner-page top bar --------------------------------
+   Inner pages carried Parent Login and four 14px social icons above the
+   logo. On phones the bar keeps only मराठी, as on the homepage: Parent
+   Login is in the menu under Login, the socials are in the footer. */
+@media (max-width: 767px) {
+  [data-section="utility-bar"] a[href*="userlogin"],
+  [data-section="utility-bar"] #lang-toggle ~ div { display: none !important; }
+}
