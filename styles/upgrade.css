@@ -522,3 +522,13 @@ section[aria-labelledby="happening-heading"].section-pad { padding-bottom: clamp
 @media (max-width: 767px) {
   .hero-social-rail { display: none !important; }
 }
+
+/* ---------- Phone polish: story frames 4:5 --------------------------------
+   A 4:3 frame on a tall phone left ~200px of empty ground above and below
+   the held heading and frame, and the faces small. Under 768px the frame
+   and its slides are 4:5: every one of the 14 photographs was checked at
+   this crop and keeps its subject (portraits use their pos focal point). */
+@media (max-width: 767px) {
+  .story-frame, .story-track .story-slide { aspect-ratio: 4 / 5; }
+  .story-frame { --fw: min(100% + 40px, calc((100svh - var(--story-chrome, 260px)) * 4 / 5)); }
+}

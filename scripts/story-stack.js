@@ -13,7 +13,7 @@
          .story-pin      position: sticky — nothing inside it moves
            .story-text     .story-head  headline
                            .story-body  paragraph + named link
-           .story-media    .story-frame  fixed 4:3 window, clips
+           .story-media    .story-frame  fixed window, clips (4:5 phone, 4:3 above)
                              .story-track  the photographs, translated here
 
    WHY THE PARAGRAPH LEAVES THE PIN BELOW 1024px
@@ -24,9 +24,8 @@
    photographs, then the prose.
 
    PACE
-   Each photograph gets PACE x the frame height of scroll (PACE_PHONE below
-   1024px, PACE_WIDE above), so the photos move a little faster than the
-   page (1 / PACE). The section's extra height is exactly
+   Each photograph gets PACE x the frame height of scroll, so the photos
+   move a little faster than the page (1 / PACE). The section's extra height is exactly
    that travel: nothing pinned waits on an empty screen.
 
    WHERE IT HOLDS
@@ -45,11 +44,9 @@
 
   var DIR = 'images/story/';
   var SIDE_BY_SIDE = 1024;     // matches @media (min-width: 1024px) in index.html
-  /* Scroll per photograph, in frame heights. Desktop frames are 1.3-2x
-     the phone's, so a lower factor keeps the scroll per photo near the
-     phone's and the page from doubling in length (about 300-380px a photo
-     from 1440 to 1920). */
-  var PACE_PHONE = 0.7, PACE_WIDE = 0.55;
+  /* Scroll per photograph, in frame heights: about 270px a photo on a
+     phone (4:5 frame) and 300-380px from 1440 to 1920. */
+  var PACE = 0.55;
   var mounts = document.querySelectorAll('[data-story-stack]');
   if (!mounts.length) return;
 
@@ -178,7 +175,7 @@
       t = tracks[i];
       var top = room + Math.max(stacked ? 12 : 24, (vh - room - m[i].pinH) / 2);
       t.pin.style.top = Math.round(top) + 'px';
-      t.scroll.style.height = Math.round(m[i].pinH + (t.n - 1) * m[i].fh * (stacked ? PACE_PHONE : PACE_WIDE)) + 'px';
+      t.scroll.style.height = Math.round(m[i].pinH + (t.n - 1) * m[i].fh * PACE) + 'px';
     }
     cache();
     update();
