@@ -245,11 +245,11 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
   --t-hover: 180ms;
 }
 .site-footer {
-  /* White ground, ink text (owner, 2026-10-28). The hairline keeps it
-     apart from a white section above. */
+  /* White ground, ink text (owner, 2026-10-28). No rule on top: the
+     house style separates with space and tone, never a line. */
   background: var(--color-bg, #fff) !important; color: #2b2724 !important;
   padding: clamp(40px, 5vw, 72px) var(--margin) 20px !important;
-  border-top: 1px solid var(--color-border, #bfc2c5) !important;
+  border-top: 0 !important;
   display: grid; grid-template-rows: auto 1fr auto; gap: clamp(48px, 9vh, 120px);
 }
 .footer-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; font-size: var(--step-body); line-height: 1.6; }
@@ -587,4 +587,22 @@ section[aria-labelledby="happening-heading"].section-pad { padding-bottom: clamp
   }
   .stats-arrow.prev { grid-area: p; }
   .stats-arrow.next { grid-area: n; }
+}
+
+/* ---------- Phone polish: footer -------------------------------------------
+   The LinkedIn icon wrapped alone onto a second row and the email field and
+   Soon were squeezed into half the width. On phones every group runs the
+   full width: Visit, Contact, the pages in two columns, then Follow with
+   the four icons in one row and the email field beside its button. */
+@media (max-width: 767px) {
+  .footer-cols { grid-template-columns: minmax(0, 1fr) !important; gap: 32px !important;
+    grid-template-areas: "visit" "contact" "pages" "follow"; }
+  .footer-col-visit { grid-area: visit; } .footer-col-contact { grid-area: contact; }
+  .footer-col-pages { grid-area: pages; } .footer-col-follow { grid-area: follow; }
+  .footer-col-pages .footer-list { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+  .footer-social { flex-wrap: nowrap; }
+  .footer-subscribe { flex-direction: row !important; }
+  .footer-subscribe button { flex: 0 0 auto; }
+  .site-footer { gap: 48px !important; padding-left: 20px !important; padding-right: 20px !important; }
+  .footer-note { text-wrap: balance; }
 }
