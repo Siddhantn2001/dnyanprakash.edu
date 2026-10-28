@@ -650,3 +650,21 @@ main form input:focus-visible, main form textarea:focus-visible, main form selec
   [data-section="utility-bar"] a[href*="userlogin"],
   [data-section="utility-bar"] #lang-toggle ~ div { display: none !important; }
 }
+
+/* ---------- Small phones: rows instead of narrow columns -------------------
+   At 375 and below the two smaller news stories (and at 320 the division
+   cards) were ~140-170px wide: three-line titles, wrapped dates. They
+   become rows there: the tall photo on the left, the words beside it. */
+@media (max-width: 399px) {
+  .nx-c { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .nx-c .nx-wide { grid-column: auto; }
+  .nx-c .nx-story:not(.nx-wide) { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); column-gap: 16px; align-items: start; }
+  .nx-c .nx-story:not(.nx-wide) .nx-title { margin-top: 0; }
+  .nx-c .nx-story:not(.nx-wide) .nx-slot { display: none; }
+}
+@media (max-width: 359px) {
+  .academics-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 28px !important; }
+  .academics-card { display: grid !important; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); column-gap: 16px; align-items: start; }
+  .academics-card .ac-img { grid-row: span 3; margin-bottom: 0 !important; }
+  .nx-c .nx-story:not(.nx-wide) .nx-title { font-size: 20px !important; text-wrap: pretty; }
+}
