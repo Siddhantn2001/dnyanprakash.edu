@@ -24,9 +24,9 @@
    photographs, then the prose.
 
    PACE
-   Each photograph gets PACE x the frame height of scroll, so the photos
-   move a little faster than the page (1 / PACE) and the pace is the same
-   proportionally on every screen. The section's extra height is exactly
+   Each photograph gets PACE x the frame height of scroll (PACE_PHONE below
+   1024px, PACE_WIDE above), so the photos move a little faster than the
+   page (1 / PACE). The section's extra height is exactly
    that travel: nothing pinned waits on an empty screen.
 
    WHERE IT HOLDS
@@ -45,7 +45,11 @@
 
   var DIR = 'images/story/';
   var SIDE_BY_SIDE = 1024;     // matches @media (min-width: 1024px) in index.html
-  var PACE = 0.7;              // scroll per photograph, in frame heights
+  /* Scroll per photograph, in frame heights. Desktop frames are 1.3-2x
+     the phone's, so a lower factor keeps the scroll per photo near the
+     phone's and the page from doubling in length (about 300-380px a photo
+     from 1440 to 1920). */
+  var PACE_PHONE = 0.7, PACE_WIDE = 0.55;
   var mounts = document.querySelectorAll('[data-story-stack]');
   if (!mounts.length) return;
 
@@ -59,8 +63,8 @@
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Width descriptors, so each slide ships at the size the frame paints:
-     the full phone width, or the 548px desktop column. */
-  var SIZES = '(max-width: 1023px) 100vw, 548px';
+     the full phone width, or up to 56% of a desktop screen. */
+  var SIZES = '(max-width: 1023px) 100vw, 56vw';
   function picture(photo) {
     var stem = DIR + photo.base;
     var WS = (window.DP_STORY_WIDTHS || {})[photo.base] || [];
@@ -174,7 +178,7 @@
       t = tracks[i];
       var top = room + Math.max(stacked ? 12 : 24, (vh - room - m[i].pinH) / 2);
       t.pin.style.top = Math.round(top) + 'px';
-      t.scroll.style.height = Math.round(m[i].pinH + (t.n - 1) * m[i].fh * PACE) + 'px';
+      t.scroll.style.height = Math.round(m[i].pinH + (t.n - 1) * m[i].fh * (stacked ? PACE_PHONE : PACE_WIDE)) + 'px';
     }
     cache();
     update();

@@ -414,3 +414,42 @@ html.dp-strip-on body { padding-bottom: 72px; }
 .aside-cta p { color: #fff !important; }
 /* No glass: the newsletter arrows and the menu backdrop lose their blur. */
 .coverflow-nav, .mobile-backdrop { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+
+/* ---------- Wide screens: content scales with the display ---------------
+   The 1200px --container-max left a 1920px screen 37% empty and the story
+   photographs at 548px. From 1280px the HOMEPAGE container is fluid
+   (inner pages keep 1200px until their article layouts get the same
+   pass, or their body text would run 150 characters a line): 90% of the
+   screen, never under 1200px, capped at 1920px (1296px at 1440, 1512 at
+   1680, 1728 at 1920, 1920 at 2560). Reading measures do not grow with it:
+   text columns keep their own caps; the extra width goes to pictures.
+   Section gaps on desktop are one fluid step instead of a flat 160px. */
+@media (min-width: 1280px) {
+  .is-home .container-main { max-width: clamp(1200px, 90vw, 1920px); }
+}
+@media (min-width: 1024px) {
+  section.section-pad { padding-top: clamp(72px, 6vw, 128px); padding-bottom: clamp(72px, 6vw, 128px); }
+  section.story.section-pad { padding-top: clamp(72px, 6vw, 128px) !important; padding-bottom: clamp(72px, 6vw, 128px) !important; }
+  /* Story: the text column grows gently (460-560px, about 50-65
+     characters a line); the photograph takes the rest, up to 64% of the
+     screen height so the held frame sits with room around it. */
+  .story-grid {
+    grid-template-columns: minmax(0, clamp(460px, 30vw, 560px)) minmax(0, 1fr);
+    column-gap: clamp(56px, 5vw, 128px);
+  }
+  .story-grid--media-first { grid-template-columns: minmax(0, 1fr) minmax(0, clamp(460px, 30vw, 560px)); }
+  .story-frame { width: min(100%, calc(64svh * 4 / 3)); }
+  .story-grid:not(.story-grid--media-first) .story-frame { margin-left: auto; }
+}
+@media (min-width: 1280px) {
+  /* The tour stays a whole picture on screen: at most 72% of its height. */
+  .tour-facade { max-width: min(100%, calc(72svh * 16 / 9)); margin-left: auto; margin-right: auto; }
+  /* The newsletter had its own 1200px cap; it follows the container now,
+     text on the story measure, the covers take the rest. */
+  .newsletter-featured { max-width: none; grid-template-columns: minmax(0, clamp(460px, 30vw, 560px)) minmax(0, 1fr); gap: clamp(56px, 5vw, 128px); }
+  .mission-stats-grid .mission-body, .mission-stats-grid .mission-visit { max-width: 620px; }
+}
+/* Divisions: four across once each card can still be about 350px wide. */
+@media (min-width: 1680px) {
+  .academics-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}

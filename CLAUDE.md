@@ -213,6 +213,8 @@ Write these as CSS custom properties inside a `<style>` block in `<head>` so the
 --nav-height:          80px
 ```
 
+**Wide screens (owner request, 2026-10-28):** on the homepage only, from 1280px the container is fluid — `clamp(1200px, 90vw, 1920px)` in `styles/upgrade.css` — so content scales with large displays. Text columns keep their own caps (460–560px story/newsletter text, 620px mission paragraph); the extra width goes to photographs. Inner pages stay at 1200px until their article layouts get the same pass.
+
 **After locking these tokens, do not change them without the owner's permission.** Every section uses these. Changing one changes the whole site.
 
 ---
