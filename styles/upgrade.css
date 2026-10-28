@@ -551,3 +551,40 @@ section[aria-labelledby="happening-heading"].section-pad { padding-bottom: clamp
   .coverflow-nav-next { right: calc(50% - 110px) !important; }
   .coverflow-dots { bottom: 10px !important; }
 }
+
+/* ---------- Phone polish: divisions ---------------------------------------
+   Four full-width cards took two and a half screens for four short facts.
+   On phones they sit 2x2 with tall photographs, title, age line and the
+   one-sentence description. */
+@media (max-width: 767px) {
+  .academics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 32px 16px !important; }
+  .academics-card .ac-img { aspect-ratio: 4 / 5 !important; margin-bottom: 12px !important; }
+  .academics-card h3 { font-size: 22px !important; line-height: 1.15 !important; }
+  .academics-card .ac-age { font-size: 15px !important; margin: 4px 0 6px !important; }
+  .academics-card p:not(.ac-age) { font-size: 16px !important; line-height: 1.5 !important; }
+}
+
+/* ---------- Phone polish: mission and the numbers --------------------------
+   The numbers sat in a 1:1 box (the old circle) centred under left-set
+   text, leaving ~100px of empty ground above and ~150px below, with thin
+   outlined arrow circles and a grey number. On phones the block hangs from
+   the same edge as the mission text: title, number in ink, label, and the
+   two arrows as plain 44px buttons in a row beneath. */
+@media (max-width: 767px) {
+  section.mission-stats.section-pad { padding-top: 56px !important; padding-bottom: 56px !important; }
+  .mission-stats .section-title { margin-bottom: 20px !important; padding-bottom: 0 !important; }
+  .mission-stats-grid { gap: 40px !important; }
+  .stats-circle {
+    aspect-ratio: auto !important; max-width: none !important; margin: 0 !important; border: 0 !important;
+    display: grid !important; grid-template-columns: 44px 44px 1fr; grid-template-areas: "in in in" "p n ."; justify-items: start; align-items: center;
+  }
+  .stats-circle-inner { grid-area: in; text-align: left !important; padding: 0 !important; max-width: none !important; }
+  .stats-title { margin: 0 0 12px !important; }
+  .stat-num { color: #2b2724 !important; font-size: 72px !important; font-weight: 500 !important; margin: 0 0 8px !important; }
+  .stats-arrow {
+    position: static !important; transform: none !important; border: 0 !important;
+    color: #2b2724 !important; margin-top: 8px; margin-left: -12px;
+  }
+  .stats-arrow.prev { grid-area: p; }
+  .stats-arrow.next { grid-area: n; }
+}
