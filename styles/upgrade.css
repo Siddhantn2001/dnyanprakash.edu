@@ -453,3 +453,52 @@ html.dp-strip-on body { padding-bottom: 72px; }
 @media (min-width: 1680px) {
   .academics-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
 }
+
+/* ---------- Homepage news: one lead, two tall, one baseline ---------------
+   Real stories, titles and dates; the standfirst is each article's own
+   opening line. Pictures are tighter crops of each story's photo
+   (images/news-home/). */
+.nx a, .nx { color: inherit; }
+.nx-story { display: block; text-decoration: none !important; color: #2b2724; }
+.nx-img { margin: 0; overflow: hidden; background: #f1f2f2; }
+.nx-img picture, .nx-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.nx-img img { transition: transform 600ms cubic-bezier(0.22,1,0.36,1); }
+.nx-title { font-family: "Playfair Display", Georgia, serif !important; font-weight: 500 !important; letter-spacing: -0.01em; line-height: 1.1 !important; color: #2b2724; margin: 20px 0 0; text-wrap: balance; }
+.nx-dek { font-family: "Libre Franklin", system-ui, sans-serif; font-size: 18px; line-height: 1.55; color: #2b2724 !important; margin: 12px 0 0; max-width: 36em; }
+.nx-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 20px; margin: 16px 0 0; font-family: "Libre Franklin", system-ui, sans-serif; font-size: 16px; line-height: 1.5; color: #2b2724 !important; }
+.nx-meta time { color: #2b2724; }
+.nx-read { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 600; color: #9E1B32; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.nx-story:focus-visible { outline: 3px solid #010155; outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .nx-story:hover .nx-img img { transform: scale(1.03); }
+  .nx-story:hover .nx-title { text-decoration: underline; text-decoration-color: #9E1B32; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+  .nx-story:hover .nx-read svg { transform: translateX(3px); }
+}
+.nx-read svg { transition: transform 200ms ease; }
+@media (prefers-reduced-motion: reduce) { .nx-img img, .nx-read svg { transition: none; } }
+/* The band under the row: this section's own bottom padding, tightened. */
+section[aria-labelledby="happening-heading"].section-pad { padding-bottom: clamp(40px, 4vw, 72px) !important; }
+
+.nx-c { display: grid; gap: 32px 16px; margin-top: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.nx-c .nx-story { display: block; }
+.nx-c .nx-wide { grid-column: 1 / -1; }
+.nx-c .nx-img { aspect-ratio: 4 / 5; }
+.nx-c .nx-wide .nx-img { aspect-ratio: 3 / 2; }
+.nx-c .nx-title { font-size: 22px !important; }
+.nx-c .nx-wide .nx-title { font-size: 30px !important; }
+.nx-c .nx-story:not(.nx-wide) .nx-meta { flex-direction: column; align-items: flex-start; gap: 0; }
+@media (min-width: 1024px) {
+  .nx-c { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(24px, 2.4vw, 48px); row-gap: 0; }
+  /* One shared baseline: picture, title, standfirst and date are rows of
+     the parent grid, so a two-line title cannot push its date out of step. */
+  .nx-c .nx-story { display: grid; grid-template-rows: subgrid; grid-row: span 4; align-content: start; }
+  .nx-c .nx-body { display: contents; }
+  .nx-c .nx-wide { grid-column: auto; }
+  /* All three pictures share one height: the wide one sets it at 3:2. */
+  .nx-c .nx-img { aspect-ratio: auto; height: 100%; }
+  .nx-c .nx-wide .nx-img { aspect-ratio: 3 / 2; height: auto; }
+  .nx-c .nx-title { font-size: clamp(24px, 1.8vw, 32px) !important; }
+  .nx-c .nx-wide .nx-title { font-size: clamp(32px, 2.8vw, 52px) !important; }
+  .nx-c .nx-story:not(.nx-wide) .nx-meta { flex-direction: row; align-items: center; gap: 6px 20px; }
+}
+
