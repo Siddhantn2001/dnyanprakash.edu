@@ -678,3 +678,10 @@ main form input:focus-visible, main form textarea:focus-visible, main form selec
   .academics-card .ac-img { grid-row: span 3; margin-bottom: 0 !important; }
   .nx-c .nx-story:not(.nx-wide) .nx-title { font-size: 20px !important; text-wrap: pretty; }
 }
+
+/* ---------- At a Glance labels; the 404 title ------------------------------
+   The At a Glance labels were the last tiny tracked red capitals on the
+   site; they are now sentence-case labels in ink at a readable size. The
+   404 title ran to three lines on phones; it steps down there. */
+.data-row dt { text-transform: none !important; letter-spacing: 0 !important; font-size: 16px !important; font-weight: 600 !important; color: #2b2724 !important; }
+@media (max-width: 479px) { section[aria-label="Page not found"] .article-heading h1 { font-size: clamp(26px, 8vw, 34px) !important; } }
