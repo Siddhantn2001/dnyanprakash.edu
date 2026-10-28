@@ -502,3 +502,23 @@ section[aria-labelledby="happening-heading"].section-pad { padding-bottom: clamp
   .nx-c .nx-story:not(.nx-wide) .nx-meta { flex-direction: row; align-items: center; gap: 6px 20px; }
 }
 
+/* ---------- Phone polish: hero header ------------------------------------
+   Over the hero's pale sky the white menu icon and मराठी toggle vanished;
+   they take the ink until the header turns white on scroll. The toggle
+   gets a 44px hit area without growing the bar. The floating social rail
+   leaves the phone hero (the links stay in the footer). */
+.nowrap { white-space: nowrap; }
+@media (max-width: 1023px) {
+  .is-home .site-header:not(.is-scrolled) [data-mobile-open],
+  .is-home .site-header:not(.is-scrolled) #lang-toggle { color: #2b2724 !important; }
+  .is-home .site-header:not(.is-scrolled) #lang-toggle .lang-toggle-label { color: #2b2724 !important; }
+  /* Leftover padding from a removed backdrop put the hero text 24px in
+     from the logo's edge; on phones it lines up with the logo. */
+  .hero-text-block { padding-left: 0; padding-right: 0; }
+  .hero .hero-sub { text-wrap: balance; }
+  #lang-toggle { position: relative; }
+  #lang-toggle::after { content: ""; position: absolute; inset: -12px -8px; }
+}
+@media (max-width: 767px) {
+  .hero-social-rail { display: none !important; }
+}
