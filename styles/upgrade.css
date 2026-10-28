@@ -214,7 +214,7 @@ main label { text-transform: none !important; letter-spacing: 0 !important; font
 a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible, input:focus-visible {
   outline: 3px solid #010155 !important; outline-offset: 3px !important;
 }
-.hero a:focus-visible, .site-footer a:focus-visible, .site-footer button:focus-visible { outline-color: #fff !important; }
+.hero a:focus-visible { outline-color: #fff !important; }
 
 /* Small controls get 44px hit areas; what you see stays the same size. */
 .coverflow-dot {
@@ -244,37 +244,39 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
   --t-hover: 180ms;
 }
 .site-footer {
-  background: var(--accent-dark) !important; color: #fff !important;
+  /* White ground, ink text (owner, 2026-10-28). The hairline keeps it
+     apart from a white section above. */
+  background: var(--color-bg, #fff) !important; color: var(--color-text-primary, #292f36) !important;
   padding: clamp(40px, 5vw, 72px) var(--margin) 20px !important;
-  border-top: 0 !important;
+  border-top: 1px solid var(--color-border, #bfc2c5) !important;
   display: grid; grid-template-rows: auto 1fr auto; gap: clamp(48px, 9vh, 120px);
 }
 .footer-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; font-size: var(--step-body); line-height: 1.6; }
-.footer-cols h2 { font-family: var(--font-text) !important; font-size: var(--step-body) !important; font-weight: 600 !important; line-height: 1.6 !important; letter-spacing: 0 !important; margin: 0 0 8px; color: #fff; }
-.footer-cols address { font-style: normal; color: rgba(255,255,255,0.86); }
-.site-footer .footer-cols a { color: rgba(255,255,255,0.86); text-decoration: none; }
-.site-footer .footer-cols a:hover { color: #fff; text-decoration: underline; }
+.footer-cols h2 { font-family: var(--font-text) !important; font-size: var(--step-body) !important; font-weight: 600 !important; line-height: 1.6 !important; letter-spacing: 0 !important; margin: 0 0 8px; color: var(--color-text-primary, #292f36); }
+.footer-cols address { font-style: normal; color: var(--color-text-primary, #292f36); }
+.site-footer .footer-cols a { color: var(--color-text-primary, #292f36); text-decoration: none; }
+.site-footer .footer-cols a:hover { color: var(--color-primary, #9E1B32); text-decoration: underline; }
 .footer-list { display: flex; flex-direction: column; }
 .footer-list a { min-height: 32px; display: inline-flex; align-items: center; }
 .footer-social { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0 !important; }
 .site-footer .footer-social a {
   width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.12); color: #fff; border: 0 !important; border-radius: 0 !important;
+  background: var(--color-bg-alt, #f1f2f2); color: var(--color-text-primary, #292f36); border: 0 !important; border-radius: 0 !important;
   transition: background-color var(--t-hover) ease;
 }
-.site-footer .footer-social a:hover { background: rgba(255,255,255,0.24); text-decoration: none; }
+.site-footer .footer-social a:hover { background: var(--color-border, #bfc2c5); text-decoration: none; }
 .footer-social svg { width: 18px; height: 18px; }
 .footer-subscribe { display: flex; gap: 6px; margin-top: 16px; max-width: 100% !important; }
-.footer-subscribe input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px !important; border: 0 !important; background: rgba(255,255,255,0.12) !important; color: #fff; font: inherit; font-size: 16px !important; opacity: 1 !important; }
-.footer-subscribe input::placeholder { color: rgba(255,255,255,0.7); }
-.footer-subscribe input:disabled { background: rgba(255,255,255,0.12); color: #fff; -webkit-text-fill-color: rgba(255,255,255,0.75); opacity: 1; }
-.footer-subscribe button { min-height: 44px; padding: 0 14px !important; border: 0; background: #fff !important; color: var(--accent-dark) !important; font: 600 1rem var(--font-text) !important; text-transform: none !important; letter-spacing: 0 !important; opacity: 0.6 !important; cursor: not-allowed; }
-.footer-note { margin: 8px 0 0; color: rgba(255,255,255,0.86); }
-/* The wordmark is always visible: it never carries .reveal (at the very
-   bottom of a page the reveal never fires, which left an empty band). */
-.footer-wordmark { display: block; width: 100%; height: auto; color: #fff; opacity: 1 !important; transform: none !important; }
-.footer-wordmark text { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.03em; fill: currentColor; }
-.footer-legal { font-size: var(--step-small); color: rgba(255,255,255,0.86); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+.footer-subscribe input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px !important; border: 0 !important; background: var(--color-bg-alt, #f1f2f2) !important; color: var(--color-text-primary, #292f36); font: inherit; font-size: 16px !important; opacity: 1 !important; }
+.footer-subscribe input::placeholder { color: var(--color-text-muted, #6B6D70); }
+.footer-subscribe input:disabled { background: var(--color-bg-alt, #f1f2f2); color: var(--color-text-muted, #6B6D70); -webkit-text-fill-color: var(--color-text-muted, #6B6D70); opacity: 1; }
+.footer-subscribe button { min-height: 44px; padding: 0 14px !important; border: 0; background: var(--color-primary, #9E1B32) !important; color: #fff !important; font: 600 1rem var(--font-text) !important; text-transform: none !important; letter-spacing: 0 !important; opacity: 0.6 !important; cursor: not-allowed; }
+.footer-note { margin: 8px 0 0; color: var(--color-text-muted, #6B6D70); }
+/* The wordmark is the school's ज्ञानप्रकाश logo artwork, unaltered (CLAUDE.md
+   §6), at the full footer width. Always visible: it never carries .reveal
+   (at the very bottom of a page the reveal never fires). */
+.footer-wordmark { display: block; width: 100%; height: auto; opacity: 1 !important; transform: none !important; }
+.footer-legal { font-size: var(--step-small); color: var(--color-text-muted, #6B6D70); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
 .site-footer .footer-legal a { color: inherit; }
 .footer-cols a { overflow-wrap: anywhere; }
 @media (max-width: 1023px) {
