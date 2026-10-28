@@ -611,3 +611,19 @@ section[aria-labelledby="happening-heading"].section-pad { padding-bottom: clamp
    The strip was the one place photographs had rounded corners, a 1px edge
    and a resting shadow; every other photo on the site is square and flat. */
 .gallery-strip-frame .gallery-img { border-radius: 0 !important; border: 0 !important; box-shadow: none !important; }
+
+/* ---------- Menu drawer: type, not rules ----------------------------------
+   The drawer still had tracked capitals between hairlines. Its sections are
+   now set as large serif words in sentence case, separated by space; the
+   pages under each open at the body size with 44px rows. */
+.mobile-panel > header { border-bottom-color: transparent !important; }
+.mobile-panel > div.border-t { border-top-color: transparent !important; }
+.mobile-accordion { border-bottom: 0 !important; }
+.mobile-accordion summary {
+  padding: 10px 20px !important; min-height: 56px;
+  font-family: "Playfair Display", Georgia, serif !important; font-size: 28px !important; font-weight: 500 !important;
+  line-height: 1.15 !important; text-transform: none !important; letter-spacing: -0.01em !important; color: #2b2724 !important;
+}
+.mobile-accordion summary::after { font-family: "Libre Franklin", system-ui, sans-serif; font-size: 24px !important; color: #2b2724 !important; }
+.mobile-accordion .mobile-sublinks { padding: 0 20px 16px 20px !important; gap: 0 !important; }
+.mobile-accordion .mobile-sublinks a { font-size: 17px !important; min-height: 44px; display: flex; align-items: center; padding: 0 !important; }
