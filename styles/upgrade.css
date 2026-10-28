@@ -343,9 +343,17 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
 [data-carousel-dots][hidden] { display: none !important; }
 @media (max-width: 639px) { .crumb-date { margin-left: 0; padding-left: 0; flex-basis: 100%; margin-top: 2px; } }
 
-/* ---------- B5. The tour on a dark field -------------------------------- */
-.tour-field { background: #2b2724; color: #fff; }
-.tour-field .section-title { color: #fff !important; margin-bottom: 32px !important; }
+/* ---------- B5. The tour --------------------------------------------------
+   White ground, ink heading: the section above sits on the light-grey
+   tone step, so the change of tone is the boundary and the picture is the
+   field. The poster is a real 16:9 frame of the video (two boys at a
+   tree), so the frame holds no bars; on phones it runs edge to edge. */
+.tour-field { background: #fff; color: #2b2724; }
+.tour-field .section-title { color: #2b2724 !important; margin-bottom: 32px !important; }
+@media (max-width: 767px) {
+  .tour-field .section-title { margin-bottom: 20px !important; }
+  .tour-facade, .tour-player { width: calc(100% + 40px) !important; max-width: none !important; margin: 0 -20px !important; }
+}
 .tour-facade, .tour-player {
   position: relative; display: block; width: 100%; aspect-ratio: 16 / 9;
   border: 0; background: #000; overflow: hidden;
@@ -442,8 +450,9 @@ html.dp-strip-on body { padding-bottom: 72px; }
   .story-grid:not(.story-grid--media-first) .story-frame { margin-left: auto; }
 }
 @media (min-width: 1280px) {
-  /* The tour stays a whole picture on screen: at most 72% of its height. */
-  .tour-facade { max-width: min(100%, calc(72svh * 16 / 9)); margin-left: auto; margin-right: auto; }
+  /* The tour stays a whole picture on screen (at most 80% of its height),
+     on the heading's left edge. */
+  .tour-facade, .tour-player { max-width: min(100%, calc(80svh * 16 / 9)); margin-left: 0; margin-right: auto; }
   /* The newsletter had its own 1200px cap; it follows the container now,
      text on the story measure, the covers take the rest. */
   .newsletter-featured { max-width: none; grid-template-columns: minmax(0, clamp(460px, 30vw, 560px)) minmax(0, 1fr); gap: clamp(56px, 5vw, 128px); }
