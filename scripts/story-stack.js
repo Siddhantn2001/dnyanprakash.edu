@@ -220,9 +220,9 @@
 
       var p = (t.pinTop - top) / t.travel;
       p = p < 0 ? 0 : (p > 1 ? 1 : p);
-      var ny = -(p * t.max);
+      var ny = Math.round(-(p * t.max));
       if (ny !== t.last) {
-        t.track.style.transform = 'translate3d(0,' + ny.toFixed(2) + 'px,0)';
+        t.track.style.transform = 'translate3d(0,' + Math.round(ny) + 'px,0)';
         t.last = ny;
       }
     }

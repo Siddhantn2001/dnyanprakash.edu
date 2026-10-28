@@ -606,3 +606,8 @@ section[aria-labelledby="happening-heading"].section-pad { padding-bottom: clamp
   .site-footer { gap: 48px !important; padding-left: 20px !important; padding-right: 20px !important; }
   .footer-note { text-wrap: balance; }
 }
+
+/* ---------- Gallery strip tiles: square and flat ---------------------------
+   The strip was the one place photographs had rounded corners, a 1px edge
+   and a resting shadow; every other photo on the site is square and flat. */
+.gallery-strip-frame .gallery-img { border-radius: 0 !important; border: 0 !important; box-shadow: none !important; }
