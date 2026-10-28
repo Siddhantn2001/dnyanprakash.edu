@@ -215,6 +215,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
   outline: 3px solid #010155 !important; outline-offset: 3px !important;
 }
 .hero a:focus-visible { outline-color: #fff !important; }
+.site-footer a:focus-visible, .site-footer button:focus-visible, .site-footer input:focus-visible { outline: 3px solid #010155 !important; outline-offset: 2px; }
 
 /* Small controls get 44px hit areas; what you see stays the same size. */
 .coverflow-dot {
@@ -246,37 +247,38 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
 .site-footer {
   /* White ground, ink text (owner, 2026-10-28). The hairline keeps it
      apart from a white section above. */
-  background: var(--color-bg, #fff) !important; color: var(--color-text-primary, #292f36) !important;
+  background: var(--color-bg, #fff) !important; color: #2b2724 !important;
   padding: clamp(40px, 5vw, 72px) var(--margin) 20px !important;
   border-top: 1px solid var(--color-border, #bfc2c5) !important;
   display: grid; grid-template-rows: auto 1fr auto; gap: clamp(48px, 9vh, 120px);
 }
 .footer-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; font-size: var(--step-body); line-height: 1.6; }
-.footer-cols h2 { font-family: var(--font-text) !important; font-size: var(--step-body) !important; font-weight: 600 !important; line-height: 1.6 !important; letter-spacing: 0 !important; margin: 0 0 8px; color: var(--color-text-primary, #292f36); }
-.footer-cols address { font-style: normal; color: var(--color-text-primary, #292f36); }
-.site-footer .footer-cols a { color: var(--color-text-primary, #292f36); text-decoration: none; }
+.footer-cols h2 { font-family: var(--font-text) !important; font-size: var(--step-body) !important; font-weight: 600 !important; line-height: 1.6 !important; letter-spacing: 0 !important; margin: 0 0 8px; color: #2b2724; }
+.footer-cols address { font-style: normal; color: #2b2724; }
+.site-footer .footer-cols a { color: #2b2724; text-decoration: none; }
 .site-footer .footer-cols a:hover { color: var(--color-primary, #9E1B32); text-decoration: underline; }
 .footer-list { display: flex; flex-direction: column; }
 .footer-list a { min-height: 32px; display: inline-flex; align-items: center; }
 .footer-social { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0 !important; }
 .site-footer .footer-social a {
   width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
-  background: var(--color-bg-alt, #f1f2f2); color: var(--color-text-primary, #292f36); border: 0 !important; border-radius: 0 !important;
+  /* Ink squares, white icons: on white they read as buttons, not wash. */
+  background: #2b2724; color: #fff; border: 0 !important; border-radius: 0 !important;
   transition: background-color var(--t-hover) ease;
 }
-.site-footer .footer-social a:hover { background: var(--color-border, #bfc2c5); text-decoration: none; }
+.site-footer .footer-social a:hover { background: var(--color-primary, #9E1B32); text-decoration: none; }
 .footer-social svg { width: 18px; height: 18px; }
 .footer-subscribe { display: flex; gap: 6px; margin-top: 16px; max-width: 100% !important; }
-.footer-subscribe input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px !important; border: 0 !important; background: var(--color-bg-alt, #f1f2f2) !important; color: var(--color-text-primary, #292f36); font: inherit; font-size: 16px !important; opacity: 1 !important; }
-.footer-subscribe input::placeholder { color: var(--color-text-muted, #6B6D70); }
-.footer-subscribe input:disabled { background: var(--color-bg-alt, #f1f2f2); color: var(--color-text-muted, #6B6D70); -webkit-text-fill-color: var(--color-text-muted, #6B6D70); opacity: 1; }
-.footer-subscribe button { min-height: 44px; padding: 0 14px !important; border: 0; background: var(--color-primary, #9E1B32) !important; color: #fff !important; font: 600 1rem var(--font-text) !important; text-transform: none !important; letter-spacing: 0 !important; opacity: 0.6 !important; cursor: not-allowed; }
-.footer-note { margin: 8px 0 0; color: var(--color-text-muted, #6B6D70); }
+.footer-subscribe input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px !important; border: 1px solid #2b2724 !important; background: #fff !important; color: #2b2724; font: inherit; font-size: 16px !important; opacity: 1 !important; }
+.footer-subscribe input::placeholder { color: var(--color-text-muted, #6B6D70); opacity: 1; }
+.footer-subscribe input:disabled { background: #fff; color: var(--color-text-muted, #6B6D70); -webkit-text-fill-color: var(--color-text-muted, #6B6D70); opacity: 1; }
+.footer-subscribe button { min-height: 44px; padding: 0 14px !important; border: 0; background: var(--color-primary, #9E1B32) !important; color: #fff !important; font: 600 1rem var(--font-text) !important; text-transform: none !important; letter-spacing: 0 !important; opacity: 1 !important; cursor: not-allowed; }
+.footer-note { margin: 8px 0 0; color: #2b2724; }
 /* The wordmark is the school's ज्ञानप्रकाश logo artwork, unaltered (CLAUDE.md
    §6), at the full footer width. Always visible: it never carries .reveal
    (at the very bottom of a page the reveal never fires). */
 .footer-wordmark { display: block; width: 100%; height: auto; opacity: 1 !important; transform: none !important; }
-.footer-legal { font-size: var(--step-small); color: var(--color-text-muted, #6B6D70); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+.footer-legal { font-size: var(--step-small); color: #2b2724; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
 .site-footer .footer-legal a { color: inherit; }
 .footer-cols a { overflow-wrap: anywhere; }
 @media (max-width: 1023px) {
