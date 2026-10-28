@@ -532,3 +532,22 @@ section[aria-labelledby="happening-heading"].section-pad { padding-bottom: clamp
   .story-frame, .story-track .story-slide { aspect-ratio: 4 / 5; }
   .story-frame { --fw: min(100% + 40px, calc((100svh - var(--story-chrome, 260px)) * 4 / 5)); }
 }
+
+/* ---------- Phone polish: newsletter --------------------------------------
+   It was the only centred section, under a ~130px hole, with its arrows
+   lying on the covers. On phones the header hangs from the same left edge
+   as every other section, the gap above it is one step, and the arrows sit
+   in one row with the dots under the cover: ← • • • → . */
+@media (max-width: 767px) {
+  section.newsletter-section.section-pad { padding-top: 56px !important; }
+  .newsletter-header { text-align: left; margin: 0 0 16px !important; max-width: none; }
+  .coverflow-nav {
+    top: auto !important; bottom: -6px; transform: none !important;
+    width: 44px !important; height: 44px !important;
+    background: transparent !important; color: #2b2724 !important;
+    opacity: 1 !important; font-size: 1.375rem;
+  }
+  .coverflow-nav-prev { left: calc(50% - 110px) !important; }
+  .coverflow-nav-next { right: calc(50% - 110px) !important; }
+  .coverflow-dots { bottom: 10px !important; }
+}
