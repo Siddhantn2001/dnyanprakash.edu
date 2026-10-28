@@ -381,8 +381,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
 }
 /* Cards lift their photo slightly on hover, desktop only. */
 @media (hover: hover) and (pointer: fine) {
-  .academics-card .ac-img img, .story-lead img, .story-slide img { transition: transform 600ms var(--ease-out); }
-  .academics-card:hover .ac-img img, .story-lead:hover img, .story-slide:hover img { transform: scale(1.03); }
+  .academics-card .ac-img img { transition: transform 600ms var(--ease-out); }
+  .academics-card:hover .ac-img img { transform: scale(1.03); }
 }
 
 /* ---------- B2. First-visit language strip (replaces the pop-up) -------- */

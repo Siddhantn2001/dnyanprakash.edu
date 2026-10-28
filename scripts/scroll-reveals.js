@@ -27,7 +27,7 @@
      DOM, which is reading order: heading, text, then pictures. */
   var PARTS = [
     'h1', 'h2', '.happening-sub', '.gallery-strip-frame', '.gallery-strip-foot',
-    '.story-text > *', '.story-lead', '.story-row',
+    '.story-text > *', '.story-tail > *', '.story-frame',
     '.news-card', '.academics-card', '.tour-facade',
     '.newsletter-header', '.newsletter-editorial', '.newsletter-cover-wrap',
     '.mission-stats-grid > *', '.events-list',
@@ -35,7 +35,7 @@
     '.faq-section', '.data-row',
     '.gallery-all .gallery-img', '.footer-cols > div', '.footer-legal'
   ].join(', ');
-  var MEDIA = '.story-lead, .story-row, .news-card, .academics-card, .tour-facade, .newsletter-cover-wrap, .gallery-strip-frame';
+  var MEDIA = '.story-frame, .news-card, .academics-card, .tour-facade, .newsletter-cover-wrap, .gallery-strip-frame';
   var STEP = 70, MAX_STEPS = 5;
 
   var pending = [];

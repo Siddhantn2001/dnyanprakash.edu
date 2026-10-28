@@ -707,60 +707,87 @@
     }
 
 
-    /* ---------- Story sections: one lead photo, a row of the rest ----------
-       Built by scripts/story-stack.js from scripts/story-stacks.js.
-       Phones: photo, then headline, paragraph and link, then a swipe row
-       with the next photo peeking in. Desktop: text beside the lead photo,
-       the row beneath. Nothing is pinned (targeted upgrade, B3). */
+    /* ---------- Story frame: one window, the photographs travel in it ----------
+       ONE MECHANISM AT EVERY WIDTH, 320 up: the text is held, one fixed 4:3
+       frame is held beside or under it, and the photographs travel upward
+       inside the frame as the page scrolls. scripts/story-stack.js builds
+       the track and drives it; this block only arranges.
+
+         .story-scroll   its height IS the scroll distance (set by the script)
+           .story-pin    position: sticky; nothing inside it moves
+             .story-head / .story-body   text
+             .story-frame > .story-track > .story-slide   photographs
+
+       What the targeted upgrade (B3) fixed and this keeps:
+       - Every slide fills the same 4:3 frame, so a photo's crop is the same
+         at every width; portrait photos carry a focal point (pos) in
+         scripts/story-stacks.js. No frame is squeezed by the screen height
+         on a portrait phone.
+       - The pin is only as tall as its contents, centred in the room below
+         the header (the script sets top), never min-height 100svh, and never
+         behind the sticky phone header.
+       - Section padding is 40px on phones and 96px on desktop.
+
+       Until the script marks a section .is-live (no script, or reduced
+       motion) nothing is pinned and the frame shows the first photograph.
+
+       Sticky safety: no ancestor of .story-pin may clip overflow-y or carry
+       a transform. */
+    .story-scroll { position: relative; }
+    .story-scroll.is-live .story-pin { position: sticky; top: 24px; }
     .story-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: "lead" "text" "row";
-      gap: 24px;
+      grid-template-areas: "text" "media";
+      gap: 20px;
     }
-    .story-media { display: contents; }
     .story-text { grid-area: text; min-width: 0; }
+    .story-media { grid-area: media; min-width: 0; }
     .story-text .section-title { margin: 0 0 16px !important; }
     .story-text .mission-body { margin: 0 0 4px !important; }
-    .story-lead { grid-area: lead; margin: 0; aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-bg-alt); }
-    .story-row { grid-area: row; min-width: 0; }
-    .story-lead picture, .story-slide picture { display: block; width: 100%; height: 100%; }
-    .story-lead img, .story-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
-    .story-slide { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-bg-alt); }
+
+    .story-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;            /* safe: not an ancestor of the pin */
+      background: var(--color-border);
+    }
+    .story-track .story-slide { margin: 0; aspect-ratio: 4 / 3; overflow: hidden; }
+    .story-slide picture { display: block; width: 100%; height: 100%; }
+    .story-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .story-tail { display: none; }
 
     @media (max-width: 1023px) {
-      /* The lead photo runs edge to edge; .container-main has 20px sides. */
-      .story-lead { margin: 0 -20px; }
-      .story-row {
-        display: flex; gap: 8px;
-        overflow-x: auto; overflow-y: hidden;
-        scroll-snap-type: x mandatory;
-        overscroll-behavior-x: contain;
-        margin: 0 -20px; padding: 0 20px;
-        scroll-padding: 0 20px;
-        scrollbar-width: none;
-      }
-      .story-row::-webkit-scrollbar { display: none; }
-      .story-slide { flex: 0 0 80%; scroll-snap-align: start; aspect-ratio: 3 / 2; }
-      .story-grid { gap: 20px; }
-      .story-text .section-title { margin-bottom: 12px !important; }
       section.story.section-pad { padding: 40px 0 !important; }
+      .story-text .section-title { margin-bottom: 0 !important; }
+      /* Capped by the room the pin has under the header and heading
+         (--story-chrome, from the script) so the pin always fits the screen
+         and can hold. On a portrait phone the cap never binds; it only
+         shrinks the frame on a phone held sideways. Stays 4:3 either way. */
+      .story-frame {
+        --fw: min(100%, 680px, calc((100svh - var(--story-chrome, 260px)) * 4 / 3));
+        width: var(--fw);
+        margin-left: calc((100% - var(--fw)) / 2);
+      }
+      .story-tail { display: block; padding-top: 24px; }
     }
-    @media (min-width: 640px) and (max-width: 1023px) {
-      .story-lead { margin: 0; }
-      .story-slide { flex-basis: 45%; }
+    /* Edge to edge on phones: .container-main carries 20px of side padding. */
+    @media (max-width: 640px) {
+      .story-frame {
+        --fw: min(100% + 40px, calc((100svh - var(--story-chrome, 260px)) * 4 / 3));
+      }
     }
     @media (min-width: 1024px) {
       .story-grid {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        grid-template-areas: "text lead" "row row";
-        column-gap: 64px; row-gap: 16px;
+        grid-template-areas: "text media";
+        column-gap: 64px;
         align-items: center;
       }
-      .story-grid--media-first { grid-template-areas: "lead text" "row row"; }
-      /* landing-elevation.css gives sections 160px; these close the bands. */
+      .story-grid--media-first { grid-template-areas: "media text"; }
+      /* landing-elevation.css gives sections 160px; this closes the bands. */
       section.story.section-pad { padding: 96px 0 !important; }
-      .story-row { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 16px; }
     }
     /* ---------- Reusable placeholder slot box ---------- */
     .slot-box {
@@ -2482,17 +2509,27 @@
          Article LEFT, picture box RIGHT (matches §8.6b layout).
          ========================================================= -->
     <section class="section-pad story" aria-label="An Experiment in Education">
-      <div class="container-main">
-        <div class="story-grid">
-          <div class="story-text">
-            <h2 class="section-title">An experiment in education</h2>
-            <p class="mission-body">What Dnyanprakash has built in Latur was not built easily. It was built despite limited physical infrastructure, without government funding, and against the grain of how most schools in this region have always operated. That it has earned the deep trust of parents, educators, and children over twenty-six years is not a coincidence, it is the result of a conscious, sustained commitment to doing education differently.</p>
-            <a href="about/an-experiment-in-education.html" class="btn btn-outline">Read how it began</a>
+      <!-- .story-scroll only provides scroll distance; .story-pin holds the
+           text and the single frame while the photographs travel inside it
+           (scripts/story-stack.js). -->
+      <div class="story-scroll" data-story-scroll>
+        <div class="story-pin">
+          <div class="container-main">
+            <div class="story-grid">
+              <div class="story-text">
+                <div class="story-head">
+                  <h2 class="section-title">An experiment in education</h2>
+                </div>
+                <div class="story-body">
+                  <p class="mission-body">What Dnyanprakash has built in Latur was not built easily. It was built despite limited physical infrastructure, without government funding, and against the grain of how most schools in this region have always operated. That it has earned the deep trust of parents, educators, and children over twenty-six years is not a coincidence, it is the result of a conscious, sustained commitment to doing education differently.</p>
+                  <a href="about/an-experiment-in-education.html" class="btn btn-outline">Read how it began</a>
+                </div>
+              </div>
+              <!-- Photographs come from scripts/story-stacks.js and travel upward
+                   through this one frame. Never add photos here. -->
+              <div class="story-media" data-story-stack="experiment" data-story-label="An Experiment in Education"></div>
+            </div>
           </div>
-          <!-- Photographs come from scripts/story-stacks.js: the slot marked
-               lead: true is the large photo, the rest form the row beneath.
-               Never add photos here. -->
-          <div class="story-media" data-story-stack="experiment" data-story-label="An Experiment in Education"></div>
         </div>
       </div>
     </section>
@@ -2502,16 +2539,26 @@
          Image LEFT, first About paragraph + Read More on the RIGHT.
          ========================================================= -->
     <section class="section-pad story" style="background: var(--color-bg-alt);" aria-label="About Us">
-      <div class="container-main">
-        <div class="story-grid story-grid--media-first">
-          <!-- Photographs come from scripts/story-stacks.js: the slot marked
-               lead: true is the large photo, the rest form the row beneath.
-               Never add photos here. -->
-          <div class="story-media" data-story-stack="vision" data-story-label="A Vision of Joyful Learning"></div>
-          <div class="story-text">
-            <h2 class="section-title">A Vision of Joyful Learning</h2>
-            <p class="mission-body">Experiencing the importance of effective learning through the mother tongue, the head of the institution, Mr. Satish Narhare, began teaching mathematics in 1989 through Narhare Classes. During this time, he realized the significance of making learning enjoyable and stress-free for children. With a vision to make education engaging, meaningful, and self-motivated — where children naturally want to learn, ask questions, seek answers, and express their thoughts freely — Savita and Satish Narhare founded Dnyanprakash in 1999, starting with their own child.</p>
-            <a href="about/index.html" class="btn btn-outline">Read the founders’ story</a>
+      <!-- .story-scroll only provides scroll distance; .story-pin holds the
+           text and the single frame while the photographs travel inside it
+           (scripts/story-stack.js). -->
+      <div class="story-scroll" data-story-scroll>
+        <div class="story-pin">
+          <div class="container-main">
+            <div class="story-grid story-grid--media-first">
+              <div class="story-text">
+                <div class="story-head">
+                  <h2 class="section-title">A Vision of Joyful Learning</h2>
+                </div>
+                <div class="story-body">
+                  <p class="mission-body">Experiencing the importance of effective learning through the mother tongue, the head of the institution, Mr. Satish Narhare, began teaching mathematics in 1989 through Narhare Classes. During this time, he realized the significance of making learning enjoyable and stress-free for children. With a vision to make education engaging, meaningful, and self-motivated — where children naturally want to learn, ask questions, seek answers, and express their thoughts freely — Savita and Satish Narhare founded Dnyanprakash in 1999, starting with their own child.</p>
+                  <a href="about/index.html" class="btn btn-outline">Read the founders’ story</a>
+                </div>
+              </div>
+              <!-- Photographs come from scripts/story-stacks.js and travel upward
+                   through this one frame. Never add photos here. -->
+              <div class="story-media" data-story-stack="vision" data-story-label="A Vision of Joyful Learning"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -2600,17 +2647,27 @@
          Article LEFT, picture box RIGHT (mirror of §8.5 layout).
          ========================================================= -->
     <section class="section-pad story" aria-label="Learning through action and experience">
-      <div class="container-main">
-        <div class="story-grid">
-          <div class="story-text">
-            <h2 class="section-title">Learning by doing</h2>
-            <p class="mission-body">From the very beginning of Dnyanprakash, children's learning was linked with action and experience. Various materials are used according to the subject for that. Various reading and writing experiments were also conducted. Children get to know letters and words in kindergarten itself. After that, the children read and write sentences, and then they create stories from pictures, complete incomplete stories, write stories from points, experience writing, case writing, dialogue writing, letter writing, etc.</p>
-            <a href="about/learning-through-action.html" class="btn btn-outline">See how a lesson works</a>
+      <!-- .story-scroll only provides scroll distance; .story-pin holds the
+           text and the single frame while the photographs travel inside it
+           (scripts/story-stack.js). -->
+      <div class="story-scroll" data-story-scroll>
+        <div class="story-pin">
+          <div class="container-main">
+            <div class="story-grid">
+              <div class="story-text">
+                <div class="story-head">
+                  <h2 class="section-title">Learning by doing</h2>
+                </div>
+                <div class="story-body">
+                  <p class="mission-body">From the very beginning of Dnyanprakash, children's learning was linked with action and experience. Various materials are used according to the subject for that. Various reading and writing experiments were also conducted. Children get to know letters and words in kindergarten itself. After that, the children read and write sentences, and then they create stories from pictures, complete incomplete stories, write stories from points, experience writing, case writing, dialogue writing, letter writing, etc.</p>
+                  <a href="about/learning-through-action.html" class="btn btn-outline">See how a lesson works</a>
+                </div>
+              </div>
+              <!-- Photographs come from scripts/story-stacks.js and travel upward
+                   through this one frame. Never add photos here. -->
+              <div class="story-media" data-story-stack="action" data-story-label="Learning through Action"></div>
+            </div>
           </div>
-          <!-- Photographs come from scripts/story-stacks.js: the slot marked
-               lead: true is the large photo, the rest form the row beneath.
-               Never add photos here. -->
-          <div class="story-media" data-story-stack="action" data-story-label="Learning through Action"></div>
         </div>
       </div>
     </section>
