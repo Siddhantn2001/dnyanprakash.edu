@@ -508,3 +508,20 @@ main,
 main > section,
 .article-body,
 .section-pad { overflow-x: clip; }
+
+/* ========================================================================
+   FAIL-SAFE REVEALS (hotfix 2026-10-29, live mobile outage)
+   Content is visible unless scroll-reveals.js has started and put
+   .reveal-on on <html>. The hidden starting states above (and the inline
+   .reveal.reveal-fx in every page, the gallery strip tiles and the hero
+   entrance) only apply while that class is present. If the script never
+   runs, runs late (more than 2s after navigation) or its observer stalls,
+   the class never lands or is removed, and every block simply shows.
+   ======================================================================== */
+html:not(.reveal-on) .reveal,
+html:not(.reveal-on) .gallery-strip-frame .gallery-img,
+html:not(.reveal-on) [data-entrance] {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}

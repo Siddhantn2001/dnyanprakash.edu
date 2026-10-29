@@ -88,7 +88,7 @@
        The other stacks sit thousands of pixels down, so their first slide is
        lazy too -- eagerly fetching all three cost about half a megabyte on
        the initial load for images nobody has scrolled to yet. */
-    if (index > 0 || stackIndex > 0) img.loading = 'lazy';
+    img.loading = 'lazy';   /* every story sits below the fold (hotfix 2026-10-29) */
     if (photo.w && photo.h) { img.width = photo.w; img.height = photo.h; }
     /* Optional focal point: cover crops around the centre, which is wrong
        when the subject sits at one edge. */

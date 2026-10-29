@@ -118,5 +118,13 @@
     if (e.target === overlay) dismiss();
   });
 
-  open();
+  /* Never over a half-built page (hotfix 2026-10-29): open only once the
+     page has fully loaded; if that took more than 6s (a slow connection),
+     skip this visit without marking the card as seen. */
+  function openWhenLoaded() {
+    if (window.performance && performance.now() > 6000) return;
+    open();
+  }
+  if (document.readyState === 'complete') openWhenLoaded();
+  else window.addEventListener('load', openWhenLoaded);
 })();

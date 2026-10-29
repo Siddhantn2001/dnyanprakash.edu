@@ -33,6 +33,44 @@ function initReveals() {
   var reveals = document.querySelectorAll('.reveal');
   if (!reveals.length) return;
 
+  /* FAIL-SAFE (hotfix 2026-10-29). Hidden starting states only apply while
+     <html> has .reveal-on (scripts/mobile-polish.css). It is added here and
+     only if this runs within 2s of navigation: on a slow phone where the
+     page is still arriving, no animation is set up and everything shows. */
+  var root = document.documentElement;
+  if (window.performance && performance.now() > 2000) return;
+  var vh0 = window.innerHeight;
+  for (var v = 0; v < reveals.length; v++) {
+    /* Anything already on screen (or above it) is never hidden. */
+    if (reveals[v].getBoundingClientRect().top < vh0) reveals[v].classList.add('is-visible');
+  }
+  root.classList.add('reveal-on');
+
+  var observerRan = false;
+  function sweep() {
+    var vh = window.innerHeight;
+    for (var i = 0; i < reveals.length; i++) {
+      var el = reveals[i];
+      if (!el.classList.contains('is-visible') && el.getBoundingClientRect().top < vh) el.classList.add('is-visible');
+    }
+    var tiles = document.querySelectorAll('.gallery-strip-frame .gallery-img:not(.is-in)');
+    for (var t = 0; t < tiles.length; t++) {
+      var r = tiles[t].getBoundingClientRect();
+      if (r.top < vh && r.bottom > 0) tiles[t].classList.add('is-in');
+    }
+  }
+  var sweeping = false;
+  window.addEventListener('scroll', function () {
+    if (sweeping) return; sweeping = true;
+    requestAnimationFrame(function () { sweeping = false; sweep(); });
+  }, { passive: true });
+  /* Watchdog: if the observer has not delivered anything within 2s, drop
+     the animation entirely; either way, show whatever is in view. */
+  setTimeout(function () {
+    if (!observerRan) root.classList.remove('reveal-on');
+    sweep();
+  }, 2000);
+
   var prefersReduced = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -92,6 +130,7 @@ function initReveals() {
 
   // (c) IntersectionObserver with anticipatory trigger.
   var observer = new IntersectionObserver(function (entries) {
+    observerRan = true;
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
         entry.target.classList.add('is-visible');
@@ -185,13 +224,9 @@ if (document.readyState === 'loading') {
     requestAnimationFrame(tick);
   }
 
-  // Initialize each counter to 0 so it doesn't flash the final value before
-  // animation starts.
-  if (!prefersReduced) {
-    counters.forEach(function (el) {
-      el.textContent = '0';
-    });
-  }
+  // The real number stays in the markup until the count-up begins
+  // (hotfix 2026-10-29): pre-zeroing showed "0" wherever the observer
+  // stalled on a slow phone.
 
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
