@@ -171,7 +171,9 @@
       t.top    = t.scroll.getBoundingClientRect().top + y;   // document space
       t.h      = t.scroll.offsetHeight;
       t.max    = t.track.scrollHeight - t.frame.clientHeight;
-      t.travel = t.h - t.pinH - t.pinTop;
+      /* Stacked, the pin holds for exactly h - pinH: the scroll height is
+         set from that below. Side by side keeps its original pacing. */
+      t.travel = t.h - t.pinH - (stacked ? 0 : t.pinTop);
       t.last   = null;                                        // force a rewrite
     }
   }
@@ -207,6 +209,15 @@
     if (!ticking) { ticking = true; requestAnimationFrame(update); }
   }
 
+  /* The phone header is sticky and covers the top of the screen; on wider
+     screens it scrolls away. */
+  function headerRoom() {
+    var h = document.querySelector('.site-header');
+    if (!h) return 0;
+    var pos = getComputedStyle(h).position;
+    return (pos === 'sticky' || pos === 'fixed') ? h.offsetHeight : 0;
+  }
+
   function measure() {
     layout();
     for (var i = 0; i < tracks.length; i++) {
@@ -220,8 +231,20 @@
          absurd on a phone, where the frame is less than two thirds the size. */
       var fh = tracks[i].frame.offsetHeight;
       var n = tracks[i].track.children.length;
-      if (fh > 0 && n > 1) {
-        tracks[i].scroll.style.height = Math.round(fh + (n - 1) * fh * 0.91) + 'px';
+      if (stacked) {
+        /* Centre the pin in the room left below the sticky header, and give
+           the section the pin's own height plus the photographs' travel, so
+           nothing pinned waits on an empty screen. */
+        var room = headerRoom();
+        pin.style.top = '';
+        var pinH = pin.offsetHeight;
+        pin.style.top = Math.round(room + Math.max(12, (window.innerHeight - room - pinH) / 2)) + 'px';
+        if (fh > 0 && n > 1) tracks[i].scroll.style.height = Math.round(pinH + (n - 1) * fh * 0.91) + 'px';
+      } else {
+        pin.style.top = '';
+        if (fh > 0 && n > 1) {
+          tracks[i].scroll.style.height = Math.round(fh + (n - 1) * fh * 0.91) + 'px';
+        }
       }
     }
     cache();
@@ -234,7 +257,14 @@
   if (reduceMotion) { measure(); return; }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', measure);
+  /* A phone's address bar resizes the viewport by 50-100px as it hides and
+     shows; re-centring a held pin then would make it jump mid-scroll. */
+  var lastW = window.innerWidth, lastH = window.innerHeight;
+  window.addEventListener('resize', function () {
+    if (window.innerWidth === lastW && Math.abs(window.innerHeight - lastH) < 160) return;
+    lastW = window.innerWidth; lastH = window.innerHeight;
+    measure();
+  });
   window.addEventListener('orientationchange', measure);
   window.addEventListener('load', measure);
 

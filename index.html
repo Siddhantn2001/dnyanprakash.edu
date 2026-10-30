@@ -773,16 +773,12 @@
        320x640 the paragraph alone is taller than the screen, so a pin
        containing all of it plus a frame could never fit the viewport. */
     @media (max-width: 1024px) {
-      /* The pinned block fills the screen and centres its contents. Pinning
-         it at a fixed offset left the heading high and a few hundred pixels
-         of nothing under the frame; centred, the pair sits as one composed
-         unit while the filmstrip runs. */
-      .story-pin {
-        top: 0;
-        min-height: 100svh;
-        display: flex;
-        align-items: center;
-      }
+      /* The pinned block is only as tall as its heading and frame. The
+         script centres it in the room below the sticky header by setting
+         its sticky top; a full-screen pin with centred contents left empty
+         pin above and below them, which scrolled away as a blank band
+         between the heading and the paragraph. */
+      .story-pin { top: 0; }
       .story-pin > .container-main { width: 100%; }
       .story-grid { display: block !important; }
       .story-head { margin-bottom: 20px; }
